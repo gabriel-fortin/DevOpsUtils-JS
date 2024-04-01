@@ -1,11 +1,11 @@
 "use client"
 
-import React from "react";
-import Image from "next/image";
+import React from "react"
+import Image from "next/image"
 
-import styles from "./page.module.css";
-import { PatAuthorization } from "./PatAuthorization";
-import { Title } from "./Title";
+import styles from "./page.module.css"
+import { PatAuthorization } from "./PatAuthorization"
+import { Title } from "./Title"
 
 
 export default function MyMainPage() {
@@ -16,5 +16,5 @@ export default function MyMainPage() {
         <Title id={5296} />
       </PatAuthorization>
     </main>
-  );
+  )
 }
