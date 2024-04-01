@@ -6,7 +6,9 @@ import { BASE_URL, API_VERSION } from "./constants"
 import { usePersonalAccessToken } from "./usePersonalAccessToken"
 
 
-export const Title: React.FC<{ id: number }> = ({ id }) => {
+export const Title: React.FC<{
+  id: number
+}> = ({ id }) => {
   const [wiTitle, setWiTitle] = useState("")
   const pat = usePersonalAccessToken()
 

@@ -6,7 +6,9 @@ import { BASE_URL, API_VERSION } from "./constants"
 import { PersonalAccessTokenContext } from "./usePersonalAccessToken";
 
 
-export const PatAuthorization: React.FC<{ children: ReactNode; }> = ({ children }) => {
+export const PatAuthorization: React.FC<{
+  children: ReactNode;
+}> = ({ children }) => {
   const [pat, setPat] = useState("")
   const [state, setState] = useState<"EMPTY" | "FETCHING" | "YES" | "NOPE">("EMPTY")
   const currentRequestAbortController = useRef<AbortController | null>(null)
