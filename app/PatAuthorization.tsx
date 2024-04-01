@@ -3,9 +3,10 @@
 import React, { ReactNode, useRef, useState } from "react";
 
 import { BASE_URL, API_VERSION } from "./constants";
+import { PersonalAccessTokenContext } from "./usePersonalAccessToken";
 
 
-export const PatAuthorization: React.FC<{ children: (pat: string) => ReactNode; }> = ({ children }) => {
+export const PatAuthorization: React.FC<{ children: ReactNode; }> = ({ children }) => {
   const [pat, setPat] = useState("");
   const [state, setState] = useState<"EMPTY" | "FETCHING" | "YES" | "NOPE">("EMPTY");
   const currentRequestAbortController = useRef<AbortController | null>(null);
@@ -40,7 +41,7 @@ export const PatAuthorization: React.FC<{ children: (pat: string) => ReactNode; 
   }
 
   return (
-    <>
+    <PersonalAccessTokenContext.Provider value={pat}>
       <div>
         PAT: <input onChange={onPatInputChange} /> <br />
         <button onClick={() => verifyPat(pat)}>Auth!</button>
@@ -48,7 +49,7 @@ export const PatAuthorization: React.FC<{ children: (pat: string) => ReactNode; 
       {state === "EMPTY" && "Enter Personal Access Token"}
       {state === "FETCHING" && "Checking the PAT"}
       {state === "NOPE" && "PAT check failure. It might be incorrect, not have the required access or there was a network problem"}
-      {state === "YES" && children(pat)}
-    </>
+      {state === "YES" && children}
+    </PersonalAccessTokenContext.Provider>
   );
 };

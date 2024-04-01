@@ -3,10 +3,12 @@
 import React, { useState } from "react";
 
 import { BASE_URL, API_VERSION } from "./constants";
+import { usePersonalAccessToken } from "./usePersonalAccessToken";
 
 
-export const Title: React.FC<{ id: number; pat: string; }> = ({ id, pat }) => {
+export const Title: React.FC<{ id: number }> = ({ id }) => {
   const [wiTitle, setWiTitle] = useState("");
+  const pat = usePersonalAccessToken()
 
   function getWorkItem() {
     const url = `${BASE_URL}?ids=${id}&${API_VERSION}`;

@@ -13,7 +13,7 @@ export default function MyMainPage() {
     <main className={styles.main}>
       HELLO
       <PatAuthorization>
-        {(pat) => <Title id={5296} pat={pat}/>}
+        <Title id={5296} />
       </PatAuthorization>
     </main>
   );
