@@ -4,17 +4,17 @@ import React from "react"
 import Image from "next/image"
 
 import styles from "./page.module.css"
-import { PatAuthorization } from "./PatAuthorization"
-import { Title } from "./Title"
+import { PatAuth } from "@/auth/PatAuth"
+import { Title } from "@/Title"
 
 
 export default function MyMainPage() {
   return (
     <main className={styles.main}>
-      HELLO
-      <PatAuthorization>
+      <h1>A tool for chores in DevOps projects</h1>
+      <PatAuth>
         <Title id={5296} />
-      </PatAuthorization>
+      </PatAuth>
     </main>
   )
 }

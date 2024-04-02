@@ -2,11 +2,11 @@
 
 import React, { ReactNode, useRef, useState } from "react"
 
-import { BASE_URL, API_VERSION } from "./constants"
-import { PersonalAccessTokenContext } from "./usePersonalAccessToken";
+import { BASE_URL, API_VERSION } from "@/constants"
+import { PersonalAccessTokenContext } from "./usePersonalAccessToken"
 
 
-export const PatAuthorization: React.FC<{
+export const PatAuth: React.FC<{
   children: ReactNode;
 }> = ({ children }) => {
   const [pat, setPat] = useState("")
@@ -44,8 +44,9 @@ export const PatAuthorization: React.FC<{
 
   return (
     <PersonalAccessTokenContext.Provider value={pat}>
+      <h2>Authentication / authorisation</h2>
       <div>
-        PAT: <input onChange={onPatInputChange} /> <br />
+        PAT: <input onChange={onPatInputChange} />
         <button onClick={() => verifyPat(pat)}>Auth!</button>
       </div>
       {state === "EMPTY" && "Enter Personal Access Token"}

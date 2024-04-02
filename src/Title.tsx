@@ -2,8 +2,8 @@
 
 import React, { useState } from "react"
 
-import { BASE_URL, API_VERSION } from "./constants"
-import { usePersonalAccessToken } from "./usePersonalAccessToken"
+import { BASE_URL, API_VERSION } from "@/constants"
+import { usePersonalAccessToken } from "@/auth/usePersonalAccessToken"
 
 
 export const Title: React.FC<{
@@ -25,6 +25,7 @@ export const Title: React.FC<{
     fetch(request)
       .then(res => res.json())
       .then(data => {
+        console.log("🚀 ~ getWorkItem ~ data:", data)
         return setWiTitle(data.value[0].fields["System.Title"])
       })
   }
