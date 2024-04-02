@@ -3,7 +3,7 @@
 import React, { useState } from "react"
 
 import { BASE_URL, API_VERSION } from "@/constants"
-import { usePersonalAccessToken } from "@/auth/usePersonalAccessToken"
+import { usePersonalAccessToken } from "@/auth/PersonalAccessTokenHolder"
 
 
 export const Title: React.FC<{

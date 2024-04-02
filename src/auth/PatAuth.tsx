@@ -3,12 +3,12 @@
 import React, { ReactNode, useRef, useState } from "react"
 
 import { BASE_URL, API_VERSION } from "@/constants"
-import { PersonalAccessTokenContext } from "./usePersonalAccessToken"
+import { PersonalAccessTokenContext } from "./PersonalAccessTokenHolder"
 
 
 export const PatAuth: React.FC<{
-  children: ReactNode;
-}> = ({ children }) => {
+  onPatChange: (_: string) => void
+}> = ({ onPatChange }) => {
   const [pat, setPat] = useState("")
   const [state, setState] = useState<"EMPTY" | "FETCHING" | "YES" | "NOPE">("EMPTY")
   const currentRequestAbortController = useRef<AbortController | null>(null)
@@ -17,6 +17,7 @@ export const PatAuth: React.FC<{
     const newPat = e.target.value
     verifyPat(newPat)
     setPat(newPat)
+    onPatChange("")
   }
 
   async function verifyPat(pat: string) {
@@ -39,20 +40,23 @@ export const PatAuth: React.FC<{
     const response = await fetch(request, { signal: abortController.signal })
 
     if (response.status !== 200) setState("NOPE")
-    else setState("YES")
+    else {
+      setState("YES")
+      onPatChange(pat)
+    }
   }
 
   return (
-    <PersonalAccessTokenContext.Provider value={pat}>
+    <>
       <h2>Authentication / authorisation</h2>
       <div>
         PAT: <input onChange={onPatInputChange} />
         <button onClick={() => verifyPat(pat)}>Auth!</button>
       </div>
-      {state === "EMPTY" && "Enter Personal Access Token"}
-      {state === "FETCHING" && "Checking the PAT"}
-      {state === "NOPE" && "PAT check failure. It might be incorrect, not have the required access or there was a network problem"}
-      {state === "YES" && children}
-    </PersonalAccessTokenContext.Provider>
+      {state === "EMPTY" && "👆 Enter Personal Access Token"}
+      {state === "FETCHING" && "❔ Checking the PAT"}
+      {state === "NOPE" && "❌ PAT check failure. It might be incorrect, not have the required access or there was a network problem"}
+      {state === "YES" && "✔️ PAT successfully checked"}
+    </>
   )
 }
