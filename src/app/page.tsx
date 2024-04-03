@@ -16,8 +16,12 @@ export default function MyMainPage() {
     <main className={styles.main}>
       <h1>A tool for chores in DevOps projects</h1>
       <PersonalAccessTokenContext.Provider value={pat}>
-        <PatAuth onPatChange={setPat}/>
-        <Title id={5296} />
+        <div className={styles.card}>
+          <PatAuth onPatChange={setPat}/>
+        </div>
+        <div className={styles.card}>
+          <Title id={5296} />
+        </div>
       </PersonalAccessTokenContext.Provider>
     </main>
   )
