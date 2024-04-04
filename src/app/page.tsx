@@ -17,12 +17,18 @@ export default function MyMainPage() {
       <h1>A tool for chores in DevOps projects</h1>
       <PersonalAccessTokenContext.Provider value={pat}>
         <div className={styles.card}>
-          <PatAuth onPatChange={setPat}/>
+          <PatAuth onPatChange={setPat} />
         </div>
-        <div className={styles.card}>
-          <Title id={5296} />
-        </div>
+        {pat !== "" && <AllTheRest />}
       </PersonalAccessTokenContext.Provider>
     </main>
   )
+}
+
+function AllTheRest() {
+  return (
+    <div className={styles.card}>
+      <Title id={5197} />
+    </div>
+    )
 }
