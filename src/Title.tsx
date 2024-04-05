@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useMemo, useState } from "react"
+import React, { FC, ReactNode, useEffect, useMemo, useState } from "react"
 
 import { BASE_URL, API_VERSION } from "@/constants"
 import { usePersonalAccessToken } from "@/auth/PersonalAccessTokenHolder"
@@ -9,60 +9,76 @@ import { usePersonalAccessToken } from "@/auth/PersonalAccessTokenHolder"
 export const Title: React.FC<{
   id: number
 }> = ({ id }) => {
-  const [workItemData, setWorkItemData] = useState<WorkItem | null>(null)
-  const devOpsRequest = useDevOpsGet(`${BASE_URL}/${id}?$expand=Relations`)
+  const url = `${BASE_URL}/${id}?$expand=Relations`
 
-  function getWorkItem() {
-    fetch(devOpsRequest)
-      .then(res => res.json())
-      .then(data => {
-        setWorkItemData(data)
-      })
-      .catch(_ => setWorkItemData(null))
+  const listItem = {
+    display: "list-item",
+    margin: "0.4em 0 0.4em 1em",
   }
 
   return (
-    <>
-      <div>
-        <button onClick={getWorkItem}>TEST</button> <br />
-        {workItemData && WorkItemDetails(workItemData)}
-      </div>
-    </>
+    <div>
+      <FetchWorkItem url={url}>
+        {wi =>
+          <DisplayWorkItem wi={wi}>
+            {childUrl =>
+              <div style={listItem}>
+                <FetchWorkItem url={childUrl}>
+                  {childWi => <DisplayWorkItem wi={childWi} />}
+                </FetchWorkItem>
+              </div>
+            }
+          </DisplayWorkItem>
+        }
+      </FetchWorkItem>
+    </div>
   )
 }
 
-function WorkItemDetails(workItemData: WorkItem) {
+const DisplayWorkItem: FC<{
+  wi: WorkItemDto,
+  children?: (url: string) => ReactNode,
+}> = ({ wi, children: renderChild }) => {
+  const wiTypeUrl = wi._links?.workItemType.href
+  const wiType = decodeURI(wiTypeUrl?.substring(wiTypeUrl.lastIndexOf("/") + 1) || "???")
+  const childrenWorkItemUrls = wi.relations?.filter(x => x.rel === "System.LinkTypes.Hierarchy-Forward").map(x => x.url) || []
+
+  const emph = { fontStyle: "italic", textDecoration: "underline" }
+
   return (
-    <>
-      US: &nbsp;
-      {workItemData?.fields["System.Title"]} <br />
-      children: <br />
-      {workItemData.relations
-        ?.filter(x => x.rel === "System.LinkTypes.Hierarchy-Forward")
-        .map(x => <Child key={x.url} url={x.url} />)}
-    </>
+    <div>
+      <div style={emph}>{wiType} #{wi.id}</div>
+      <div>{wi.fields["System.Title"]}</div>
+      <div>
+        {renderChild && childrenWorkItemUrls.map(renderChild)}
+      </div>
+    </div>
   )
 }
 
-const Child: React.FC<{ url: string }> = ({ url }) => {
-  const [workItemData, setWorkItemData] = useState<WorkItem | null>(null)
+const FetchWorkItem: FC<{
+  url: string,
+  children?: (wi: WorkItemDto) => ReactNode
+}> = ({ url, children: consumer }) => {
+  const [workItemDto, setWorkItemDto] = useState<WorkItemDto | null>(null)
   const devOpsRequest = useDevOpsGet(url)
 
   useEffect(() => {
-    fetch(devOpsRequest)
-      .then(res => res.json())
-      .then(setWorkItemData)
-  }, [devOpsRequest, url])
+    function getWorkItem() {
+      fetch(devOpsRequest)
+        .then(res => res.json())
+        .then(data => {
+          setWorkItemDto(data)
+        })
+        .catch(_ => setWorkItemDto(null))
+    }
+    getWorkItem()
+  }, [devOpsRequest])
 
-  return (
-    workItemData &&
-    <>
-      – &nbsp;
-      {workItemData?.fields["System.Title"]}
-      <br />
-    </>
-  )
+  return (workItemDto && consumer && consumer(workItemDto))
 }
+
+
 
 
 function useDevOpsGet(url: string): Request {
@@ -82,7 +98,10 @@ function useDevOpsGet(url: string): Request {
 
 
 
-type WorkItem = {
+type WorkItemDto = {
+  id: string
+  rev: number
+  url: string
   fields: {
     "System.Title": string,
   }
@@ -91,4 +110,8 @@ type WorkItem = {
     url: string,
     attributes: [any]
   }]
+  _links?: {
+    self: { href: string }
+    workItemType: { href: string }
+  }
 }
