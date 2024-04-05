@@ -1,9 +1,8 @@
 "use client"
 
-import React, { ReactNode, useRef, useState } from "react"
+import React, { useRef, useState } from "react"
 
 import { BASE_URL, API_VERSION } from "@/constants"
-import { PersonalAccessTokenContext } from "./PersonalAccessTokenHolder"
 
 
 export const PatAuth: React.FC<{

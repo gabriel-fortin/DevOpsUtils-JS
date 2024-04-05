@@ -3,10 +3,11 @@
 import React, { useState } from "react"
 import Image from "next/image"
 
-import styles from "./page.module.css"
 import { PatAuth } from "@/auth/PatAuth"
 import { WorkItemAndItsChildren } from "@/showWorkItems/WorkItemAndItsChildren"
 import { PersonalAccessTokenContext } from "@/auth/PersonalAccessTokenHolder"
+
+import styles from "./page.module.css"
 
 
 export default function MyMainPage() {
