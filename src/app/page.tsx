@@ -5,7 +5,7 @@ import Image from "next/image"
 
 import styles from "./page.module.css"
 import { PatAuth } from "@/auth/PatAuth"
-import { Title } from "@/Title"
+import { WorkItemAndItsChildren } from "@/showWorkItems/WorkItemAndItsChildren"
 import { PersonalAccessTokenContext } from "@/auth/PersonalAccessTokenHolder"
 
 
@@ -28,7 +28,7 @@ export default function MyMainPage() {
 function AllTheRest() {
   return (
     <div className={styles.card}>
-      <Title id={5197} />
+      <WorkItemAndItsChildren id={5197} />
     </div>
     )
 }
