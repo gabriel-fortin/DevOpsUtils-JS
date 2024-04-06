@@ -1,20 +1,17 @@
 "use client"
 
-import React, { FC, ReactNode } from "react"
+import React, { FC } from "react"
 
-import { WorkItemDto } from "@/repository/WorkItemDto"
+import { useWorkItemDto } from "@/contexts/WorkItemDtoContext"
 
 
-export const DisplayWorkItem: FC<{
-  wi: WorkItemDto
-  children?: (url: string) => ReactNode
-}> = ({
-  wi,
-  children: renderChild,
-}) => {
+export const DisplayWorkItem: FC =
+  () => {
+    const wi = useWorkItemDto()
+    if (!wi) return null
+
     const wiTypeUrl = wi._links?.workItemType.href
     const wiType = decodeURI(wiTypeUrl?.substring(wiTypeUrl.lastIndexOf("/") + 1) || "???")
-    const childrenWorkItemUrls = wi.relations?.filter(x => x.rel === "System.LinkTypes.Hierarchy-Forward").map(x => x.url) || []
 
     const emph = {
       textDecoration: "underline",
@@ -25,9 +22,6 @@ export const DisplayWorkItem: FC<{
       <div>
         <div style={emph}>[{wiType} #{wi.id}]</div>
         <div>{wi.fields["System.Title"]}</div>
-        <div>
-          {renderChild && childrenWorkItemUrls.map(renderChild)}
-        </div>
       </div>
     )
   }
