@@ -4,8 +4,8 @@ import React, { useState } from "react"
 import Image from "next/image"
 
 import { PatAuth } from "@/auth/PatAuth"
+import { PersonalAccessTokenContext } from "@/contexts/PersonalAccessTokenContext"
 import { WorkItemAndItsChildren } from "@/showWorkItems/WorkItemAndItsChildren"
-import { PersonalAccessTokenContext } from "@/auth/PersonalAccessTokenHolder"
 
 import styles from "./page.module.css"
 

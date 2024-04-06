@@ -1,7 +1,7 @@
 import { useMemo } from "react"
 
-import { usePersonalAccessToken } from "@/auth/PersonalAccessTokenHolder"
 import { API_VERSION } from "@/constants"
+import { usePersonalAccessToken } from "@/contexts/PersonalAccessTokenContext"
 
 
 export function useDevOpsGet(url: string): Request {
