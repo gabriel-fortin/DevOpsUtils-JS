@@ -3,6 +3,7 @@
 import React, { useRef, useState } from "react"
 
 import { BASE_URL, API_VERSION } from "@/constants"
+import { useLocalStorage } from "@uidotdev/usehooks"
 
 
 export const PatAuth: React.FC<{
@@ -11,12 +12,22 @@ export const PatAuth: React.FC<{
   const [pat, setPat] = useState("")
   const [state, setState] = useState<"EMPTY" | "FETCHING" | "YES" | "NOPE">("EMPTY")
   const currentRequestAbortController = useRef<AbortController | null>(null)
+  const [patInStorage, savePatToStorage] = useLocalStorage("pat", "")
 
   const onPatInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const newPat = e.target.value
     verifyPat(newPat)
     setPat(newPat)
     onPatChange("")
+  }
+
+  const loadPat = () => {
+    console.log("🚀 ~ loadPat ~ loadPat:", loadPat)
+    return setPat(patInStorage)
+  }
+  const savePat = () => {
+    console.log("🚀 ~ savePat ~ savePat:", savePat)
+    return savePatToStorage(pat)
   }
 
   async function verifyPat(pat: string) {
@@ -45,11 +56,19 @@ export const PatAuth: React.FC<{
     }
   }
 
+  const spaced = { margin: "0.5em 0", display: "flex", gap: "0.5em" }
+  const save = { visibility: pat ? "initial" : "hidden" as React.CSSProperties["visibility"] }
+  const load = { visibility: patInStorage ? "initial" : "hidden" as React.CSSProperties["visibility"] }
+
   return (
     <>
       <h2>Authentication / authorisation</h2>
-      <div>
+      <div style={spaced}>
         PAT: <input onChange={onPatInputChange} />
+        <button onClick={savePat} style={save}>Save to local storage</button>
+      </div>
+      <div style={spaced}>
+        <button onClick={loadPat} style={load}>Load from local storage</button>
         <button onClick={() => verifyPat(pat)}>Auth!</button>
       </div>
       {state === "EMPTY" && "👆 Enter Personal Access Token"}
