@@ -5,6 +5,7 @@ import Image from "next/image"
 
 import { PatAuth } from "@/auth/PatAuth"
 import { PersonalAccessTokenContext } from "@/contexts/PersonalAccessTokenContext"
+import { SelectWorkItem } from "@/selectWorkItem/SelectWorkItem"
 import { WorkItemAndItsChildren } from "@/showWorkItems/WorkItemAndItsChildren"
 
 import styles from "./page.module.css"
@@ -27,9 +28,17 @@ export default function MyMainPage() {
 }
 
 function AllTheRest() {
+  const [workItemId, setWorkItemId] = useState<number | null>(null)
   return (
+    <>
+      <div className={styles.card}>
+        <SelectWorkItem onWorkItemSelected={setWorkItemId} />
+      </div>
+      {workItemId &&
     <div className={styles.card}>
-      <WorkItemAndItsChildren id={5197} />
+          <WorkItemAndItsChildren id={workItemId} />
     </div>
+      }
+    </>
     )
 }
