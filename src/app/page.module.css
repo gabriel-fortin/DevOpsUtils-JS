@@ -46,6 +46,10 @@
   width: var(--max-width);
 }
 
+.main button {
+  padding: 0.3em 0.5em;
+}
+
 .card {
   width: fit-content;
   padding: 1rem 1.2rem;

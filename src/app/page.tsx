@@ -21,7 +21,7 @@ export default function MyMainPage() {
         <div className={styles.card}>
           <PatAuth onPatChange={setPat} />
         </div>
-        {pat !== "" && <AllTheRest />}
+        {pat && <AllTheRest />}
       </PersonalAccessTokenContext.Provider>
     </main>
   )
@@ -35,10 +35,10 @@ function AllTheRest() {
         <SelectWorkItem onWorkItemSelected={setWorkItemId} />
       </div>
       {workItemId &&
-    <div className={styles.card}>
+        <div className={styles.card}>
           <WorkItemAndItsChildren id={workItemId} />
-    </div>
+        </div>
       }
     </>
-    )
+  )
 }
