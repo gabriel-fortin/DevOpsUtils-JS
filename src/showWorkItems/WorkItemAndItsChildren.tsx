@@ -9,13 +9,11 @@ import { WorkItemDto } from "@/repository/WorkItemDto"
 
 import { DisplayWorkItem } from "./DisplayWorkItem"
 import { FetchWorkItem } from "./FetchWorkItem"
+import { useWorkItemId } from "@/contexts/WorkItemIdContext"
 
 
-export const WorkItemAndItsChildren: React.FC<{
-  id: number
-}> = ({
-  id,
-}) => {
+export const WorkItemAndItsChildren: React.FC<{}> = ({}) => {
+    const id = useWorkItemId()
     const url = `${BASE_URL}/${id}?$expand=Relations`
 
     const exposeWorkItem = (wi: WorkItemDto | null) => {
@@ -49,7 +47,7 @@ export const WorkItemAndItsChildren: React.FC<{
 const ForEachChildWorkItemUrl: FC<{ children: ReactNode }> = ({ children }) => {
   const wi = useWorkItemDto()
   if (!wi) return null
-  
+
   return wi.relations
     ?.filter(x => x.rel === "System.LinkTypes.Hierarchy-Forward")
     .map(x => x.url)

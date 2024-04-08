@@ -9,36 +9,39 @@ import { SelectWorkItem } from "@/selectWorkItem/SelectWorkItem"
 import { WorkItemAndItsChildren } from "@/showWorkItems/WorkItemAndItsChildren"
 
 import styles from "./page.module.css"
+import { WorkItemIdContext } from "@/contexts/WorkItemIdContext"
 
 
 export default function MyMainPage() {
   const [pat, setPat] = useState("")
+  const [workItemId, setWorkItemId] = useState<number | null>(null)
 
   return (
     <main className={styles.main}>
       <h1>A tool for chores in DevOps projects</h1>
+      <div className={styles.card}>
+        <PatAuth onPatChange={setPat} />
+      </div>
+      <div className={styles.card}>
+        <SelectWorkItem onWorkItemSelected={setWorkItemId} />
+      </div>
       <PersonalAccessTokenContext.Provider value={pat}>
-        <div className={styles.card}>
-          <PatAuth onPatChange={setPat} />
-        </div>
-        {pat && <AllTheRest />}
+        <WorkItemIdContext.Provider value={workItemId}>
+          <MaybeAllTheRest visible={!!pat && !!workItemId} />
+        </WorkItemIdContext.Provider>
       </PersonalAccessTokenContext.Provider>
     </main>
   )
 }
 
-function AllTheRest() {
-  const [workItemId, setWorkItemId] = useState<number | null>(null)
+function MaybeAllTheRest({ visible }: { visible: boolean }) {
+  if (!visible) return null
+
   return (
     <>
       <div className={styles.card}>
-        <SelectWorkItem onWorkItemSelected={setWorkItemId} />
+        <WorkItemAndItsChildren />
       </div>
-      {workItemId &&
-        <div className={styles.card}>
-          <WorkItemAndItsChildren id={workItemId} />
-        </div>
-      }
     </>
   )
 }

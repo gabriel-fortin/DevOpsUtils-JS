@@ -3,8 +3,8 @@
 import { createContext, useContext } from "react"
 
 
-const WorkItemIdContext = createContext<number | null>(null)
+export const WorkItemIdContext = createContext<number | null>(null)
 
-function useWorkItemId() {
+export function useWorkItemId() {
   return useContext(WorkItemIdContext)
 }
