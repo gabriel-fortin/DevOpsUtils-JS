@@ -14,7 +14,7 @@ import { useWorkItemId } from "@/contexts/WorkItemIdContext"
 
 export const WorkItemAndItsChildren: React.FC<{}> = ({}) => {
     const id = useWorkItemId()
-    const url = `${BASE_URL}/${id}?$expand=Relations`
+    const url = `${BASE_URL}/wit/workitems/${id}?$expand=Relations`
 
     const exposeWorkItem = (wi: WorkItemDto | null) => {
       // TODO: expose the work item to the whole app

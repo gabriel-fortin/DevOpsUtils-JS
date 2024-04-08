@@ -2,8 +2,9 @@
 
 import React, { useRef, useState } from "react"
 
-import { BASE_URL, API_VERSION } from "@/constants"
+import { BASE_URL } from "@/constants"
 import { useLocalStorage } from "@uidotdev/usehooks"
+import { useDevOpsGet } from "@/repository/devOps"
 
 
 export const PatAuth: React.FC<{
@@ -11,8 +12,9 @@ export const PatAuth: React.FC<{
 }> = ({ onPatChange }) => {
   const [pat, setPat] = useState("")
   const [state, setState] = useState<"EMPTY" | "FETCHING" | "YES" | "NOPE">("EMPTY")
-  const currentRequestAbortController = useRef<AbortController | null>(null)
+  const requestAbortion = useRef<AbortController | null>(null)
   const [patInStorage, savePatToStorage] = useLocalStorage("pat", "")
+  const requestAnything: Request = useDevOpsGet(`${BASE_URL}/wit/tags`, pat)
 
   const onPatInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const newPat = e.target.value
@@ -22,32 +24,26 @@ export const PatAuth: React.FC<{
   }
 
   const loadPat = () => {
-    console.log("🚀 ~ loadPat ~ loadPat:", loadPat)
     return setPat(patInStorage)
   }
   const savePat = () => {
-    console.log("🚀 ~ savePat ~ savePat:", savePat)
     return savePatToStorage(pat)
   }
 
   async function verifyPat(pat: string) {
+    requestAbortion.current?.abort()
+
     if (pat === "") {
       setState("EMPTY")
       return
     }
 
-    const url = `${BASE_URL}?ids=${5296}&${API_VERSION}`
-    const auth = `Basic ${btoa(":" + pat)}`
-    const request = new Request(url)
-    request.headers.append("Authorization", auth)
-    request.headers.append("Accept", "application/json")
-
     setState("FETCHING")
 
-    const abortController = new AbortController()
-    currentRequestAbortController.current = abortController
+    const controller = new AbortController()
+    requestAbortion.current = controller
 
-    const response = await fetch(request, { signal: abortController.signal })
+    const response = await fetch(requestAnything, { signal: controller.signal })
 
     if (response.status !== 200) setState("NOPE")
     else {
