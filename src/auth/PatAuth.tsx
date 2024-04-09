@@ -60,7 +60,7 @@ export const PatAuth: React.FC<{
     <>
       <h2>Authentication / authorisation</h2>
       <div style={spaced}>
-        PAT: <input onChange={onPatInputChange} />
+        PAT: <input value={pat} onChange={onPatInputChange} />
         <button onClick={savePat} style={save}>Save to local storage</button>
       </div>
       <div style={spaced}>
