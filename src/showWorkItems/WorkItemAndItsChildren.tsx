@@ -12,7 +12,8 @@ import { FetchWorkItem } from "./FetchWorkItem"
 import { useWorkItemId } from "@/contexts/WorkItemIdContext"
 
 
-export const WorkItemAndItsChildren: React.FC<{}> = ({}) => {
+export const WorkItemAndItsChildren: React.FC<{}> =
+  ({ }) => {
     const id = useWorkItemId()
     const url = `${BASE_URL}/wit/workitems/${id}?$expand=Relations`
 
@@ -20,15 +21,37 @@ export const WorkItemAndItsChildren: React.FC<{}> = ({}) => {
       // TODO: expose the work item to the whole app
     }
 
+    /*  arrows   ↓↯↧⇓⇣⇩▼▽    ↘⇘   ⇒⇨⇾  */
+
+    const overallStyle = {
+      color: "grey",
+    }
     const listItem = {
       display: "list-item",
-      margin: "0.4em 0 0.4em 1em",
+      margin: "0.5em 0 0.5em 1.4em",
+      listStyleType: "'⇘ '",
+      fontSize: "1.2rem",
+    }
+    const parentingSymbol = {
+      margin: "0.0em 0.0em 0.3em",
+      fontSize: "1.2rem",
+    }
+    const mainItem = {
+      color: "white",
     }
 
     return (
-      <div>
+      <div style={overallStyle}>
         <FetchWorkItem url={url} onWorkItemReceived={exposeWorkItem}>
-          <DisplayWorkItem />
+          <ForParentWorkItemUrl>
+            <FetchWorkItem>
+              <DisplayWorkItem />
+            </FetchWorkItem>
+            <div style={parentingSymbol}>
+              ⇓
+            </div>
+          </ForParentWorkItemUrl>
+          <DisplayWorkItem style={mainItem} />
           <ForEachChildWorkItemUrl>
             <FetchWorkItem>
               <div style={listItem}>
@@ -58,4 +81,17 @@ const ForEachChildWorkItemUrl: FC<{ children: ReactNode }> = ({ children }) => {
     )
 }
 
+const ForParentWorkItemUrl: FC<{ children: ReactNode }> = ({ children }) => {
+  const wi = useWorkItemDto()
+  const parentUrl = wi?.relations
+    ?.find(x => x.rel === "System.LinkTypes.Hierarchy-Reverse")
+    ?.url
 
+  if (!wi || !parentUrl) return null
+
+  return (
+    <WorkItemUrlContext.Provider value={parentUrl}>
+      {children}
+    </WorkItemUrlContext.Provider>
+  )
+}
