@@ -10,6 +10,7 @@ import { WorkItemAndItsChildren } from "@/showWorkItems/WorkItemAndItsChildren"
 
 import styles from "./page.module.css"
 import { WorkItemIdContext } from "@/contexts/WorkItemIdContext"
+import { AddTasks } from "@/addingTasks/AddTasks"
 
 
 export default function MyMainPage() {
@@ -41,6 +42,9 @@ function MaybeAllTheRest({ visible }: { visible: boolean }) {
     <>
       <div className={styles.card}>
         <WorkItemAndItsChildren />
+      </div>
+      <div className={styles.card}>
+        <AddTasks />
       </div>
     </>
   )
