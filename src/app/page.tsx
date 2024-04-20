@@ -16,6 +16,8 @@ import { AddTasks } from "@/addingTasks/AddTasks"
 export default function MyMainPage() {
   const [pat, setPat] = useState("")
   const [workItemId, setWorkItemId] = useState<number | null>(null)
+  const isClient = useIsClient()
+  if (!isClient) return null
 
   return (
     <main className={styles.main}>
