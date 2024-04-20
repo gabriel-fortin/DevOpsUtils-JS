@@ -2,13 +2,17 @@
 
 import React, { CSSProperties, FC, useCallback, useEffect, useState } from "react"
 
-import { SelectableTask, createFreshTasksList } from "./tasks"
+import { BASE_URL } from "@/constants"
 import { useWorkItemId } from "@/contexts/WorkItemIdContext"
+import { useDevOpsPost } from "@/repository/devOps"
+
+import { SelectableTask, createFreshTasksList } from "./tasks"
 
 
 export function AddTasks() {
   const [tasks, setTasks] = useState<SelectableTask[]>(createFreshTasksList)
-  const wiId = useWorkItemId()
+  const { workItemId: wiId, setWorkItemId } = useWorkItemId()
+  const request = useDevOpsPost(`${BASE_URL}/wit/workitems/$Task`)
 
   const resetTaskSelection = useCallback(() => setTasks(createFreshTasksList()), [])
 
@@ -28,8 +32,44 @@ export function AddTasks() {
 
   const addSelectedTasksToWorkItem = () => {
     console.log("🚀 ~ addSelectedTasksToWorkItem ")
-    // TODO: call DevOps, add tasks to WI
     resetTaskSelection()
+
+    const taskCreatingRequests = tasks
+      .filter(x => x.isSelected)
+      .map(task => {
+        const postData = [
+          {
+            op: "add",
+            path: "/fields/System.Title",
+            from: null,
+            value: task.getTitle(),
+          },
+          {
+            op: "add",
+            path: "/relations/-",
+            from: null,
+            value: {
+              rel: "System.LinkTypes.Hierarchy-Reverse",
+              url: `${BASE_URL}/wit/workItems/${wiId}`,
+            },
+          },
+        ]
+        return postData
+      })
+      .map(postData =>
+        fetch(request, {
+          body: JSON.stringify(postData),
+        })
+      )
+
+    Promise.allSettled(taskCreatingRequests)
+      .then(() => {
+        // trigger a refresh
+        setWorkItemId(null)
+        setTimeout(() => {
+          setWorkItemId(wiId)
+        }, 10)
+      })
   }
 
   const summaryStyle: CSSProperties = { display: "block" }
