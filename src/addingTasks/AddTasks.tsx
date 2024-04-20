@@ -2,17 +2,16 @@
 
 import React, { CSSProperties, FC, useCallback, useEffect, useState } from "react"
 
-import { BASE_URL } from "@/constants"
 import { useWorkItemId } from "@/contexts/WorkItemIdContext"
-import { useDevOpsPost } from "@/repository/devOps"
 
 import { SelectableTask, createFreshTasksList } from "./tasks"
+import { useNetworkOperations } from "./networkOperations"
 
 
 export function AddTasks() {
   const [tasks, setTasks] = useState<SelectableTask[]>(createFreshTasksList)
   const { workItemId: wiId, setWorkItemId } = useWorkItemId()
-  const request = useDevOpsPost(`${BASE_URL}/wit/workitems/$Task`)
+  const { postChildTasksToDevOps } = useNetworkOperations()
 
   const resetTaskSelection = useCallback(() => setTasks(createFreshTasksList()), [])
 
@@ -32,37 +31,14 @@ export function AddTasks() {
 
   const addSelectedTasksToWorkItem = () => {
     console.log("🚀 ~ addSelectedTasksToWorkItem ")
+    if (!wiId) return
+
     resetTaskSelection()
 
-    const taskCreatingRequests = tasks
-      .filter(x => x.isSelected)
-      .map(task => {
-        const postData = [
-          {
-            op: "add",
-            path: "/fields/System.Title",
-            from: null,
-            value: task.getTitle(),
-          },
-          {
-            op: "add",
-            path: "/relations/-",
-            from: null,
-            value: {
-              rel: "System.LinkTypes.Hierarchy-Reverse",
-              url: `${BASE_URL}/wit/workItems/${wiId}`,
-            },
-          },
-        ]
-        return postData
-      })
-      .map(postData =>
-        fetch(request, {
-          body: JSON.stringify(postData),
-        })
-      )
+    const selectedTasks = tasks.filter(x => x.isSelected)
+    const childTaskRequests = postChildTasksToDevOps(wiId, selectedTasks)
 
-    Promise.allSettled(taskCreatingRequests)
+    Promise.allSettled(childTaskRequests)
       .then(() => {
         // trigger a refresh
         setWorkItemId(null)
@@ -71,6 +47,10 @@ export function AddTasks() {
         }, 10)
       })
   }
+
+  const specialTasks = tasks.filter(x => x.group === "special")
+  const presentationLayerTasks = tasks.filter(x => x.group === "Presentation")
+  const accessLayerTasks = tasks.filter(x => x.group === "Access")
 
   const summaryStyle: CSSProperties = { display: "block" }
   const headerStyle: CSSProperties = { display: "list-item" }
@@ -86,9 +66,11 @@ export function AddTasks() {
           Add tasks
         </h2>
       </summary>
-      {tasks.map(x =>
-        <RenderItem key={x.name} task={x} onToggle={toggleTask} />
-      )}
+      <RenderTasks tasks={specialTasks} onToggle={toggleTask} />
+      <Separator />
+      <RenderTasks tasks={presentationLayerTasks} onToggle={toggleTask} />
+      <Separator />
+      <RenderTasks tasks={accessLayerTasks} onToggle={toggleTask} />
       <button onClick={addSelectedTasksToWorkItem} style={buttonStyle}>
         Add above tasks to #{wiId}
       </button>
@@ -96,18 +78,18 @@ export function AddTasks() {
   )
 }
 
-export const RenderItem: FC<{
-  task: SelectableTask,
+const RenderTasks: FC<{
+  tasks: SelectableTask[],
   onToggle: (t: SelectableTask) => void,
 }> = ({
-  task,
+  tasks,
   onToggle: toggle,
 }) => {
     const labelStyle: CSSProperties = { display: "block" }
-    const checkboxStyle: CSSProperties = { margin: "0.1em 0.5em 0.2em 0" }
+    const checkboxStyle: CSSProperties = { margin: "0.2em 0.5em 0.3em 0" }
 
-    return (
-      <label style={labelStyle}>
+    return tasks.map(task =>
+      <label style={labelStyle} key={task.name}>
         <input type="checkbox"
           value={task.name}
           checked={task.isSelected}
@@ -118,3 +100,8 @@ export const RenderItem: FC<{
       </label>
     )
   }
+
+function Separator() {
+  const separatorStyle: CSSProperties = { margin: "0.7em" }
+  return (<div style={separatorStyle} />)
+}
