@@ -15,7 +15,6 @@ import { useWorkItemId } from "@/contexts/WorkItemIdContext"
 export const WorkItemAndItsChildren: React.FC<{}> =
   ({ }) => {
     const id = useWorkItemId()
-    const url = `${BASE_URL}/wit/workitems/${id}?$expand=Relations`
 
     const exposeWorkItem = (wi: WorkItemDto | null) => {
       // TODO: expose the work item to the whole app
@@ -42,7 +41,6 @@ export const WorkItemAndItsChildren: React.FC<{}> =
 
     return (
       <div style={overallStyle}>
-        <FetchWorkItem url={url} onWorkItemReceived={exposeWorkItem}>
           <ForParentWorkItemUrl>
             <FetchWorkItem>
               <DisplayWorkItem />
@@ -59,7 +57,6 @@ export const WorkItemAndItsChildren: React.FC<{}> =
               </div>
             </FetchWorkItem>
           </ForEachChildWorkItemUrl>
-        </FetchWorkItem>
       </div>
     )
   }
