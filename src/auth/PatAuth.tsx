@@ -1,26 +1,36 @@
 "use client"
 
-import React, { useRef, useState } from "react"
+import React, { useEffect, useState } from "react"
 
-import { BASE_URL } from "@/constants"
 import { useLocalStorage } from "@uidotdev/usehooks"
-import { useDevOpsGet } from "@/repository/devOps"
+import { useDevOpsApi } from "@/repository/swr"
 
 
 export const PatAuth: React.FC<{
   onPatChange: (_: string) => void
-}> = ({ onPatChange }) => {
+}> = ({ onPatChange: notifyPatChanged }) => {
   const [pat, setPat] = useState("")
   const [state, setState] = useState<"EMPTY" | "FETCHING" | "YES" | "NOPE">("EMPTY")
-  const requestAbortion = useRef<AbortController | null>(null)
   const [patInStorage, savePatToStorage] = useLocalStorage("pat", "")
-  const requestAnything: Request = useDevOpsGet(`${BASE_URL}/wit/tags`, pat)
+  const { data: response, isLoading } = useDevOpsApi("wit/tags", pat)
+
+  useEffect(() => {
+    if (isLoading) {
+      setState("FETCHING")
+    } else if (!pat) {
+      setState("EMPTY")
+    } else if (response?.status === 200) {
+      notifyPatChanged(pat)
+      setState("YES")
+    } else {
+      notifyPatChanged("")
+      setState("NOPE")
+    }
+  }, [isLoading, notifyPatChanged, pat, response])
 
   const onPatInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const newPat = e.target.value
-    verifyPat(newPat)
     setPat(newPat)
-    onPatChange("")
   }
 
   const loadPat = () => {
@@ -28,28 +38,6 @@ export const PatAuth: React.FC<{
   }
   const savePat = () => {
     return savePatToStorage(pat)
-  }
-
-  async function verifyPat(pat: string) {
-    requestAbortion.current?.abort()
-
-    if (pat === "") {
-      setState("EMPTY")
-      return
-    }
-
-    setState("FETCHING")
-
-    const controller = new AbortController()
-    requestAbortion.current = controller
-
-    const response = await fetch(requestAnything, { signal: controller.signal })
-
-    if (response.status !== 200) setState("NOPE")
-    else {
-      setState("YES")
-      onPatChange(pat)
-    }
   }
 
   const spaced = { margin: "0.5em 0", display: "flex", gap: "0.5em" }
@@ -65,7 +53,7 @@ export const PatAuth: React.FC<{
       </div>
       <div style={spaced}>
         <button onClick={loadPat} style={load}>Load from local storage</button>
-        <button onClick={() => verifyPat(pat)}>Auth!</button>
+        {/* <button onClick={() => verifyPat(pat)}>Auth!</button> */}
       </div>
       {state === "EMPTY" && "👆 Enter Personal Access Token"}
       {state === "FETCHING" && "❔ Checking the PAT"}
