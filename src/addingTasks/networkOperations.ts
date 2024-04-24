@@ -1,4 +1,4 @@
-import { BASE_URL } from "@/constants"
+import { BASE_URL } from "@/config"
 import { useDevOpsPost } from "@/repository/devOps"
 
 import { SelectableTask } from "./tasks"

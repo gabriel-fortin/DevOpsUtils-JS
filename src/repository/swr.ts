@@ -1,7 +1,7 @@
 import useSWR from "swr"
 
 import { usePersonalAccessToken } from "@/contexts/PersonalAccessTokenContext"
-import { API_VERSION, BASE_URL } from "@/constants"
+import { API_VERSION, BASE_URL } from "@/config"
 
 import { WORK_ITEMS_URL } from "./constants"
 import { WorkItemDto } from "./WorkItemDto"

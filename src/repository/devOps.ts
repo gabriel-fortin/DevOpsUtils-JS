@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 
-import { API_VERSION } from "@/constants"
+import { API_VERSION } from "@/config"
 import { usePersonalAccessToken } from "@/contexts/PersonalAccessTokenContext"
 
 
