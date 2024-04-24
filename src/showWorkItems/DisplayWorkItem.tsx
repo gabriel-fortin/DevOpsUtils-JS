@@ -2,15 +2,17 @@
 
 import React, { FC } from "react"
 
-import { useWorkItemDto } from "@/contexts/WorkItemDtoContext"
+import { useFetchWorkItem } from "@/repository/swr"
 
 
 export const DisplayWorkItem: FC<{
+  workItemId: number
   style?: React.CSSProperties
 }> = ({
-  style: injectedStyle
+  workItemId,
+  style: injectedStyle,
 }) => {
-    const wi = useWorkItemDto()
+    const { workItemDto: wi } = useFetchWorkItem(workItemId)
     if (!wi) return null
 
     const wiTypeUrl = wi._links?.workItemType.href
@@ -25,7 +27,7 @@ export const DisplayWorkItem: FC<{
     }
 
     return (
-      <div style={{...defaultStyle, ...injectedStyle}}>
+      <div style={{ ...defaultStyle, ...injectedStyle }}>
         <div style={emph}>[{wiType} #{wi.id}]</div>
         <div>{wi.fields["System.Title"]}</div>
       </div>

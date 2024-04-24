@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react"
 
 import { useLocalStorage } from "@uidotdev/usehooks"
+import { TAGS_URL } from "@/repository/constants"
 import { useDevOpsApi } from "@/repository/swr"
 
 
@@ -12,7 +13,7 @@ export const PatAuth: React.FC<{
   const [pat, setPat] = useState("")
   const [state, setState] = useState<"EMPTY" | "FETCHING" | "YES" | "NOPE">("EMPTY")
   const [patInStorage, savePatToStorage] = useLocalStorage("pat", "")
-  const { data: response, isLoading } = useDevOpsApi("wit/tags", pat)
+  const { data: response, isLoading } = useDevOpsApi(TAGS_URL, pat)
 
   useEffect(() => {
     if (isLoading) {

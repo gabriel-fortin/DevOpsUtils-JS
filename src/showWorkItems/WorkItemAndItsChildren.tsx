@@ -1,24 +1,21 @@
 "use client"
 
-import React, { FC, ReactNode } from "react"
+import React from "react"
 
-import { BASE_URL } from "@/constants"
-import { useWorkItemDto } from "@/contexts/WorkItemDtoContext"
-import { WorkItemUrlContext } from "@/contexts/WorkItemUrlContext"
-import { WorkItemDto } from "@/repository/WorkItemDto"
+import { useFetchWorkItem } from "@/repository/swr"
+import { WorkItemDto, extractWorkItemId } from "@/repository/WorkItemDto"
 
 import { DisplayWorkItem } from "./DisplayWorkItem"
-import { FetchWorkItem } from "./FetchWorkItem"
-import { useWorkItemId } from "@/contexts/WorkItemIdContext"
 
 
-export const WorkItemAndItsChildren: React.FC<{}> =
-  ({ }) => {
-    const id = useWorkItemId()
-
-    const exposeWorkItem = (wi: WorkItemDto | null) => {
-      // TODO: expose the work item to the whole app
-    }
+export const WorkItemAndItsChildren: React.FC<{
+  workItemId: number
+}> = ({
+  workItemId,
+}) => {
+    const { workItemDto } = useFetchWorkItem(workItemId)
+    const parentWorkItemId = getParentId(workItemDto)
+    const childrenWorkItemsIds = getChildrenIds(workItemDto)
 
     /*  arrows   ↓↯↧⇓⇣⇩▼▽    ↘⇘   ⇒⇨⇾  */
 
@@ -41,54 +38,44 @@ export const WorkItemAndItsChildren: React.FC<{}> =
 
     return (
       <div style={overallStyle}>
-          <ForParentWorkItemUrl>
-            <FetchWorkItem>
-              <DisplayWorkItem />
-            </FetchWorkItem>
+        {parentWorkItemId &&
+          <>
+            <DisplayWorkItem workItemId={parentWorkItemId} />
             <div style={parentingSymbol}>
               ⇓
             </div>
-          </ForParentWorkItemUrl>
-          <DisplayWorkItem style={mainItem} />
-          <ForEachChildWorkItemUrl>
-            <FetchWorkItem>
-              <div style={listItem}>
-                <DisplayWorkItem />
-              </div>
-            </FetchWorkItem>
-          </ForEachChildWorkItemUrl>
+          </>
+        }
+        <DisplayWorkItem workItemId={workItemId} style={mainItem} />
+        {childrenWorkItemsIds
+          .map(id =>
+            <div style={listItem} key={id}>
+              <DisplayWorkItem workItemId={id} />
+            </div>
+          )}
       </div>
     )
   }
 
-
-// TODO: add prop for when there are no children
-// TODO: add prop for when children info is not present on the wi?
-const ForEachChildWorkItemUrl: FC<{ children: ReactNode }> = ({ children }) => {
-  const wi = useWorkItemDto()
-  if (!wi) return null
-
-  return wi.relations
-    ?.filter(x => x.rel === "System.LinkTypes.Hierarchy-Forward")
-    .map(x => x.url)
-    .map(url =>
-      <WorkItemUrlContext.Provider key={url} value={url}>
-        {children}
-      </WorkItemUrlContext.Provider>
-    )
-}
-
-const ForParentWorkItemUrl: FC<{ children: ReactNode }> = ({ children }) => {
-  const wi = useWorkItemDto()
-  const parentUrl = wi?.relations
+function getParentId(workItemDto?: WorkItemDto): number | null {
+  const parentUrl = workItemDto
+    ?.relations
     ?.find(x => x.rel === "System.LinkTypes.Hierarchy-Reverse")
     ?.url
 
-  if (!wi || !parentUrl) return null
+  if (!parentUrl) return null
+  return extractWorkItemId(parentUrl)
+}
 
-  return (
-    <WorkItemUrlContext.Provider value={parentUrl}>
-      {children}
-    </WorkItemUrlContext.Provider>
-  )
+function getChildrenIds(workItemDto?: WorkItemDto): number[] {
+  const maybeIds: (number | null)[] | undefined =
+    workItemDto
+      ?.relations
+      ?.filter(x => x.rel === "System.LinkTypes.Hierarchy-Forward")
+      .map(x => extractWorkItemId(x.url))
+  return omitFalsyValues(maybeIds ?? [])
+}
+
+function omitFalsyValues<T>(arg: (T | null | undefined)[]): T[] {
+  return arg.filter(x => !!x) as T[]
 }
