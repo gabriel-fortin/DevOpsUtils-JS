@@ -15,7 +15,7 @@ export type WorkItemDto = {
         url: string
         attributes: [any]
     }]
-    _links?: {
+    _links: {
         self: { href: string }
         workItemType: { href: string }
     }
