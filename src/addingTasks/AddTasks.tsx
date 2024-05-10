@@ -3,15 +3,15 @@
 import React, { CSSProperties, FC, useCallback, useEffect, useState } from "react"
 
 import { useWorkItemId } from "@/contexts/WorkItemIdContext"
+import { useAddTasksToWorkItem } from "@/repository/swr"
 
 import { SelectableTask, createFreshTasksList } from "./tasks"
-import { useNetworkOperations } from "./networkOperations"
 
 
 export function AddTasks() {
   const [tasks, setTasks] = useState<SelectableTask[]>(createFreshTasksList)
   const { workItemId: wiId, setWorkItemId } = useWorkItemId()
-  const { postChildTasksToDevOps } = useNetworkOperations()
+  const { trigger } = useAddTasksToWorkItem(wiId, tasks.filter(x => x.isSelected))
 
   const resetTaskSelection = useCallback(() => setTasks(createFreshTasksList()), [])
 
@@ -35,17 +35,13 @@ export function AddTasks() {
 
     resetTaskSelection()
 
-    const selectedTasks = tasks.filter(x => x.isSelected)
-    const childTaskRequests = postChildTasksToDevOps(wiId, selectedTasks)
+    trigger()
 
-    Promise.allSettled(childTaskRequests)
-      .then(() => {
-        // trigger a refresh
-        setWorkItemId(null)
-        setTimeout(() => {
-          setWorkItemId(wiId)
-        }, 10)
-      })
+    // trigger a refresh
+    setWorkItemId(null)
+    setTimeout(() => {
+      setWorkItemId(wiId)
+    }, 10)
   }
 
   const specialTasks = tasks.filter(x => x.group === "special")

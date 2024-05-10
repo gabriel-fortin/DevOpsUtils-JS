@@ -1,4 +1,4 @@
-import { API_VERSION, BASE_URL } from "@/config"
+import { BASE_URL } from "@/config"
 
 
 export type FetcherKey = [string, string]
@@ -30,9 +30,10 @@ class BuilderImpl<TReturn> implements ComposableFetcherBuilder<TReturn> {
 }
 
 const coreFetcher: FetcherWithOptions<Response> =
-    ([localUrl, _pat]: FetcherKey, options: RequestInit) => {
-        const joinChar = localUrl.includes("?") ? "&" : "?"
-        return fetch(BASE_URL + localUrl + joinChar + API_VERSION, options)
+    (key: FetcherKey | null, options: RequestInit) => {
+        if (key === null) throw Error("coreFetcher: the key is null")
+        const [localUrl, _pat] = key
+        return fetch(BASE_URL + localUrl, options)
     }
 
 export const composableFetcher: ComposableFetcherBuilder<Response> =

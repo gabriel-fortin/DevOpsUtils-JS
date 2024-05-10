@@ -21,10 +21,10 @@ export type WorkItemDto = {
     }
 }
 
-export function extractWorkItemId(url: string): number | null {
-    const index = url?.lastIndexOf(WORK_ITEMS_URL)
+export function extractWorkItemId(url?: string): number | null {
+    const index = url?.lastIndexOf(WORK_ITEMS_URL) ?? -2
     if (index < 0) {
-        console.warn(`Could not extract work item id from url: ${url}`)
+        console.warn(`Could not extract (index=${index}) work item id from url: ${url}`)
     }
     const idChunk = url?.substring(index + WORK_ITEMS_URL.length)
     return Number(idChunk)
