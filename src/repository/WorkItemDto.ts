@@ -26,6 +26,6 @@ export function extractWorkItemId(url?: string): number | null {
     if (index < 0) {
         console.warn(`Could not extract (index=${index}) work item id from url: ${url}`)
     }
-    const idChunk = url?.substring(index + WORK_ITEMS_URL.length)
+    const idChunk = url?.substring(index + WORK_ITEMS_URL.length + 1)
     return Number(idChunk)
 }

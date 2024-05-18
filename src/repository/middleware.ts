@@ -1,4 +1,4 @@
-import { SelectableTask } from "@/addingTasks/tasks"
+import { Task } from "@/addingTasks/tasks"
 import { FetcherKey, Middleware } from "./fetcher"
 import { WorkItemDto } from "./WorkItemDto"
 import { WORK_ITEMS_URL } from "./constants"
@@ -45,48 +45,39 @@ export const apiVersionMiddleware: <T> (
             return next(newKey, options)
         }
 
-
-export const addTasksMiddleware: <T> (
-    workItemId: number,
-    tasks: SelectableTask[],
-) => Middleware<T, T> =
-    (workItemId, tasks) =>
+export const delayMiddleware: (
+    delayMs: number
+) => Middleware<Response, Response> =
+    (delayMs) =>
         async (key, options, next) => {
-            const payload = tasks
-                .map(task => preparePostData(workItemId, task))
+            return new Promise((resolve, _reject) => {
+                setTimeout(() => {
+                    resolve(next(key, options))
+                }, delayMs)
+            })
+        }
+
+export const addTaskMiddleware: <T> (
+    workItemId: number,
+    task: Task,
+) => Middleware<T, T> =
+    (workItemId, task) =>
+        async (key, options, next) => {
+            const payload = preparePostData(workItemId, task)
             const augmentedOptions = {
                 ...options,
                 headers: {
                     ...options.headers,
-                    // "Accept": "application/json",
                     "Content-Type": "application/json-patch+json",
                 },
-                method: "PATCH",
+                method: "POST",
                 body: JSON.stringify(payload),
             }
-
-            //????
-
             return next(key, augmentedOptions)
         }
 
-
-
-function preparePostData(workItemId: number, task: SelectableTask) {
-    return {
-        // method: "POST",
-        method: "PATCH",
-        // uri: `${BASE_URL}${WORK_ITEMS_URL}$Task`,
-        uri: `/playground-project/_apis/${WORK_ITEMS_URL}/$Task`,
-        headers: {
-            // "Content-Type": "application/json-patch+json",
-        },
-        body: [
-            {
-                "op": "add",
-                "path": "/id",
-                "value": "-14"
-            },
+function preparePostData(workItemId: number, task: Task) {
+    return [
             {
                 op: "add",
                 path: "/fields/System.Title",
@@ -99,9 +90,8 @@ function preparePostData(workItemId: number, task: SelectableTask) {
                 from: null,
                 value: {
                     rel: "System.LinkTypes.Hierarchy-Reverse",
-                    url: `${BASE_URL}${WORK_ITEMS_URL}/${workItemId}`,
-                },
+                url: `${BASE_URL}/${WORK_ITEMS_URL}/${workItemId}`,
             },
-        ],
-    }
+        },
+    ]
 }

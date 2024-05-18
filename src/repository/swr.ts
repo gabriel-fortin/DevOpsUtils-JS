@@ -1,12 +1,12 @@
 import useSWR from "swr"
 import useSWRMutation from "swr/mutation"
 
-import { SelectableTask } from "@/addingTasks/tasks"
+import { Task } from "@/addingTasks/tasks"
 import { usePersonalAccessToken } from "@/contexts/PersonalAccessTokenContext"
 
-import { WIT_BATCH_URL, WORK_ITEMS_URL } from "./constants"
+import { WORK_ITEMS_URL } from "./constants"
 import { composableFetcher, Fetcher, FetcherKey } from "./fetcher"
-import { addTasksMiddleware, apiVersionMiddleware, authMiddleware, workItemDtoResponseMiddleware } from "./middleware"
+import { addTaskMiddleware, apiVersionMiddleware, authMiddleware, delayMiddleware, workItemDtoResponseMiddleware } from "./middleware"
 
 
 export function useFetchWorkItem(
@@ -47,31 +47,22 @@ function useDevOpsApiInternal<TFetcherReturn>(
     return useSWR(key, fetcher)
 }
 
-export function useAddTasksToWorkItem(
-    workItemId: number | null,
-    tasks: SelectableTask[],
+export function useAddTaskToWorkItem(
+    workItemId: number,
+    task: Task,
 ) {
     const pat = usePersonalAccessToken()
-    const key: FetcherKey = [WIT_BATCH_URL, pat]
+    const key: FetcherKey = [`${WORK_ITEMS_URL}/$Task`, pat]
     const { data, error, trigger, reset, isMutating } =
         useSWRMutation(
             key,
             composableFetcher
-                .with(apiVersionMiddleware("4.1"))
+                .with(delayMiddleware(2000))
+                // .with(apiVersionMiddleware("4.1"))
+.with(apiVersionMiddleware())
                 .with(authMiddleware)
-                // TODO: remove the need for the workItemId argument to be null
-                    // we should not need to have a hack with a -1 to appease the rule of hooks
-                .with(addTasksMiddleware(workItemId ?? -1, tasks))
+                .with(addTaskMiddleware(workItemId, task))
                 .build(),
         )
-        if (workItemId === null) {
-            return {
-                data: null,
-                error: null,
-                trigger: () => {
-                    throw new Error(`The called trigger created by ${useAddTasksToWorkItem.name} but work item id is null`)
-                }
-            }
-        }
-    return { data, error, trigger, reset, isMutating }
+            return { data, error, trigger, reset, isMutating }
 }

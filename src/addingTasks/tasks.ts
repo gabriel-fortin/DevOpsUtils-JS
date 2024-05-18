@@ -5,13 +5,6 @@ export type Task = {
     group: "special" | "Presentation" | "Access"
 }
 
-export type SelectableTask =
-    Task
-    &
-    {
-        isSelected: boolean
-    }
-
 const allTasks: Task[] = [
     {
         name: "fill infosec",
@@ -70,11 +63,6 @@ const allTasks: Task[] = [
     },
 ]
 
-export function createFreshTasksList(): SelectableTask[] {
-    return allTasks.map(x => (
-        {
-            ...x,
-            isSelected: false,
-        }
-    ))
+export function createFreshTasksList(): Task[] {
+    return allTasks
 }
