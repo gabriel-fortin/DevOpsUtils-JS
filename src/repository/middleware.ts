@@ -1,8 +1,7 @@
-import { Task } from "@/addingTasks/tasks"
+import { API_VERSION } from "@/config"
+
 import { FetcherKey, Middleware } from "./fetcher"
 import { WorkItemDto } from "./WorkItemDto"
-import { WORK_ITEMS_URL } from "./constants"
-import { API_VERSION, BASE_URL } from "@/config"
 
 
 export const authMiddleware: Middleware<Response, Response> =
@@ -55,43 +54,4 @@ export const delayMiddleware: (
                     resolve(next(key, options))
                 }, delayMs)
             })
-        }
-
-export const addTaskMiddleware: <T> (
-    workItemId: number,
-    task: Task,
-) => Middleware<T, T> =
-    (workItemId, task) =>
-        async (key, options, next) => {
-            const payload = preparePostData(workItemId, task)
-            const augmentedOptions = {
-                ...options,
-                headers: {
-                    ...options.headers,
-                    "Content-Type": "application/json-patch+json",
-                },
-                method: "POST",
-                body: JSON.stringify(payload),
-            }
-            return next(key, augmentedOptions)
-        }
-
-function preparePostData(workItemId: number, task: Task) {
-    return [
-            {
-                op: "add",
-                path: "/fields/System.Title",
-                from: null,
-                value: task.getTitle(),
-            },
-            {
-                op: "add",
-                path: "/relations/-",
-                from: null,
-                value: {
-                    rel: "System.LinkTypes.Hierarchy-Reverse",
-                url: `${BASE_URL}/${WORK_ITEMS_URL}/${workItemId}`,
-            },
-        },
-    ]
 }
