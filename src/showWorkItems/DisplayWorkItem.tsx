@@ -2,7 +2,7 @@
 
 import React, { FC } from "react"
 
-import { useFetchWorkItem } from "@/repository/swr"
+import { useFetchWorkItem } from "./hooks"
 
 
 export const DisplayWorkItem: FC<{

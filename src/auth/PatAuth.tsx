@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react"
 
 import { useLocalStorage } from "@uidotdev/usehooks"
 import { TAGS_URL } from "@/repository/constants"
-import { useDevOpsApi } from "@/repository/swr"
+import { useDevOpsApi } from "@/repository/hooks"
 
 
 export const PatAuth: React.FC<{

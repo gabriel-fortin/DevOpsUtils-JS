@@ -2,10 +2,9 @@
 
 import React from "react"
 
-import { useFetchWorkItem } from "@/repository/swr"
-import { WorkItemDto, extractWorkItemId } from "@/repository/WorkItemDto"
-
 import { DisplayWorkItem } from "./DisplayWorkItem"
+import { useFetchWorkItem } from "./hooks"
+import { WorkItemDto, extractWorkItemId } from "./WorkItemDto"
 
 
 export const WorkItemAndItsChildren: React.FC<{

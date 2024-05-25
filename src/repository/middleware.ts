@@ -1,7 +1,6 @@
 import { API_VERSION } from "@/config"
 
 import { FetcherKey, Middleware } from "./fetcher"
-import { WorkItemDto } from "./WorkItemDto"
 
 
 export const authMiddleware: Middleware<Response, Response> =
@@ -15,20 +14,6 @@ export const authMiddleware: Middleware<Response, Response> =
             }
         }
         return next(key, augmentedOptions)
-    }
-
-export const workItemDtoResponseMiddleware: Middleware<Response, WorkItemDto> =
-    async (key, options, next) => {
-        const augmentedOptions = {
-            ...options,
-            headers: {
-                ...options.headers,
-                // "Accept": "application/json",
-                "Content-Type": "application/json-patch+json",
-            },
-        }
-        const response = await next(key, augmentedOptions)
-        return response.json() as Promise<WorkItemDto>
     }
 
 export const apiVersionMiddleware: <T> (

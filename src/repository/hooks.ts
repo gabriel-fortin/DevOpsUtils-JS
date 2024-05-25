@@ -2,31 +2,18 @@ import useSWR from "swr"
 
 import { usePersonalAccessToken } from "@/contexts/PersonalAccessTokenContext"
 
-import { WORK_ITEMS_URL } from "./constants"
 import { composableFetcher, Fetcher, FetcherKey } from "./fetcher"
-import { authMiddleware, workItemDtoResponseMiddleware } from "./middleware"
+import { authMiddleware } from "./middleware"
 
 
-export function useFetchWorkItem(
-    workItemId: number,
-) {
-    const { data, error, isLoading, isValidating, mutate } =
-        useDevOpsApiInternal(
-            `${WORK_ITEMS_URL}/${workItemId}?$expand=Relations`,
-            composableFetcher
-                .with(authMiddleware)
-                .with(workItemDtoResponseMiddleware)
-                .build(),
-        )
-    if (error) console.log("ERROR", error)
-    return { workItemDto: data, error, isLoading, isValidating, mutate }
-}
-
+/**
+ * Make a call to DevOps
+ */
 export function useDevOpsApi(
     localUrl: string,
     patOverride?: string,
 ) {
-    return useDevOpsApiInternal(
+    return useDevOpsApi2(
         localUrl,
         composableFetcher
             .with(authMiddleware)
@@ -34,7 +21,11 @@ export function useDevOpsApi(
         patOverride)
 }
 
-function useDevOpsApiInternal<TFetcherReturn>(
+/**
+ * Make a call to DevOps.
+ * This version allows to set the fetcher that will make the request
+ */
+export function useDevOpsApi2<TFetcherReturn>(
     localUrl: string,
     fetcher: Fetcher<TFetcherReturn>,
     patOverride?: string,

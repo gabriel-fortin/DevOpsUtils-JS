@@ -3,11 +3,12 @@
 import EventEmitter from "events"
 import React, { CSSProperties, FC, useCallback, useEffect, useState } from "react"
 
-import { useAddTaskToWorkItem, useFetchWorkItem } from "@/repository/swr"
+import { useFetchWorkItem } from "@/showWorkItems/hooks"
 
-import { Task } from "./tasks"
 import { REQUESTED_ADDING_TASKS_TO_WORK_ITEM } from "./AddTasks"
 import styles from "./AddTasks.module.css"
+import { useAddTaskToWorkItem } from "./hooks"
+import { Task } from "./tasks"
 
 
 export const TaskItem: FC<{
@@ -20,7 +21,8 @@ export const TaskItem: FC<{
   events,
 }) => {
     const { trigger: triggerAddingTask, isMutating } = useAddTaskToWorkItem(parentWorkItemId, task)
-    // effectively, we're modifying the parent as well so we need a way to make it refresh
+    // by adding a child task, we're effectively modifying the parent
+    // so we need a way to refresh its data
     const { mutate: refreshParent } = useFetchWorkItem(parentWorkItemId)
     const [isChecked, setIsChecked] = useState(false)
 
