@@ -31,7 +31,7 @@ export default function MyMainPage() {
         <SelectWorkItem onWorkItemSelected={setWorkItemId} />
       </div>
       <PersonalAccessTokenContext.Provider value={pat}>
-        <WorkItemIdContext.Provider value={{ workItemId, setWorkItemId }}>
+        <WorkItemIdContext.Provider value={{ workItemId }}>
           {!!pat && !!workItemId &&
             <MaybeAllTheRest workItemId={workItemId} />
           }
