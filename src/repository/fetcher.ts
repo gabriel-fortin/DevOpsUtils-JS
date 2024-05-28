@@ -1,7 +1,7 @@
 import { BASE_URL } from "@/config"
 
 
-export type FetcherKey = [string, string]
+export type FetcherKey = [string]
 export type Fetcher<T> = (key: FetcherKey) => Promise<T>
 type FetcherWithOptions<T> = (key: FetcherKey, options: RequestInit) => Promise<T>
 
@@ -30,9 +30,8 @@ class BuilderImpl<TReturn> implements ComposableFetcherBuilder<TReturn> {
 }
 
 const coreFetcher: FetcherWithOptions<Response> =
-    (key: FetcherKey | null, options: RequestInit) => {
-        if (key === null) throw Error("coreFetcher: the key is null")
-        const [localUrl, _pat] = key
+    (key: FetcherKey, options: RequestInit) => {
+        const [localUrl] = key
         console.debug(`🚀 ~ coreFetcher ~ local URL: ${localUrl} \n options:`, options)
         return fetch(BASE_URL + localUrl, options)
     }

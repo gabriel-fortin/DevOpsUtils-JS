@@ -16,7 +16,7 @@ export function useAddTaskToWorkItem(
     task: Task,
 ) {
     const pat = usePersonalAccessToken()
-    const key: FetcherKey = [`${WORK_ITEMS_URL}/$Task`, pat]
+    const key: FetcherKey = [`${WORK_ITEMS_URL}/$Task`]
     const { data, error, trigger, reset, isMutating } =
         useSWRMutation(
             key,

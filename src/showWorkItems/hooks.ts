@@ -12,7 +12,7 @@ export function useFetchWorkItem(
     workItemId: number,
 ) {
     const pat = usePersonalAccessToken()
-    const key: FetcherKey = [`${WORK_ITEMS_URL}/${workItemId}?$expand=Relations`, "this parameter is not used anymore"]
+    const key: FetcherKey = [`${WORK_ITEMS_URL}/${workItemId}?$expand=Relations`]
     const { data, error, isLoading, isValidating, mutate } =
         useSWR(
             key,

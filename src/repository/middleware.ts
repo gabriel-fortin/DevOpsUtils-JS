@@ -9,11 +9,11 @@ export const apiVersionMiddleware: <T> (
 ) => Middleware<T, T> =
     (version) =>
         async (key, options, next) => {
-            const [url, pat] = key
+            const [url] = key
 
             const joinChar = url.includes("?") ? "&" : "?"
             const newKey: FetcherKey =
-                [url + joinChar + "api-version=" + (version ?? API_VERSION), pat]
+                [url + joinChar + "api-version=" + (version ?? API_VERSION)]
             return next(newKey, options)
         }
 
