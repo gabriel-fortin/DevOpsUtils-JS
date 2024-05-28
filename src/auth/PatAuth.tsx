@@ -3,8 +3,7 @@
 import React, { useEffect, useState } from "react"
 
 import { useLocalStorage } from "@uidotdev/usehooks"
-import { TAGS_URL } from "@/repository/constants"
-import { useDevOpsApi } from "@/repository/hooks"
+import { useAnyCallUsingPat } from "./hooks"
 
 
 export const PatAuth: React.FC<{
@@ -13,7 +12,7 @@ export const PatAuth: React.FC<{
   const [pat, setPat] = useState("")
   const [state, setState] = useState<"EMPTY" | "FETCHING" | "YES" | "NOPE">("EMPTY")
   const [patInStorage, savePatToStorage] = useLocalStorage("pat", "")
-  const { data: response, isLoading } = useDevOpsApi(TAGS_URL, pat)
+  const { data: response, isLoading } = useAnyCallUsingPat(pat)
 
   useEffect(() => {
     if (isLoading) {

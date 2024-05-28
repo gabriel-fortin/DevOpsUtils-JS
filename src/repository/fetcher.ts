@@ -33,6 +33,7 @@ const coreFetcher: FetcherWithOptions<Response> =
     (key: FetcherKey | null, options: RequestInit) => {
         if (key === null) throw Error("coreFetcher: the key is null")
         const [localUrl, _pat] = key
+        console.debug(`🚀 ~ coreFetcher ~ local URL: ${localUrl} \n options:`, options)
         return fetch(BASE_URL + localUrl, options)
     }
 

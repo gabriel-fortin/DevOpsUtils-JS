@@ -2,28 +2,11 @@ import useSWR from "swr"
 
 import { usePersonalAccessToken } from "@/contexts/PersonalAccessTokenContext"
 
-import { composableFetcher, Fetcher, FetcherKey } from "./fetcher"
-import { authMiddleware } from "./middleware"
+import { Fetcher, FetcherKey } from "./fetcher"
 
-
-/**
- * Make a call to DevOps
- */
-export function useDevOpsApi(
-    localUrl: string,
-    patOverride?: string,
-) {
-    return useDevOpsApi2(
-        localUrl,
-        composableFetcher
-            .with(authMiddleware)
-            .build(),
-        patOverride)
-}
 
 /**
  * Make a call to DevOps.
- * This version allows to set the fetcher that will make the request
  */
 export function useDevOpsApi2<TFetcherReturn>(
     localUrl: string,

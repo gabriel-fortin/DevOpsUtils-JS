@@ -3,18 +3,6 @@ import { API_VERSION } from "@/config"
 import { FetcherKey, Middleware } from "./fetcher"
 
 
-export const authMiddleware: Middleware<Response, Response> =
-    (key, options, next) => {
-        const [_localUrl, pat] = key
-        const augmentedOptions = {
-            ...options,
-            headers: {
-                ...options.headers,
-                "Authorization": `Basic ${btoa(":" + pat)}`,
-            }
-        }
-        return next(key, augmentedOptions)
-    }
 
 export const apiVersionMiddleware: <T> (
     version?: string,
@@ -39,4 +27,4 @@ export const delayMiddleware: (
                     resolve(next(key, options))
                 }, delayMs)
             })
-}
+        }
