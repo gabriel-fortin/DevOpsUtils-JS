@@ -1,5 +1,5 @@
 
-import { BASE_URL } from "@/config"
+import { PROJECT_URL } from "@/config"
 import { WORK_ITEMS_URL } from "@/repository/constants"
 import { Middleware } from "@/repository/fetcher"
 
@@ -39,7 +39,7 @@ function preparePostData(workItemId: number, task: Task) {
             from: null,
             value: {
                 rel: "System.LinkTypes.Hierarchy-Reverse",
-                url: `${BASE_URL}/${WORK_ITEMS_URL}/${workItemId}`,
+                url: `${PROJECT_URL}/${WORK_ITEMS_URL}/${workItemId}`,
             },
         },
     ]

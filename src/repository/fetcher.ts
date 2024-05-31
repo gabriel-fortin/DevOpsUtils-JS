@@ -1,4 +1,4 @@
-import { BASE_URL } from "@/config"
+import { PROJECT_URL } from "@/config"
 
 
 export type FetcherKey = [string]
@@ -33,7 +33,7 @@ const coreFetcher: FetcherWithOptions<Response> =
     (key: FetcherKey, options: RequestInit) => {
         const [localUrl] = key
         console.debug(`🚀 ~ coreFetcher ~ local URL: ${localUrl} \n options:`, options)
-        return fetch(BASE_URL + localUrl, options)
+        return fetch(`${PROJECT_URL}/${localUrl}`, options)
     }
 
 export const composableFetcher: ComposableFetcherBuilder<Response> =
