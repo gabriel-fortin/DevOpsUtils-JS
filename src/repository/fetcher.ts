@@ -36,7 +36,6 @@ const coreFetcher: FetcherWithOptions<Response> =
         return fetch(url, options)
     }
 
-export const composableFetcher: ComposableFetcherBuilder<Response> =
-    new BuilderImpl(coreFetcher)
-
-
+export function useComposableFetcher(): ComposableFetcherBuilder<Response> {
+    return new BuilderImpl(coreFetcher)
+}
