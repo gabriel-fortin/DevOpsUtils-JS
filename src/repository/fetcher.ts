@@ -31,9 +31,9 @@ class BuilderImpl<TReturn> implements ComposableFetcherBuilder<TReturn> {
 
 const coreFetcher: FetcherWithOptions<Response> =
     (key: FetcherKey, options: RequestInit) => {
-        const [localUrl] = key
-        console.debug(`🚀 ~ coreFetcher ~ local URL: ${localUrl} \n options:`, options)
-        return fetch(`${PROJECT_URL}/${localUrl}`, options)
+        const [url] = key
+        console.debug(`🚀 ~ coreFetcher ~ URL: ${url} \n options:`, options)
+        return fetch(url, options)
     }
 
 export const composableFetcher: ComposableFetcherBuilder<Response> =

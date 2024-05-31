@@ -1,9 +1,11 @@
 import useSWR from "swr"
 
 import { patAuthMiddleware } from "@/auth/middleware"
+import { PROJECT_URL } from "@/config"
 import { usePersonalAccessToken } from "@/contexts/PersonalAccessTokenContext"
 import { WORK_ITEMS_URL } from "@/repository/constants"
 import { FetcherKey, composableFetcher } from "@/repository/fetcher"
+import { projectUrlMiddleware } from "@/repository/middleware"
 
 import { workItemDtoResponseMiddleware } from "./middleware"
 
@@ -17,6 +19,7 @@ export function useFetchWorkItem(
         useSWR(
             key,
             composableFetcher
+                .with(projectUrlMiddleware(PROJECT_URL))
                 .with(patAuthMiddleware(pat))
                 .with(workItemDtoResponseMiddleware)
                 .build(),

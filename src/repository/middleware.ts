@@ -3,7 +3,6 @@ import { API_VERSION } from "@/config"
 import { FetcherKey, Middleware } from "./fetcher"
 
 
-
 export const apiVersionMiddleware: <T> (
     version?: string,
 ) => Middleware<T, T> =
@@ -27,4 +26,15 @@ export const delayMiddleware: (
                     resolve(next(key, options))
                 }, delayMs)
             })
+        }
+
+export const projectUrlMiddleware: <T> (
+    projectUrl: string
+) => Middleware<T, T> =
+    (projectUrl) =>
+        (key, options, next) => {
+            const [localUrl, ...rest] = key
+            const fullUrl = `${projectUrl}/${localUrl}`
+            const newKey: FetcherKey = [fullUrl, ...rest]
+            return next(newKey, options)
         }
