@@ -1,11 +1,8 @@
 import useSWR from "swr"
 
-import { patAuthMiddleware } from "@/auth/middleware"
-import { PROJECT_URL } from "@/config"
-import { usePersonalAccessToken } from "@/contexts/PersonalAccessTokenContext"
+import { usePreconfiguredComposableFetcher } from "@/niceties"
 import { WORK_ITEMS_URL } from "@/repository/constants"
-import { FetcherKey, useComposableFetcher } from "@/repository/fetcher"
-import { projectUrlMiddleware } from "@/repository/middleware"
+import { FetcherKey } from "@/repository/fetcher"
 
 import { workItemDtoResponseMiddleware } from "./middleware"
 
@@ -13,14 +10,11 @@ import { workItemDtoResponseMiddleware } from "./middleware"
 export function useFetchWorkItem(
     workItemId: number,
 ) {
-    const pat = usePersonalAccessToken()
     const key: FetcherKey = [`${WORK_ITEMS_URL}/${workItemId}?$expand=Relations`]
     const { data, error, isLoading, isValidating, mutate } =
         useSWR(
             key,
-            useComposableFetcher()
-                .with(projectUrlMiddleware(PROJECT_URL))
-                .with(patAuthMiddleware(pat))
+            usePreconfiguredComposableFetcher()
                 .with(workItemDtoResponseMiddleware)
                 .build(),
         )

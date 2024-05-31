@@ -1,11 +1,8 @@
 import useSWRMutation from "swr/mutation"
 
-import { patAuthMiddleware } from "@/auth/middleware"
-import { PROJECT_URL } from "@/config"
-import { usePersonalAccessToken } from "@/contexts/PersonalAccessTokenContext"
+import { usePreconfiguredComposableFetcher } from "@/niceties"
 import { WORK_ITEMS_URL } from "@/repository/constants"
-import { FetcherKey, useComposableFetcher } from "@/repository/fetcher"
-import { apiVersionMiddleware, projectUrlMiddleware } from "@/repository/middleware"
+import { FetcherKey } from "@/repository/fetcher"
 
 import { addTaskMiddleware } from "./middleware"
 import { Task } from "./tasks"
@@ -15,17 +12,13 @@ export function useAddTaskToWorkItem(
     workItemId: number,
     task: Task,
 ) {
-    const pat = usePersonalAccessToken()
     const key: FetcherKey = [`${WORK_ITEMS_URL}/$Task`]
     const { data, error, trigger, reset, isMutating } =
         useSWRMutation(
             key,
-            useComposableFetcher()
+            usePreconfiguredComposableFetcher()
                 // .with(delayMiddleware(2000))
                 // .with(apiVersionMiddleware("4.1"))
-                .with(projectUrlMiddleware(PROJECT_URL))
-                .with(apiVersionMiddleware())
-                .with(patAuthMiddleware(pat))
                 .with(addTaskMiddleware(workItemId, task))
                 .build(),
         )

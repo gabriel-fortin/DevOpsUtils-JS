@@ -1,9 +1,8 @@
 import useSWR from "swr"
 
-import { PROJECT_URL } from "@/config"
+import { useNoAuthPreconfiguredComposableFetcher } from "@/niceties"
 import { TAGS_URL } from "@/repository/constants"
-import { FetcherKey, useComposableFetcher } from "@/repository/fetcher"
-import { apiVersionMiddleware, projectUrlMiddleware } from "@/repository/middleware"
+import { FetcherKey } from "@/repository/fetcher"
 
 import { patAuthMiddleware } from "./middleware"
 
@@ -17,9 +16,7 @@ export function useAnyCallUsingPat(pat: string) {
     const actualKey = pat ? key : null
     return useSWR(
         actualKey,
-        useComposableFetcher()
-            .with(projectUrlMiddleware(PROJECT_URL))
-            .with(apiVersionMiddleware())
+        useNoAuthPreconfiguredComposableFetcher()
             .with(patAuthMiddleware(pat))
             .build(),
     )

@@ -1,6 +1,3 @@
-import { PROJECT_URL } from "@/config"
-
-
 export type FetcherKey = [string]
 export type Fetcher<T> = (key: FetcherKey) => Promise<T>
 type FetcherWithOptions<T> = (key: FetcherKey, options: RequestInit) => Promise<T>
@@ -36,6 +33,6 @@ const coreFetcher: FetcherWithOptions<Response> =
         return fetch(url, options)
     }
 
-export function useComposableFetcher(): ComposableFetcherBuilder<Response> {
+export function useBasicComposableFetcher(): ComposableFetcherBuilder<Response> {
     return new BuilderImpl(coreFetcher)
 }
