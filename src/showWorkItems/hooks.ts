@@ -5,6 +5,7 @@ import { WORK_ITEMS_URL } from "@/networking/constants"
 import { FetcherKey } from "@/networking/fetcher"
 
 import { workItemDtoResponseMiddleware } from "./middleware"
+import { WorkItemDto } from "./WorkItemDto"
 
 
 export function useFetchWorkItem(
@@ -15,7 +16,7 @@ export function useFetchWorkItem(
         useSWR(
             key,
             usePreconfiguredComposableFetcher()
-                .with(workItemDtoResponseMiddleware)
+                .with<WorkItemDto>(workItemDtoResponseMiddleware)
                 .build(),
         )
     if (error) console.log("ERROR", error)
