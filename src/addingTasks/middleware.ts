@@ -1,7 +1,7 @@
 
 import { PROJECT_URL } from "@/config"
-import { WORK_ITEMS_URL } from "@/repository/constants"
-import { Middleware } from "@/repository/fetcher"
+import { WORK_ITEMS_URL } from "@/networking/constants"
+import { Middleware } from "@/networking/fetcher"
 
 import { Task } from "./tasks"
 

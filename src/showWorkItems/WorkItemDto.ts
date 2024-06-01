@@ -1,6 +1,6 @@
 "use client"
 
-import { WORK_ITEMS_URL } from "@/repository/constants"
+import { WORK_ITEMS_URL } from "@/networking/constants"
 
 
 export type WorkItemDto = {

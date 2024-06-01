@@ -1,8 +1,8 @@
 import useSWR from "swr"
 
 import { useNoAuthPreconfiguredComposableFetcher } from "@/niceties"
-import { TAGS_URL } from "@/repository/constants"
-import { FetcherKey } from "@/repository/fetcher"
+import { TAGS_URL } from "@/networking/constants"
+import { FetcherKey } from "@/networking/fetcher"
 
 import { patAuthMiddleware } from "./middleware"
 

@@ -1,9 +1,9 @@
 import { PROJECT_URL } from "@/config"
 import { usePersonalAccessToken } from "@/contexts/PersonalAccessTokenContext"
 
-import { useBasicComposableFetcher } from "@/repository/fetcher"
+import { useBasicComposableFetcher } from "@/networking/fetcher"
+import { projectUrlMiddleware, apiVersionMiddleware } from "@/networking/middleware"
 import { patAuthMiddleware } from "@/auth/middleware"
-import { projectUrlMiddleware, apiVersionMiddleware } from "@/repository/middleware"
 
 
 /**

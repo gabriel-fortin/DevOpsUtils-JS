@@ -1,8 +1,8 @@
 import useSWRMutation from "swr/mutation"
 
 import { usePreconfiguredComposableFetcher } from "@/niceties"
-import { WORK_ITEMS_URL } from "@/repository/constants"
-import { FetcherKey } from "@/repository/fetcher"
+import { WORK_ITEMS_URL } from "@/networking/constants"
+import { FetcherKey } from "@/networking/fetcher"
 
 import { addTaskMiddleware } from "./middleware"
 import { Task } from "./tasks"
