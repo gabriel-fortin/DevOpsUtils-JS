@@ -22,34 +22,40 @@ export default function MyMainPage() {
   if (!isClient) return null
 
   return (
+    <PersonalAccessTokenContext.Provider value={pat}>
+      <WorkItemIdContext.Provider value={{ workItemId }}>
     <main className={styles.main}>
       <h1>A tool for chores in DevOps projects</h1>
-      <div className={styles.card}>
+          <Card>
         <PatAuth onPatChange={setPat} />
-      </div>
-      <div className={styles.card}>
+          </Card>
+          <Card>
         <SelectWorkItem onWorkItemSelected={setWorkItemId} />
-      </div>
-      <PersonalAccessTokenContext.Provider value={pat}>
-        <WorkItemIdContext.Provider value={{ workItemId }}>
-          {!!pat && !!workItemId &&
-            <MaybeAllTheRest workItemId={workItemId} />
-          }
+          </Card>
+          <Card hideIf={!workItemId}>
+            <WorkItemAndItsChildren />
+          </Card>
+          <Card hideIf={!workItemId}>
+            <AddTasks />
+          </Card>
+        </main>
         </WorkItemIdContext.Provider>
       </PersonalAccessTokenContext.Provider>
-    </main>
   )
 }
 
-function MaybeAllTheRest({ workItemId }: { workItemId: number }) {
+const Card: React.FC<{
+  hideIf?: boolean
+  children: React.ReactNode
+}> = ({
+  hideIf: shouldHideCard,
+  children,
+}) => {
+    if (shouldHideCard) return null
+
   return (
-     <>
       <div className={styles.card}>
-        <WorkItemAndItsChildren workItemId={workItemId} />
+        {children}
       </div>
-      <div className={styles.card}>
-        <AddTasks />
-      </div>
-    </>
   )
 }

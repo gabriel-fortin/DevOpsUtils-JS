@@ -5,9 +5,18 @@ import React from "react"
 import { DisplayWorkItem } from "./DisplayWorkItem"
 import { useFetchWorkItem } from "./hooks"
 import { WorkItemDto, extractWorkItemId } from "./WorkItemDto"
+import { useWorkItemId } from "@/contexts/WorkItemIdContext"
 
 
 export const WorkItemAndItsChildren: React.FC<{
+}> = ({
+}) => {
+    const { workItemId } = useWorkItemId()
+    if (workItemId == null) return
+    return WorkItemAndItsChildrenInternal({ workItemId })
+  }
+
+const WorkItemAndItsChildrenInternal: React.FC<{
   workItemId: number
 }> = ({
   workItemId,
