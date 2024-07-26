@@ -1,4 +1,4 @@
-import { Middleware } from "@/repository/fetcher"
+import { Middleware } from "@/networking/fetcher"
 
 import { WorkItemDto } from "./WorkItemDto"
 
