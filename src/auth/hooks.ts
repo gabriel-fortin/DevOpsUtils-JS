@@ -1,6 +1,6 @@
 import useSWR from "swr"
 
-import { useNoAuthPreconfiguredComposableFetcher } from "@/niceties"
+import { useNoAuthPreconfiguredComposableFetcher } from "@/networking/preconfiguredFetchers"
 import { TAGS_URL } from "@/networking/constants"
 import { FetcherKey } from "@/networking/fetcher"
 
