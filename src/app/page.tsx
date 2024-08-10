@@ -9,6 +9,7 @@ import { PatAuth } from "@/auth/PatAuth"
 import { PersonalAccessTokenContext } from "@/contexts/PersonalAccessTokenContext"
 import { ProjectUrlContextProvider, SetConstantProjectUrl } from "@/contexts/ProjectUrlContext"
 import { WorkItemIdContext } from "@/contexts/WorkItemIdContext"
+import { SelectProjectUrl } from "@/projectUrl/SelectProjectUrl"
 import { SelectWorkItem } from "@/selectWorkItem/SelectWorkItem"
 import { WorkItemAndItsChildren } from "@/showWorkItems/WorkItemAndItsChildren"
 
@@ -24,11 +25,13 @@ export default function MyMainPage() {
 
   return (
     <ProjectUrlContextProvider>
-      <SetConstantProjectUrl />
       <PersonalAccessTokenContext.Provider value={pat}>
         <WorkItemIdContext.Provider value={{ workItemId }}>
           <main className={styles.main}>
             <h1>A tool for chores in DevOps projects</h1>
+            <Card>
+              <SelectProjectUrl />
+            </Card>
             <Card>
               <PatAuth onPatChange={setPat} />
             </Card>
