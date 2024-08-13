@@ -23,6 +23,7 @@ export function usePreconfiguredComposableFetcher(): ReturnType<typeof useBasicC
  */
 export function useNoAuthPreconfiguredComposableFetcher(): ReturnType<typeof useBasicComposableFetcher> {
     const [projectUrl] = useProjectUrl()
+    console.log("🚀 ~ useNoAuthPreconfiguredComposableFetcher ~ projectUrl:", projectUrl)
     return useBasicComposableFetcher()
         .with(projectUrlMiddleware(projectUrl))
         .with(apiVersionMiddleware())

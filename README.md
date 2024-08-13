@@ -14,23 +14,28 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## `SWR` and fetchers
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This project uses `SWR` and builds an infrastructure on top of it to make the 
+different steps of fetching logic split into independent chunks. Each place in 
+the app might require a different combination of those chunks. Those chunks 
+are called "middleware" and mostly behave the way you would expect middleware 
+to behave. However, each middleware can set up two elements. One is the 
+pipeline of the request - creating the request and consuming the response 
+(standard middleware stuff). The other is building the key used in calls to 
+`SWR`. Building the key correctly ensures that re-fetching happens when 
+data relevant to how a request is made changes.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### Rules of fetcher middleware
 
-## Learn More
+~~It is not allowed to change the existing values in the key array. Only to add 
+new ones. Otherwise that would influence the behaviour of other middleware 
+which would break the single responsibility and encapsulation principles.~~
 
-To learn more about Next.js, take a look at the following resources:
+The key will be an array of strings. The first element in the array will 
+always be the URL to be used in the request. Additional items can be added 
+to that array.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+If the middleware adds a value to the key array, the fetch pipeline part of the 
+middleware has to remove that value from the array before passing the array 
+to the next middleware.

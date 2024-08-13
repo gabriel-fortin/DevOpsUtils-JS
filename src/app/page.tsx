@@ -16,6 +16,11 @@ import { WorkItemAndItsChildren } from "@/showWorkItems/WorkItemAndItsChildren"
 import styles from "./page.module.css"
 
 
+// TODO: remove PAT context, if possible; take inspiration from SWR
+
+// TODO: add component for choosing project
+
+
 export default function MyMainPage() {
   const [pat, setPat] = useState("")
   const [workItemId, setWorkItemId] = useState<number | null>(null)

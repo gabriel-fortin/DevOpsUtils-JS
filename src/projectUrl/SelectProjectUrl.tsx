@@ -69,7 +69,7 @@ const ProjectItem: React.FC<{
     const projectItemStyle: CSSProperties = {
       padding: "0.3em 0.5em 0.4em 0.6em",
       border: "3px dotted #333333",
-      borderRadius: "14px",
+      borderRadius: "6px",
       display: "flex", justifyContent: "space-between",
       cursor: "default",
     }
