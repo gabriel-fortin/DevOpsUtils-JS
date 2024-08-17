@@ -1,15 +1,40 @@
-export type FetcherKey = [string]
-export type Fetcher<T> = (key: FetcherKey) => Promise<T>
-type FetcherWithOptions<T> = (key: FetcherKey, options: RequestInit) => Promise<T>
+import { url } from "inspector"
 
-export type Middleware<T1, T2> = (
-    key: FetcherKey,
+export type FetchUrl = string
+
+type KeyForSwr = [FetchUrl, ...any]
+
+export type ParameterisedFetcher<TResult, TParam> = (
+    url: FetchUrl,
     options: RequestInit,
-    next: FetcherWithOptions<T1>,
-) => Promise<T2>
-type KeyEnlarger = (inputKey: FetcherKey) => FetcherKey
+    param: [TParam],
+) => Promise<TResult>
 
-interface ComposableFetcherBuilder<TReturn> {
+export type ParamDistributingFetcher<TResult, TParam> = (
+    url: FetchUrl,
+    options: RequestInit,
+    paramList: [...[any], TParam],
+) => Promise<TResult>
+
+type Fetcher<TResult> = (
+    url: FetchUrl,
+    options: RequestInit,
+) => Promise<TResult>
+
+type FetcherForSwrCall<TResult> = (
+    key: KeyForSwr,
+    options: RequestInit,
+) => Promise<TResult>
+
+export type Middleware<TInnerResult, TOwnResult, TParam> = (
+    url: FetchUrl,
+    options: RequestInit,
+    param: TParam,
+    next: Fetcher<TInnerResult>,
+) => Promise<TOwnResult>
+
+
+interface ComposableFetcherBuilder<TResult, TParam> {
     /**
      * Expands what the bare fetch operations does
      * and what the key is (to trigger re-fetching when it changes)
@@ -17,47 +42,82 @@ interface ComposableFetcherBuilder<TReturn> {
      *  validation, response parsing and much more 
      * @returns an new instance of the builder which can build an enhanced fetcher
     */
-    with: <TNewReturn> (
-        keyEnlarger: KeyEnlarger,
-        middleware: Middleware<TReturn, TNewReturn>,
-    ) => ComposableFetcherBuilder<TNewReturn>
-    // with: <TNewReturn> (middleware: Middleware<TReturn, TNewReturn>) => ComposableFetcherBuilder<TNewReturn>
+    // TODO: update doc comments
+    with: <TNewResult, TNewParam> (
+        param: TNewParam,
+        middleware: Middleware<TResult, TNewResult, TNewParam>,
+    ) => ComposableFetcherBuilder<TNewResult, TNewParam>
 
     /**
      * Bulids a fetcher which applies all the enhancements present in this builder
      * @returns a key and a fetcher to use with `useSWR`
      */
-    build: (inputKey: FetcherKey) => [FetcherKey, Fetcher<TReturn>]
+    build: (url: FetchUrl) => [KeyForSwr, FetcherForSwrCall<TResult>]
 }
 
-const IDENTITY: KeyEnlarger = key => key
+class BuilderImplLayer<TResult, TParam> implements ComposableFetcherBuilder<TResult, TParam> {
+    fetcher: ParamDistributingFetcher<TResult, TParam>
+    // nextBuilder: BuilderImplLayer<TResult, TParam> | BuilderImplRoot<TResult>
+    // param: TParam
+    paramList: [...[any], TParam]
 
-class BuilderImpl<TReturn> implements ComposableFetcherBuilder<TReturn> {
-    keyEnlarger: KeyEnlarger
-    fetcher: FetcherWithOptions<TReturn>
+    constructor(
+        paramList: [...[any], TParam],
+        fetcher: ParamDistributingFetcher<TResult, TParam>,
+    ) {
+        // this.param = param
+        this.paramList = paramList
+        this.fetcher = fetcher
+        // this.nextBuilder = nextBuilder
+    }
 
-    constructor(keyEnlarger: KeyEnlarger | null, fetcher: FetcherWithOptions<TReturn>) {
-        this.keyEnlarger = keyEnlarger ?? IDENTITY
+    with<TNewResult, TNewParam>(newParam: TNewParam, middleware: Middleware<TResult, TNewResult, TNewParam>)
+        : ComposableFetcherBuilder<TNewResult, TNewParam> {
+
+        const newFetcher: ParamDistributingFetcher<TNewResult, TNewParam> =
+            (url, opts, paramList) => {
+                const [newParam, ...innerParams] = paramList.reverse()
+
+                const nextThunk: Fetcher<TResult>
+                    = (url, opts) => this.fetcher(url, opts, innerParams as unknown as [...[any], TParam])
+
+                return middleware(url, opts, newParam, nextThunk)
+            }
+
+        return new BuilderImplLayer<TNewResult, TNewParam>(
+            [...this.paramList as unknown as [any], newParam],
+            newFetcher)
+    }
+
+    build(url: FetchUrl): [KeyForSwr, Fetcher<TResult>] {
+        const key = [?url, ???]
+    }
+}
+
+class BuilderImplRoot<TResult> implements ComposableFetcherBuilder<TResult> {
+    fetcher: Fetcher<TResult>
+
+    constructor(fetcher: Fetcher<TResult>) {
         this.fetcher = fetcher
     }
 
-    with<TNewReturn>(keyEnlarger: KeyEnlarger, middleware: Middleware<TReturn, TNewReturn>)
-        : ComposableFetcherBuilder<TNewReturn> {
-        const enhancedEnlarger: KeyEnlarger =
-            (key) => keyEnlarger(this.keyEnlarger(key))
-        const enhancedFetcher: FetcherWithOptions<TNewReturn> =
-            (key, opts) => middleware(key, opts, this.fetcher)
-        return new BuilderImpl(enhancedEnlarger, enhancedFetcher)
-    }
+    with<TNewResult, TNewParam>(
+        newParam: TNewParam,
+        middleware: Middleware<TResult, TNewResult, TNewParam>
+    ): ComposableFetcherBuilder<TNewResult> {
 
-    build(inputKey: FetcherKey): [FetcherKey, Fetcher<TReturn>] {
-        return [this.keyEnlarger(inputKey), key => this.fetcher(key, {} as RequestInit)]
     }
 }
 
-const coreFetcher: FetcherWithOptions<Response> =
-    (key: FetcherKey, options: RequestInit) => {
-        const [url] = key
+// const coreFetcher: FetcherWithOptions<Response> =
+//     (key: FetcherKey, options: RequestInit) => {
+//         const [url] = key
+//         console.debug(`🚀 ~ coreFetcher ~ URL: ${url} \n options:`, options)
+//         return fetch(url, options)
+//     }
+const coreFetcher: ParameterisedFetcher<Response, FetchUrl> =
+    // the 'param' happens to be the exact same as 'url'
+    (url: FetchUrl, options: RequestInit, _param: FetchUrl) => {
         console.debug(`🚀 ~ coreFetcher ~ URL: ${url} \n options:`, options)
         return fetch(url, options)
     }
