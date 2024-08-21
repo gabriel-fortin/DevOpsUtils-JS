@@ -21,6 +21,9 @@ const ProjectUrlContext = createContext<ContextType>(defaultContextValue)
 
 export function useProjectUrl(): [UrlType, UrlSetterType] {
   const { value, setter } = useContext(ProjectUrlContext)
+  if (value === defaultContextValue.value) {
+    console.debug("⚠️ Using project URL context before any value was set")
+  }
   return [value, setter]
 }
 
@@ -29,7 +32,7 @@ export const ProjectUrlContextProvider: React.FC<{
 }> = ({
   children,
 }) => {
-    const [projectUrl, setProjectUrl] = useState<UrlType>("<no project URL set yet>")
+    const [projectUrl, setProjectUrl] = useState<UrlType>(defaultContextValue.value)
 
     const memoedContextData = useMemo(() => ({
       value: projectUrl,
@@ -47,7 +50,7 @@ export const ProjectUrlContextProvider: React.FC<{
 function sanitized(setValue: UrlSetterType): UrlSetterType {
   return inputValue => {
     if (!URL.canParse(inputValue)) {
-      console.error(`Project Url Context - setting URL but URL not valid: '${inputValue}'`)
+      console.error(`Project Url Context - setting URL failed because URL not valid: '${inputValue}'`)
       return
     }
 
