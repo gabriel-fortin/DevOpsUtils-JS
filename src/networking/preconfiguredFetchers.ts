@@ -24,6 +24,6 @@ export function usePreconfiguredComposableFetcher(): ReturnType<typeof useBasicC
 export function useNoAuthPreconfiguredComposableFetcher(): ReturnType<typeof useBasicComposableFetcher> {
     const [projectUrl] = useProjectUrl()
     return useBasicComposableFetcher()
-        .with(projectUrlMiddleware(projectUrl))
+        .with(projectUrlMiddleware(projectUrl), projectUrl)
         .with(apiVersionMiddleware())
 }

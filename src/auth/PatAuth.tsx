@@ -57,7 +57,7 @@ export const PatAuth: React.FC<{
       </div>
       {state === "EMPTY" && "👆 Enter Personal Access Token"}
       {state === "FETCHING" && "❔ Checking the PAT"}
-      {state === "NOPE" && "❌ PAT check failure. It might be incorrect, not have the required access or there was a network problem"}
+      {state === "NOPE" && "❌ PAT check failure. It might be incorrect for the current project, not have the required access or there was a network problem"}
       {state === "YES" && "✔️ PAT successfully checked"}
     </>
   )
