@@ -13,6 +13,7 @@ export const PatAuth: React.FC<{
 }) => {
     const [currentPat, setCurrentPat] = useState("")
     const [state, setState] = useState<"EMPTY" | "FETCHING" | "YES" | "NOPE">("EMPTY")
+    const [isAutoLoad, setIsAutoLoad] = useState(true)
     const [patInStorage, savePatToStorage] = usePatStorage()
     const { data: response, isLoading } = useAnyCallUsingPat(currentPat)
 
@@ -30,6 +31,12 @@ export const PatAuth: React.FC<{
       }
     }, [isLoading, notifyPatChanged, currentPat, response])
 
+    useEffect(() => {
+      if (isAutoLoad) {
+        setCurrentPat(patInStorage)
+      }
+    }, [isAutoLoad, patInStorage])
+
     const onPatInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
       const newPat = e.target.value
       setCurrentPat(newPat)
@@ -45,6 +52,10 @@ export const PatAuth: React.FC<{
       savePatToStorage(currentPat)
     }
 
+    const toggleAutoLoad = () => {
+      setIsAutoLoad(!isAutoLoad)
+    }
+
     const spaced = { margin: "0.5em 0", display: "flex", gap: "0.5em" }
     const save = { visibility: currentPat ? "initial" : "hidden" as React.CSSProperties["visibility"] }
     const load = { visibility: patInStorage ? "initial" : "hidden" as React.CSSProperties["visibility"] }
@@ -53,7 +64,14 @@ export const PatAuth: React.FC<{
       <>
         <h2>Authentication / authorisation</h2>
         <div style={spaced}>
-          PAT: <input value={currentPat} onChange={onPatInputChange} />
+          <input checked={isAutoLoad} onChange={toggleAutoLoad} id="patAutoLoad" type="checkbox"></input>
+          <label htmlFor="patAutoLoad">
+            Load PAT automatically (if previously saved)
+          </label>
+        </div>
+        <div style={spaced}>
+          <div style={{ alignSelf: "center" }}>PAT: </div>
+          <input value={currentPat} onChange={onPatInputChange} />
           <button onClick={savePat} style={save}>Save to local storage</button>
         </div>
         <div style={spaced}>

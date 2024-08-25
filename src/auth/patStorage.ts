@@ -21,10 +21,10 @@ export const usePatStorage: () => [string, (_: string) => void] =
         const orgUrl = hasInvalidOrg ? undefined : projectUrl.slice(0, projectUrl.lastIndexOf("/"))
 
         // assume that all projects in an organisation use the same PAT
-        const pat: string | undefined =
+        const pat: string =
             hasInvalidOrg
                 ? ""
-                : dataInStorage[orgUrl ?? "return an undefined"]
+                : dataInStorage[orgUrl ?? "return an undefined"] ?? ""
 
         const setPat = useCallback((newPat: string) => {
             if (orgUrl === undefined) return
