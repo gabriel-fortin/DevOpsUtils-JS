@@ -3,16 +3,16 @@
 import { useCallback } from "react"
 import { useLocalStorage } from "@uidotdev/usehooks"
 
+import { useProjectUrl } from "@/contexts/ProjectUrlContext"
+
 
 type PatStore = {
     [url: string]: string
 }
 
-export const usePatStorage: (
-    projectUrl: string
-) => [string, (_: string) => void] = (
-    projectUrl
-) => {
+export const usePatStorage: () => [string, (_: string) => void] =
+    () => {
+        const [projectUrl] = useProjectUrl()
         const [dataInStorage, saveDataToStorage] = useLocalStorage<PatStore>("pat", {})
 
         const hasInvalidOrg = projectUrl.lastIndexOf("/") < 0
