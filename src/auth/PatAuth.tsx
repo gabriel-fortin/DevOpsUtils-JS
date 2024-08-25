@@ -2,58 +2,63 @@
 
 import React, { useEffect, useState } from "react"
 
-import { useLocalStorage } from "@uidotdev/usehooks"
+import { useProjectUrl } from "@/contexts/ProjectUrlContext"
+
 import { useAnyCallUsingPat } from "./hooks"
+import { usePatStorage } from "./patStorage"
 
 
 export const PatAuth: React.FC<{
   onPatChange: (_: string) => void
 }> = ({ onPatChange: notifyPatChanged }) => {
-  const [pat, setPat] = useState("")
+  const [currentPat, setCurrentPat] = useState("")
   const [state, setState] = useState<"EMPTY" | "FETCHING" | "YES" | "NOPE">("EMPTY")
-  const [patInStorage, savePatToStorage] = useLocalStorage("pat", "")
-  const { data: response, isLoading } = useAnyCallUsingPat(pat)
+  const [projectUrl] = useProjectUrl()
+  const [patInStorage, savePatToStorage] = usePatStorage(projectUrl)
+  const { data: response, isLoading } = useAnyCallUsingPat(currentPat)
 
   useEffect(() => {
     if (isLoading) {
       setState("FETCHING")
-    } else if (!pat) {
+    } else if (!currentPat) {
       setState("EMPTY")
     } else if (response?.status === 200) {
-      notifyPatChanged(pat)
+      notifyPatChanged(currentPat)
       setState("YES")
     } else {
       notifyPatChanged("")
       setState("NOPE")
     }
-  }, [isLoading, notifyPatChanged, pat, response])
+  }, [isLoading, notifyPatChanged, currentPat, response])
 
   const onPatInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const newPat = e.target.value
-    setPat(newPat)
+    setCurrentPat(newPat)
   }
 
   const loadPat = () => {
-    return setPat(patInStorage)
+    setCurrentPat(patInStorage)
   }
   const savePat = () => {
-    return savePatToStorage(pat)
+    // don't save a PAT that didn't lead to a successful response
+    if (state !== "YES") return
+
+    savePatToStorage(currentPat)
   }
 
   const spaced = { margin: "0.5em 0", display: "flex", gap: "0.5em" }
-  const save = { visibility: pat ? "initial" : "hidden" as React.CSSProperties["visibility"] }
+  const save = { visibility: currentPat ? "initial" : "hidden" as React.CSSProperties["visibility"] }
   const load = { visibility: patInStorage ? "initial" : "hidden" as React.CSSProperties["visibility"] }
 
   return (
     <>
       <h2>Authentication / authorisation</h2>
       <div style={spaced}>
-        PAT: <input value={pat} onChange={onPatInputChange} />
+        PAT: <input value={currentPat} onChange={onPatInputChange} />
         <button onClick={savePat} style={save}>Save to local storage</button>
       </div>
       <div style={spaced}>
         <button onClick={loadPat} style={load}>Load from local storage</button>
-        {/* <button onClick={() => verifyPat(pat)}>Auth!</button> */}
       </div>
       {state === "EMPTY" && "👆 Enter Personal Access Token"}
       {state === "FETCHING" && "❔ Checking the PAT"}

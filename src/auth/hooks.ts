@@ -17,7 +17,7 @@ export function useAnyCallUsingPat(pat: string) {
 
     return useSWR(
         ...useNoAuthPreconfiguredComposableFetcher()
-            .with<Response>(patAuthMiddleware(pat))
+            .with<Response>(patAuthMiddleware(pat), pat)
             .build(actualUrl)
     )
 }

@@ -19,6 +19,7 @@ const defaultContextValue: ContextType = {
 
 const ProjectUrlContext = createContext<ContextType>(defaultContextValue)
 
+/** Returns a [URL, URL setter] pair: [string, string => void] */
 export function useProjectUrl(): [UrlType, UrlSetterType] {
   const { value, setter } = useContext(ProjectUrlContext)
   if (value === defaultContextValue.value) {
