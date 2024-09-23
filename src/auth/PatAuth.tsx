@@ -4,52 +4,55 @@ import React, { useEffect, useState } from "react"
 
 import { useAnyCallUsingPat } from "./hooks"
 import { usePatStorage } from "./patStorage"
+import { usePersonalAccessTokenSetter } from "@/contexts/PersonalAccessTokenContext"
 
 
 export const PatAuth: React.FC<{
-  onPatChange: (_: string) => void
 }> = ({
-  onPatChange: notifyPatChanged
 }) => {
-    const [currentPat, setCurrentPat] = useState("")
+    // internal things
+    const [currentPatInput, setCurrentPatInput] = useState("")
     const [state, setState] = useState<"EMPTY" | "FETCHING" | "YES" | "NOPE">("EMPTY")
     const [isAutoLoad, setIsAutoLoad] = useState(true)
+
+    // external things
     const [patInStorage, savePatToStorage] = usePatStorage()
-    const { data: response, isLoading } = useAnyCallUsingPat(currentPat)
+    const setPat = usePersonalAccessTokenSetter()
+    const { data: response, isLoading } = useAnyCallUsingPat(currentPatInput)
 
     useEffect(() => {
       if (isLoading) {
         setState("FETCHING")
-      } else if (!currentPat) {
+      } else if (!currentPatInput) {
         setState("EMPTY")
       } else if (response?.status === 200) {
-        notifyPatChanged(currentPat)
+        setPat(currentPatInput)
         setState("YES")
       } else {
-        notifyPatChanged("")
+        setPat("")
         setState("NOPE")
       }
-    }, [isLoading, notifyPatChanged, currentPat, response])
+    }, [isLoading, setPat, currentPatInput, response])
 
     useEffect(() => {
       if (isAutoLoad) {
-        setCurrentPat(patInStorage)
+        setCurrentPatInput(patInStorage)
       }
     }, [isAutoLoad, patInStorage])
 
     const onPatInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
       const newPat = e.target.value
-      setCurrentPat(newPat)
+      setCurrentPatInput(newPat)
     }
 
     const loadPat = () => {
-      setCurrentPat(patInStorage)
+      setCurrentPatInput(patInStorage)
     }
     const savePat = () => {
       // don't save a PAT that didn't lead to a successful response
       if (state !== "YES") return
 
-      savePatToStorage(currentPat)
+      savePatToStorage(currentPatInput)
     }
 
     const toggleAutoLoad = () => {
@@ -57,7 +60,7 @@ export const PatAuth: React.FC<{
     }
 
     const spaced = { margin: "0.5em 0", display: "flex", gap: "0.5em" }
-    const save = { visibility: currentPat ? "initial" : "hidden" as React.CSSProperties["visibility"] }
+    const save = { visibility: currentPatInput ? "initial" : "hidden" as React.CSSProperties["visibility"] }
     const load = { visibility: patInStorage ? "initial" : "hidden" as React.CSSProperties["visibility"] }
 
     return (
@@ -71,7 +74,7 @@ export const PatAuth: React.FC<{
         </div>
         <div style={spaced}>
           <div style={{ alignSelf: "center" }}>PAT: </div>
-          <input value={currentPat} onChange={onPatInputChange} />
+          <input value={currentPatInput} onChange={onPatInputChange} />
           <button onClick={savePat} style={save}>Save to local storage</button>
         </div>
         <div style={spaced}>

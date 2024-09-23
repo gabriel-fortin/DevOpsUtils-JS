@@ -6,7 +6,7 @@ import { useIsClient } from "@uidotdev/usehooks"
 
 import { AddTasks } from "@/addingTasks/AddTasks"
 import { PatAuth } from "@/auth/PatAuth"
-import { PersonalAccessTokenContext } from "@/contexts/PersonalAccessTokenContext"
+import { PersonalAccessTokenContextProvider } from "@/contexts/PersonalAccessTokenContext"
 import { ProjectUrlContextProvider, SetConstantProjectUrl } from "@/contexts/ProjectUrlContext"
 import { WorkItemIdContext } from "@/contexts/WorkItemIdContext"
 import { SelectProjectUrl } from "@/projectUrl/SelectProjectUrl"
@@ -17,7 +17,6 @@ import styles from "./page.module.css"
 
 
 export default function MyMainPage() {
-  const [pat, setPat] = useState("")
   const [workItemId, setWorkItemId] = useState<number | null>(null)
 
   const isClient = useIsClient()
@@ -25,7 +24,7 @@ export default function MyMainPage() {
 
   return (
     <ProjectUrlContextProvider>
-      <PersonalAccessTokenContext.Provider value={pat}>
+      <PersonalAccessTokenContextProvider>
         <WorkItemIdContext.Provider value={{ workItemId }}>
           <main className={styles.main}>
             <h1>A tool for chores in DevOps projects</h1>
@@ -33,7 +32,7 @@ export default function MyMainPage() {
               <SelectProjectUrl />
             </Card>
             <Card>
-              <PatAuth onPatChange={setPat} />
+              <PatAuth />
             </Card>
             <Card>
               <SelectWorkItem onWorkItemSelected={setWorkItemId} />
@@ -46,7 +45,7 @@ export default function MyMainPage() {
             </Card>
           </main>
         </WorkItemIdContext.Provider>
-      </PersonalAccessTokenContext.Provider>
+      </PersonalAccessTokenContextProvider>
     </ProjectUrlContextProvider>
   )
 }
