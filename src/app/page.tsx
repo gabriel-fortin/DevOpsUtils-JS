@@ -26,22 +26,12 @@ export default function MyMainPage() {
         <WorkItemIdContextProvider>
           <main className={styles.main}>
             <h1>A tool for chores in DevOps projects</h1>
-            <Card>
-              <SelectProjectUrl />
-            </Card>
-            <Card>
-              <PatAuth />
-            </Card>
-            <Card>
-              <SelectWorkItem />
-            </Card>
+            <Card render={<SelectProjectUrl />} />
+            <Card render={<PatAuth />} />
+            <Card render={<SelectWorkItem />} />
             <IfWorkItemIdIsSet>
-              <Card>
-                <WorkItemAndItsChildren />
-              </Card>
-              <Card>
-                <AddTasks />
-              </Card>
+              <Card render={<WorkItemAndItsChildren />} />
+              <Card render={<AddTasks />} />
             </IfWorkItemIdIsSet>
           </main>
         </WorkItemIdContextProvider>
@@ -51,12 +41,15 @@ export default function MyMainPage() {
 }
 
 const Card: React.FC<{
-  children: React.ReactNode
+  children?: React.ReactNode
+  render?: React.ReactNode
 }> = ({
   children,
+  render: childrenToRender
 }) => {
     return (
       <div className={styles.card}>
+        {childrenToRender}
         {children}
       </div>
     )
