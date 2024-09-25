@@ -3,7 +3,7 @@
 import EventEmitter from "events"
 import React, { CSSProperties, FC, useMemo, useState } from "react"
 
-import { useWorkItemId } from "@/contexts/WorkItemIdContext"
+import { useWorkItemIdValue } from "@/contexts/WorkItemIdContext"
 
 import { Task, createFreshTasksList } from "./tasks"
 import { TaskItem } from "./TaskItem"
@@ -41,7 +41,7 @@ const RenderTasks: FC<{
   tasks,
   events,
 }) => {
-    const { workItemId: parentWorkItemId } = useWorkItemId()
+    const parentWorkItemId = useWorkItemIdValue()
 
     if (!parentWorkItemId) return "No parent work item selected"
 
@@ -59,7 +59,7 @@ const Button: FC<{
 }> = ({
   events,
 }) => {
-    const { workItemId } = useWorkItemId()
+    const workItemId = useWorkItemIdValue()
 
     const addTasksToWorkItem = () => {
       events.emit(REQUESTED_ADDING_TASKS_TO_WORK_ITEM)

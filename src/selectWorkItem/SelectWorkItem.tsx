@@ -2,16 +2,17 @@
 
 import React, { FC, useState } from "react"
 
+import { useWorkItemIdSetter } from "@/contexts/WorkItemIdContext"
+
 
 export const SelectWorkItem: FC<{
-  onWorkItemSelected: (id: number | null) => void,
 }> = ({
-  onWorkItemSelected: notifyWorkItemSelected,
 }) => {
     const [userValue, setUserValue] = useState<number | null>(null)
+    const setWorkItemId = useWorkItemIdSetter()
 
     function confirmWorkItemChoice() {
-      notifyWorkItemSelected(userValue)
+      setWorkItemId(userValue)
     }
 
     function enteredValueChanged(event: React.ChangeEvent<HTMLInputElement>) {
