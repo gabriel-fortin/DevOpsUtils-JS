@@ -5,8 +5,8 @@ import React, { CSSProperties, FC, useMemo, useState } from "react"
 
 import { useWorkItemIdValue } from "@/contexts/WorkItemIdContext"
 
-import { Task, createFreshTasksList } from "./tasks"
-import { TaskItem } from "./TaskItem"
+import { Task, createFreshTasksList } from "../task"
+import { TasksList } from "./TasksList"
 
 
 export const REQUESTED_ADDING_TASKS_TO_WORK_ITEM = "requested adding tasks to work item"
@@ -23,36 +23,16 @@ export function AddTasks() {
 
   return (
     <details>
-      <Summary />
-      <RenderTasks tasks={specialTasks} events={emitter} />
+      <Header />
+      <TasksList tasks={specialTasks} events={emitter} />
       <Separator />
-      <RenderTasks tasks={presentationLayerTasks} events={emitter} />
+      <TasksList tasks={presentationLayerTasks} events={emitter} />
       <Separator />
-      <RenderTasks tasks={accessLayerTasks} events={emitter} />
+      <TasksList tasks={accessLayerTasks} events={emitter} />
       <Button events={emitter} />
     </details>
   )
 }
-
-const RenderTasks: FC<{
-  tasks: Task[]
-  events: EventEmitter
-}> = ({
-  tasks,
-  events,
-}) => {
-    const parentWorkItemId = useWorkItemIdValue()
-
-    if (!parentWorkItemId) return "No parent work item selected"
-
-    return tasks.map(task =>
-      <TaskItem key={task.name}
-        parentWorkItemId={parentWorkItemId}
-        task={task}
-        events={events}
-      />
-    )
-  }
 
 const Button: FC<{
   events: EventEmitter
@@ -79,7 +59,7 @@ function Separator() {
   return (<div style={separatorStyle} />)
 }
 
-function Summary() {
+function Header() {
   const summaryStyle: CSSProperties = { display: "block" }
   const headerStyle: CSSProperties = { display: "list-item" }
 

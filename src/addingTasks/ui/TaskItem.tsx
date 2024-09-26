@@ -7,8 +7,8 @@ import { useFetchWorkItem } from "@/showWorkItems/hooks"
 
 import { REQUESTED_ADDING_TASKS_TO_WORK_ITEM } from "./AddTasks"
 import styles from "./AddTasks.module.css"
-import { useAddTaskToWorkItem } from "./hooks"
-import { Task } from "./tasks"
+import { useAddTaskToWorkItem } from "../hooks"
+import { Task } from "../task"
 
 
 export const TaskItem: FC<{

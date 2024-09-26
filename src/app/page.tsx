@@ -4,7 +4,7 @@ import React from "react"
 import Image from "next/image"
 import { useIsClient } from "@uidotdev/usehooks"
 
-import { AddTasks } from "@/addingTasks/AddTasks"
+import { AddTasks } from "@/addingTasks"
 import { PatAuth } from "@/auth/PatAuth"
 import { PersonalAccessTokenContextProvider } from "@/contexts/PersonalAccessTokenContext"
 import { ProjectUrlContextProvider, SetConstantProjectUrl } from "@/contexts/ProjectUrlContext"

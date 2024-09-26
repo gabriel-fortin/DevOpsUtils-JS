@@ -3,7 +3,7 @@ import { PROJECT_URL } from "@/config"
 import { WORK_ITEMS_URL } from "@/networking/constants"
 import { Middleware } from "@/networking/fetcher"
 
-import { Task } from "./tasks"
+import { Task } from "./task"
 
 
 export const addTaskMiddleware: <T> (

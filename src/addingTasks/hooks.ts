@@ -5,7 +5,7 @@ import { WORK_ITEMS_URL } from "@/networking/constants"
 import { FetcherUrl } from "@/networking/fetcher"
 
 import { addTaskMiddleware } from "./middleware"
-import { Task } from "./tasks"
+import { Task } from "./task"
 
 
 export function useAddTaskToWorkItem(
