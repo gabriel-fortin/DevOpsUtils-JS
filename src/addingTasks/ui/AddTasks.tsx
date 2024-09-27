@@ -7,6 +7,7 @@ import { useWorkItemIdValue } from "@/contexts/WorkItemIdContext"
 
 import { Task, createFreshTasksList } from "../task"
 import { TasksList } from "./TasksList"
+import styles from "./AddTasks.module.css"
 
 
 export const REQUESTED_ADDING_TASKS_TO_WORK_ITEM = "requested adding tasks to work item"
@@ -30,6 +31,25 @@ export function AddTasks() {
       <Separator />
       <TasksList tasks={accessLayerTasks} events={emitter} />
       <Button events={emitter} />
+
+      {/* temporary button to show dialog */}
+      <button onClick={() => (document!.getElementById("taskEdit") as HTMLDialogElement).showModal()}>show it!</button>
+
+      <dialog id="taskEdit" className={styles.taskEdit}>
+        <h3>Edit task</h3>
+        <p>
+          <span>title:</span>
+          <span>input with text value</span>
+        </p>
+        <p>
+          <span>group:</span>
+          <span>dropdown with group selection</span>
+        </p>
+        <p>
+          <button>Add/Update</button>
+          <button>Cancel</button>
+        </p>
+      </dialog>
     </details>
   )
 }

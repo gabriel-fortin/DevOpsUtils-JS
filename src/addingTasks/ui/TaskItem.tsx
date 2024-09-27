@@ -5,10 +5,10 @@ import React, { CSSProperties, FC, useCallback, useEffect, useState } from "reac
 
 import { useFetchWorkItem } from "@/showWorkItems/hooks"
 
-import { REQUESTED_ADDING_TASKS_TO_WORK_ITEM } from "./AddTasks"
-import styles from "./AddTasks.module.css"
 import { useAddTaskToWorkItem } from "../hooks"
 import { Task } from "../task"
+import { REQUESTED_ADDING_TASKS_TO_WORK_ITEM } from "./AddTasks"
+import styles from "./AddTasks.module.css"
 
 
 export const TaskItem: FC<{
