@@ -35,7 +35,7 @@ export const SelectProjectUrl: React.FC<{
       <>
         <h2>Select project</h2>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.5em", width: "30em" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.5em" }}>
 
           {repo.projectList.map(savedProjectName => (
             <ProjectItem key={savedProjectName}
