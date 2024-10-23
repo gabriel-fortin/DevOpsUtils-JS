@@ -20,7 +20,7 @@ export default function App() {
         <WorkItemIdContextProvider>
           <main className="main">
             <h1>A tool for chores in DevOps projects</h1>
-            <Card render={<SelectProjectUrl />} />
+            <SelectProjectCard />
             <Card render={<PatAuth />} />
             <Card render={<SelectWorkItem />} />
             <IfWorkItemIdIsSet>
@@ -35,15 +35,28 @@ export default function App() {
   )
 }
 
+const SelectProjectCard: React.FC =
+  (
+  ) => {
+    const [url] = useProjectUrl()
+    return (
+      <Card focus={!!url}>
+        <SelectProjectUrl />
+      </Card>
+    )
+  }
+
 const Card: React.FC<{
   children?: React.ReactNode
   render?: React.ReactNode
+  focus?: boolean
 }> = ({
   children,
-  render: childrenToRender
+  render: childrenToRender,
+  focus = false,
 }) => {
     return (
-      <div className="card">
+      <div className={`card p-4 m-1 ${focus ? "border-1 border-accent" : "border-2 border-primary"}`}>
         {childrenToRender}
         {children}
       </div>
@@ -52,7 +65,7 @@ const Card: React.FC<{
 
 const Logos: React.FC = () => {
   return (
-    <div>
+    <div className="flex gap-5 mx-8 my-6">
       <a href="https://vitejs.dev" target="_blank">
         <img src={viteLogo} className="logo" alt="Vite logo" />
       </a>

@@ -1,8 +1,6 @@
 #root {
   max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  width: 100%;
 }
 
 .main {
@@ -19,12 +17,12 @@
   padding: 1rem 1.2rem;
   border-radius: var(--border-radius);
   border: 1px solid rgba(var(--border-rgb), 0.2);
+  transition: background 200ms, box-shadow ease-out 200ms;
 }
 
 .card:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: rgba(0, 0, 0, 0.01);
   box-shadow: rgba(200, 200, 200, 0.02) 0 0 10px 10px;
-  transition: background 200ms, box-shadow ease-out 200ms;
 }
 
 .read-the-docs {
