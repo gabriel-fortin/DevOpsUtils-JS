@@ -13,7 +13,7 @@ type ContextType = {
   setter: UrlSetterType
 }
 const defaultContextValue: ContextType = {
-  value: "<no URL set>",
+  value: "",
   setter: (_: UrlType) => { console.warn("Dummy setter was used") },
 }
 

@@ -40,7 +40,7 @@ const SelectProjectCard: React.FC =
   ) => {
     const [url] = useProjectUrl()
     return (
-      <Card focus={!!url}>
+      <Card focus={!url}>
         <SelectProjectUrl />
       </Card>
     )

@@ -20,6 +20,7 @@ export const SelectProjectUrl: React.FC<{
 
     const removeProject = (projectName: string) => () => {
       repo.removeProject(projectName)
+      setProjectUrl("")
     }
 
     const handleLinkClick = () => {
