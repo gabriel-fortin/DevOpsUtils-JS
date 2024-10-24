@@ -1,15 +1,15 @@
 "use client"
 
-import React, { CSSProperties, useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 
 import { useProjectUrl } from "@/contexts/ProjectUrlContext"
 
 import { useProjectUrlRepository } from "./repository"
 
 
-export const SelectProjectUrl: React.FC<{
-}> = ({
-}) => {
+export const SelectProjectUrl: React.FC =
+  (
+  ) => {
     const repo = useProjectUrlRepository()
     const [isAddingProject, setIsAddingProject] = useState(false)
     const [currentProjectUrl, setProjectUrl] = useProjectUrl()
@@ -21,6 +21,8 @@ export const SelectProjectUrl: React.FC<{
     const removeProject = (projectName: string) => () => {
       repo.removeProject(projectName)
       setProjectUrl("")
+      // TODO: bug: when removing the selected project, it seems the project is not removed from context
+      // (the PAT is not automatically removed from its field)
     }
 
     const handleLinkClick = () => {
@@ -32,27 +34,34 @@ export const SelectProjectUrl: React.FC<{
       setIsAddingProject(false)
     }
 
+    const handleNewProjectCancelled = () => {
+      setIsAddingProject(false)
+    }
+
+    const projectList = repo.projectList
+    const hasProjects = projectList.length > 0
+
     return (
-      <>
-        <h2>Select project</h2>
+      <div className="flex flex-col gap-3">
+        <h2 className="ml-1 text-xl">
+          Select project
+        </h2>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.5em" }}>
+        {hasProjects && projectList.map(savedProjectName => (
+          <ProjectItem key={savedProjectName}
+            isSelected={savedProjectName == currentProjectUrl}
+            projectName={savedProjectName}
+            onProjectSelected={selectProject(savedProjectName)}
+            onProjectRemoved={removeProject(savedProjectName)}
+          />
+        ))
+        }
 
-          {repo.projectList.map(savedProjectName => (
-            <ProjectItem key={savedProjectName}
-              isSelected={savedProjectName == currentProjectUrl}
-              projectName={savedProjectName}
-              onProjectSelected={selectProject(savedProjectName)}
-              onProjectRemoved={removeProject(savedProjectName)}
-            />
-          ))}
-
-          {isAddingProject
-            && <NewProjectInput onProjectSubmitted={handleNewProjectAdded} />
-            || <NewProjectLink onLinkClicked={handleLinkClick} />
-          }
-        </div>
-      </>
+        {isAddingProject
+          && <NewProjectInput onProjectSubmitted={handleNewProjectAdded} onNewProjectCancelled={handleNewProjectCancelled} />
+          || <NewProjectButton onLinkClicked={handleLinkClick} isHighlighted={!hasProjects} />
+        }
+      </div>
     )
   }
 
@@ -67,49 +76,43 @@ const ProjectItem: React.FC<{
   onProjectSelected: selectProject,
   onProjectRemoved: removeProject,
 }) => {
-    const projectItemStyle: CSSProperties = {
-      padding: "0.3em 0.5em 0.4em 0.6em",
-      border: "3px dotted #333333",
-      borderRadius: "14px",
-      display: "flex", justifyContent: "space-between",
-      cursor: "default",
-    }
-    if (isSelected) {
-      projectItemStyle.border = "2px solid darkolivegreen"
-    }
+    const classesWhenSelected = isSelected && "border-secondary hover:border-secondary"
 
     return (
-      <div style={projectItemStyle} onClick={selectProject}>
-        <span style={{ width: "100%" }}>
+      <div
+        className={`btn flex flex-row flex-flex-nowrap ${classesWhenSelected}`}
+        onClick={selectProject}>
+        <span className="grow text-left">
           {projectName}
         </span>
-        <span style={{ fontSize: "0.8em", alignSelf: "center" }} onClick={removeProject}>
+        <span className="btn btn-outline btn-md -my-8 -mr-4 border-0"
+          onClick={removeProject}>
           ❌
         </span>
       </div>
     )
   }
 
-const NewProjectLink: React.FC<{
+const NewProjectButton: React.FC<{
   onLinkClicked: () => void
+  isHighlighted: boolean
 }> = ({
-  onLinkClicked: clickLink
+  onLinkClicked: clickLink,
+  isHighlighted,
 }) => {
-    const linkStyle = { color: "steelblue", textDecoration: "underline", fontSize: "0.8em" }
-
     return (
-      <div style={{ marginLeft: "0.5em" }}>
-        <a onClick={clickLink} href="#" style={linkStyle}>
+      <div onClick={clickLink} className={`w-fit btn btn-sm ${isHighlighted && "btn-accent"}`}>
           add project...
-        </a>
       </div>
     )
   }
 
 const NewProjectInput: React.FC<{
   onProjectSubmitted: (projectName: string) => void
+  onNewProjectCancelled: () => void
 }> = ({
   onProjectSubmitted: submitProject,
+  onNewProjectCancelled: cancel,
 }) => {
     const projectNameInputRef = useRef<HTMLInputElement>()
 
@@ -121,11 +124,22 @@ const NewProjectInput: React.FC<{
     useEffect(() => projectNameInputRef.current?.focus(), [])
 
     return (
-      <div style={{ display: "flex", gap: "0.5em" }}>
+      <div className="flex items-center input input-sm input-bordered px-0">
+        <button
+          className="btn btn-sm btn-accent btn-outline mr-2"
+          onClick={cancel}>
+          X
+        </button>
         {/* cast to LegacyRef because TS types are botched; hopefully we can remove the cast in the future */}
         <input ref={projectNameInputRef as React.LegacyRef<HTMLInputElement>}
-          placeholder="project URL" style={{ flexGrow: 1 }} />
-        <button onClick={addNewProject}>Add</button>
+          placeholder="project URL"
+          className="grow"
+        />
+        <button
+          className="btn btn-sm btn-accent"
+          onClick={addNewProject}>
+          Add
+        </button>
       </div>
     )
   }
