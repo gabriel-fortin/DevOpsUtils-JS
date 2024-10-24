@@ -4,7 +4,7 @@ import viteLogo from "/vite.svg"
 import { AddTasks } from "@/addingTasks"
 import { PatAuth } from "@/auth/PatAuth"
 import { PersonalAccessTokenContextProvider } from "@/contexts/PersonalAccessTokenContext"
-import { ProjectUrlContextProvider } from "@/contexts/ProjectUrlContext"
+import { ProjectUrlContextProvider, useProjectUrl } from "@/contexts/ProjectUrlContext"
 import { IfWorkItemIdIsSet, WorkItemIdContextProvider } from "@/contexts/WorkItemIdContext"
 import { SelectProjectUrl } from "@/projectUrl/SelectProjectUrl"
 import { SelectWorkItem } from "@/selectWorkItem/SelectWorkItem"
@@ -59,6 +59,7 @@ const Card: React.FC<{
       <div className={`card p-4 m-1 ${focus ? "border-1 border-accent" : "border-2 border-primary"}`}>
         {childrenToRender}
         {children}
+        {focus && <span className="absolute left-0.5 top-4 bottom-4 rounded-sm bg-accent w-0.5 animate-pulse"></span>}
       </div>
     )
   }
