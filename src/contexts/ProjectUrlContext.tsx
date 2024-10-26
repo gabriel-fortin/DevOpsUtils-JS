@@ -23,7 +23,7 @@ const ProjectUrlContext = createContext<ContextType>(defaultContextValue)
 export function useProjectUrl(): [UrlType, UrlSetterType] {
   const { value, setter } = useContext(ProjectUrlContext)
   if (value === defaultContextValue.value) {
-    console.debug("⚠️ Using project URL context before any value was set")
+    console.debug("⚠️ Using project URL context when no URL set")
   }
   return [value, setter]
 }
@@ -50,8 +50,14 @@ export const ProjectUrlContextProvider: React.FC<{
 // Prevent common errors when setting project's URL
 function sanitized(setValue: UrlSetterType): UrlSetterType {
   return inputValue => {
+    if (!inputValue){
+      setValue("")
+      return
+    }
+
     if (!URL.canParse(inputValue)) {
-      console.error(`Project Url Context - setting URL failed because URL not valid: '${inputValue}'`)
+      console.warn(`Project Url Context - setting invalid URL: '${inputValue}'`)
+      setValue("")
       return
     }
 

@@ -21,8 +21,6 @@ export const SelectProjectUrl: React.FC =
     const removeProject = (projectName: string) => () => {
       repo.removeProject(projectName)
       setProjectUrl("")
-      // TODO: bug: when removing the selected project, it seems the project is not removed from context
-      // (the PAT is not automatically removed from its field)
     }
 
     const handleLinkClick = () => {
@@ -78,6 +76,11 @@ const ProjectItem: React.FC<{
 }) => {
     const classesWhenSelected = isSelected && "border-secondary hover:border-secondary"
 
+    const handleRemoveProject: React.MouseEventHandler<HTMLElement> = e => {
+      e.stopPropagation()
+      removeProject()
+    }
+
     return (
       <div
         className={`btn flex flex-row flex-flex-nowrap ${classesWhenSelected}`}
@@ -86,7 +89,7 @@ const ProjectItem: React.FC<{
           {projectName}
         </span>
         <span className="btn btn-outline btn-md -my-8 -mr-4 border-0"
-          onClick={removeProject}>
+          onClick={handleRemoveProject}>
           ❌
         </span>
       </div>
@@ -102,7 +105,7 @@ const NewProjectButton: React.FC<{
 }) => {
     return (
       <div onClick={clickLink} className={`w-fit btn btn-sm ${isHighlighted && "btn-accent"}`}>
-          add project...
+        add project...
       </div>
     )
   }
