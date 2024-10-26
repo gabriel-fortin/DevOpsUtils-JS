@@ -1,32 +1,10 @@
 "use client"
 
-import { createContext, useContext, useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 
-import { PROJECT_URL } from "@/config"
+import { defaultContextValue, ProjectUrlContext } from "./context"
+import { UrlSetterType, UrlType } from "./types"
 
-
-type UrlType = string
-type UrlSetterType = (projectUrl: UrlType) => void
-
-type ContextType = {
-  value: UrlType
-  setter: UrlSetterType
-}
-const defaultContextValue: ContextType = {
-  value: "",
-  setter: (_: UrlType) => { console.warn("Dummy setter was used") },
-}
-
-const ProjectUrlContext = createContext<ContextType>(defaultContextValue)
-
-/** Returns a [URL, URL setter] pair: [string, string => void] */
-export function useProjectUrl(): [UrlType, UrlSetterType] {
-  const { value, setter } = useContext(ProjectUrlContext)
-  if (value === defaultContextValue.value) {
-    console.debug("⚠️ Using project URL context when no URL set")
-  }
-  return [value, setter]
-}
 
 export const ProjectUrlContextProvider: React.FC<{
   children: React.ReactNode,
@@ -68,15 +46,4 @@ function sanitized(setValue: UrlSetterType): UrlSetterType {
 
     setValue(trimmedValue)
   }
-}
-
-// Sets the context value once to a constant string
-export const SetConstantProjectUrl: React.FC<{}> = ({ }) => {
-  const [_, setProjectUrl] = useProjectUrl()
-
-  useEffect(() => {
-    setProjectUrl(PROJECT_URL)
-  }, [setProjectUrl])
-
-  return null
 }

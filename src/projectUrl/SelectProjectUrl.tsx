@@ -2,8 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react"
 
-import { useProjectUrl } from "@/contexts/ProjectUrlContext"
-
+import { useProjectUrl } from "./hooks"
 import { useProjectUrlRepository } from "./repository"
 
 

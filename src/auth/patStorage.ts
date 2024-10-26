@@ -3,7 +3,7 @@
 import { useCallback } from "react"
 import { useLocalStorage } from "@uidotdev/usehooks"
 
-import { useProjectUrl } from "@/contexts/ProjectUrlContext"
+import { useProjectUrl } from "@/projectUrl"
 
 
 type PatStore = {
