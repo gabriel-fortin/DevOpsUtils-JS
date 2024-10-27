@@ -37,9 +37,9 @@ export default function App() {
 const SelectProjectCard: React.FC =
   (
   ) => {
-    const [url] = useProjectUrl()
+    const { projectUrl } = useProjectUrl()
     return (
-      <Card focus={!url}>
+      <Card focus={!projectUrl}>
         <SelectProjectUrl />
       </Card>
     )

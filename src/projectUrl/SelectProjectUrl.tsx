@@ -11,7 +11,7 @@ export const SelectProjectUrl: React.FC =
   ) => {
     const repo = useProjectUrlRepository()
     const [isAddingProject, setIsAddingProject] = useState(false)
-    const [currentProjectUrl, setProjectUrl] = useProjectUrl()
+    const { projectUrl: currentProjectUrl, setProjectUrl, removeProjectUrl } = useProjectUrl()
 
     const selectProject = (projectName: string) => () => {
       setProjectUrl(projectName)
@@ -19,7 +19,7 @@ export const SelectProjectUrl: React.FC =
 
     const removeProject = (projectName: string) => () => {
       repo.removeProject(projectName)
-      setProjectUrl("")
+      removeProjectUrl()
     }
 
     const handleLinkClick = () => {

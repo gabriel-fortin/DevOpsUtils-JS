@@ -12,7 +12,7 @@ type PatStore = {
 
 export const usePatStorage: () => [string, (_: string) => void] =
     () => {
-        const [projectUrl] = useProjectUrl()
+        const { projectUrl } = useProjectUrl()
         const [dataInStorage, saveDataToStorage] = useLocalStorage<PatStore>("pat", {})
 
         const hasInvalidOrg = projectUrl.lastIndexOf("/") < 0
@@ -37,5 +37,4 @@ export const usePatStorage: () => [string, (_: string) => void] =
         }, [dataInStorage, saveDataToStorage, orgUrl])
 
         return [pat, setPat]
-
     }
