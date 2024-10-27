@@ -4,7 +4,7 @@ import { ContextType } from "./types"
 
 
 export const defaultContextValue: ContextType = {
-  value: "",
+  value: null,
   setter: () => { console.warn("Dummy setter was used") },
 }
 

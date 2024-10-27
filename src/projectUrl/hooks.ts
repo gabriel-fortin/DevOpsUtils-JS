@@ -20,6 +20,6 @@ export function useProjectUrl(): HookReturnType {
   return {
     projectUrl: value,
     setProjectUrl: setter,
-    removeProjectUrl: () => setter(""),
+    removeProjectUrl: () => setter(null),
   }
 }

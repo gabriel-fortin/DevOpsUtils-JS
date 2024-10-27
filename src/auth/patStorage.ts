@@ -15,7 +15,7 @@ export const usePatStorage: () => [string, (_: string) => void] =
         const { projectUrl } = useProjectUrl()
         const [dataInStorage, saveDataToStorage] = useLocalStorage<PatStore>("pat", {})
 
-        const hasInvalidOrg = projectUrl.lastIndexOf("/") < 0
+        const hasInvalidOrg = !projectUrl || projectUrl.lastIndexOf("/") < 0
 
         // make a guess on the part of the URL representing the organisation
         const orgUrl = hasInvalidOrg ? undefined : projectUrl.slice(0, projectUrl.lastIndexOf("/"))

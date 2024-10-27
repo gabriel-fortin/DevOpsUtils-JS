@@ -27,6 +27,8 @@ export const SelectProjectUrl: React.FC =
     }
 
     const handleNewProjectAdded = (projectName: string) => {
+      if (!projectName || !projectName.trim()) return
+
       repo.addProject(projectName)
       setIsAddingProject(false)
     }
