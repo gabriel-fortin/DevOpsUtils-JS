@@ -3,7 +3,7 @@ import viteLogo from "/vite.svg"
 
 import { AddTasks } from "@/addingTasks"
 import { PatAuth } from "@/auth/PatAuth"
-import { PersonalAccessTokenContextProvider } from "@/contexts/PersonalAccessTokenContext"
+import { PersonalAccessTokenContextProvider, usePersonalAccessTokenValue } from "@/contexts/PersonalAccessTokenContext"
 import { ProjectUrlContextProvider, useProjectUrl, SelectProjectUrl } from "@/projectUrl"
 import { IfWorkItemIdIsSet, WorkItemIdContextProvider } from "@/contexts/WorkItemIdContext"
 import { SelectWorkItem } from "@/selectWorkItem/SelectWorkItem"
@@ -20,7 +20,7 @@ export default function App() {
           <main className="main">
             <h1>A tool for chores in DevOps projects</h1>
             <SelectProjectCard />
-            <Card render={<PatAuth />} />
+            <PatAuthCard />
             <Card render={<SelectWorkItem />} />
             <IfWorkItemIdIsSet>
               <Card render={<WorkItemAndItsChildren />} />
@@ -39,8 +39,21 @@ const SelectProjectCard: React.FC =
   ) => {
     const { projectUrl } = useProjectUrl()
     return (
-      <Card focus={!projectUrl}>
+      <Card isHighlighted={!projectUrl}>
         <SelectProjectUrl />
+      </Card>
+    )
+  }
+
+const PatAuthCard: React.FC =
+  (
+  ) => {
+    const { projectUrl } = useProjectUrl()
+    const pat = usePersonalAccessTokenValue()
+
+    return (
+      <Card isHighlighted={!!projectUrl && !pat}>
+        <PatAuth />
       </Card>
     )
   }
@@ -48,17 +61,17 @@ const SelectProjectCard: React.FC =
 const Card: React.FC<{
   children?: React.ReactNode
   render?: React.ReactNode
-  focus?: boolean
+  isHighlighted?: boolean
 }> = ({
   children,
   render: childrenToRender,
-  focus = false,
+  isHighlighted = false,
 }) => {
     return (
-      <div className={`card p-4 m-1 ${focus ? "border-1 border-accent" : "border-2 border-primary"}`}>
+      <div className={`card p-4 m-1 ${isHighlighted ? "border-1 border-accent" : "border-2 border-primary"}`}>
         {childrenToRender}
         {children}
-        {focus && <span className="absolute left-0.5 top-4 bottom-4 rounded-sm bg-accent w-0.5 animate-pulse"></span>}
+        {isHighlighted && <span className="absolute left-0.5 top-4 bottom-4 rounded-sm bg-accent w-0.5 animate-pulse"></span>}
       </div>
     )
   }
