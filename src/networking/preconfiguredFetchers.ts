@@ -10,7 +10,8 @@ import { projectUrlMiddleware, apiVersionMiddleware } from "@/networking/middlew
  */
 export function usePreconfiguredComposableFetcher(): ReturnType<typeof useBasicComposableFetcher> {
     const pat = usePersonalAccessTokenValue()
-    const {projectUrl} = useProjectUrl()
+    const { projectUrl } = useProjectUrl()
+
     return useBasicComposableFetcher()
         .with(projectUrlMiddleware(projectUrl))
         .with(apiVersionMiddleware())
@@ -22,7 +23,8 @@ export function usePreconfiguredComposableFetcher(): ReturnType<typeof useBasicC
  * This version is merely without the auth middleware.
  */
 export function useNoAuthPreconfiguredComposableFetcher(): ReturnType<typeof useBasicComposableFetcher> {
-    const {projectUrl} = useProjectUrl()
+    const { projectUrl } = useProjectUrl()
+
     return useBasicComposableFetcher()
         .with(projectUrlMiddleware(projectUrl), projectUrl)
         .with(apiVersionMiddleware())

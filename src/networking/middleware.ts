@@ -33,10 +33,10 @@ export const projectUrlMiddleware: <T> (
 ) => Middleware<T, T> =
     (projectUrl) =>
         (key, options, next) => {
-            if (!projectUrl){
-                throw new Error("Project URL middleware: project URL is not set; cannot build a full URL")
+            if (!projectUrl) {
+                throw new Error(`${projectUrlMiddleware.name}: project URL is not set'`)
             }
-            
+        
             const [localUrl, ...rest] = key
             const fullUrl = `${projectUrl}/${localUrl}`
             const newKey: FetcherKey = [fullUrl, ...rest]
