@@ -13,7 +13,7 @@ export function usePreconfiguredComposableFetcher(): ReturnType<typeof useBasicC
     const { projectUrl } = useProjectUrl()
 
     return useBasicComposableFetcher()
-        .with(projectUrlMiddleware(projectUrl))
+        .with(projectUrlMiddleware(projectUrl), projectUrl)
         .with(apiVersionMiddleware())
         .with(patAuthMiddleware(pat))
 }
