@@ -1,5 +1,4 @@
 
-import { PROJECT_URL } from "@/config"
 import { WORK_ITEMS_URL } from "@/networking/constants"
 import { Middleware } from "@/networking/fetcher"
 
@@ -9,10 +8,15 @@ import { Task } from "./task"
 export const addTaskMiddleware: <T> (
     workItemId: number,
     task: Task,
+    projectUrl: string | null,
 ) => Middleware<T, T> =
-    (workItemId, task) =>
+    (workItemId, task, projectUrl) =>
         async (key, options, next) => {
-            const payload = preparePostData(workItemId, task)
+            if (!projectUrl) {
+                throw new Error(`${addTaskMiddleware.name}: project URL is not set'`)
+            }
+        
+            const payload = preparePostData(workItemId, task, projectUrl)
             const augmentedOptions = {
                 ...options,
                 headers: {
@@ -25,7 +29,7 @@ export const addTaskMiddleware: <T> (
             return next(key, augmentedOptions)
         }
 
-function preparePostData(workItemId: number, task: Task) {
+function preparePostData(workItemId: number, task: Task, projectUrl: string) {
     return [
         {
             op: "add",
@@ -39,7 +43,7 @@ function preparePostData(workItemId: number, task: Task) {
             from: null,
             value: {
                 rel: "System.LinkTypes.Hierarchy-Reverse",
-                url: `${PROJECT_URL}/${WORK_ITEMS_URL}/${workItemId}`,
+                url: `${projectUrl}/${WORK_ITEMS_URL}/${workItemId}`,
             },
         },
     ]
