@@ -37,8 +37,11 @@ export const PatAuth: React.FC<{
     useEffect(() => {
       if (isAutoLoad) {
         setCurrentPatInput(patInStorage)
+        if (!patInStorage) {
+          setPat("")
+        }
       }
-    }, [isAutoLoad, patInStorage])
+    }, [isAutoLoad, patInStorage, setPat])
 
     const onPatInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
       const newPat = e.target.value
