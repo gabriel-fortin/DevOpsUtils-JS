@@ -1,6 +1,6 @@
 import { patAuthMiddleware } from "@/auth/middleware"
 import { usePersonalAccessTokenValue } from "@/contexts/PersonalAccessTokenContext"
-import { useProjectUrl } from "@/projectUrl"
+import { useProjectUrl } from "@/selectProjectUrl"
 import { useBasicComposableFetcher } from "@/networking/fetcher"
 import { projectUrlMiddleware, apiVersionMiddleware } from "@/networking/middleware"
 

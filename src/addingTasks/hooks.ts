@@ -3,7 +3,7 @@ import useSWRMutation from "swr/mutation"
 import { usePreconfiguredComposableFetcher } from "@/networking/preconfiguredFetchers"
 import { WORK_ITEMS_URL } from "@/networking/constants"
 import { FetcherUrl } from "@/networking/fetcher"
-import { useProjectUrl } from "@/projectUrl"
+import { useProjectUrl } from "@/selectProjectUrl"
 
 import { addTaskMiddleware } from "./middleware"
 import { Task } from "./task"
