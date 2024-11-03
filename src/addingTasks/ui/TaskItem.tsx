@@ -1,7 +1,6 @@
 "use client"
 
-import EventEmitter from "events"
-import React, { CSSProperties, FC, useCallback, useEffect, useState } from "react"
+import { CSSProperties, FC, useCallback, useEffect, useState } from "react"
 
 import { useFetchWorkItem } from "@/showWorkItems/hooks"
 
@@ -14,7 +13,7 @@ import styles from "./AddTasks.module.css"
 export const TaskItem: FC<{
   parentWorkItemId: number
   task: Task
-  events: EventEmitter
+  events: EventTarget
 }> = ({
   parentWorkItemId,
   task,
@@ -42,9 +41,9 @@ export const TaskItem: FC<{
     }, [isChecked, refreshParent, triggerAddingTask])
 
     useEffect(() => {
-      events.on(REQUESTED_ADDING_TASKS_TO_WORK_ITEM, addTaskToDevOps)
+      events.addEventListener(REQUESTED_ADDING_TASKS_TO_WORK_ITEM, addTaskToDevOps)
       return () => {
-        events.off(REQUESTED_ADDING_TASKS_TO_WORK_ITEM, addTaskToDevOps)
+        events.removeEventListener(REQUESTED_ADDING_TASKS_TO_WORK_ITEM, addTaskToDevOps)
       }
     }, [events, addTaskToDevOps])
 

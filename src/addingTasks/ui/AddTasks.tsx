@@ -1,7 +1,6 @@
 "use client"
 
-import EventEmitter from "events"
-import React, { CSSProperties, FC, useMemo, useState } from "react"
+import { CSSProperties, FC, useMemo, useState } from "react"
 
 import { useWorkItemIdValue } from "@/contexts/WorkItemIdContext"
 
@@ -15,8 +14,7 @@ export const REQUESTED_ADDING_TASKS_TO_WORK_ITEM = "requested adding tasks to wo
 export function AddTasks() {
   const [tasks] = useState<Task[]>(createFreshTasksList)
 
-  const emitter = useMemo(() => new EventEmitter(), [])
-  emitter.setMaxListeners(tasks.length)
+  const emitter = useMemo(() => new EventTarget(), [])
 
   const specialTasks = tasks.filter(x => x.group === "special")
   const presentationLayerTasks = tasks.filter(x => x.group === "Presentation")
@@ -55,14 +53,14 @@ export function AddTasks() {
 }
 
 const Button: FC<{
-  events: EventEmitter
+  events: EventTarget
 }> = ({
   events,
 }) => {
     const workItemId = useWorkItemIdValue()
 
     const addTasksToWorkItem = () => {
-      events.emit(REQUESTED_ADDING_TASKS_TO_WORK_ITEM)
+      events.dispatchEvent(new Event(REQUESTED_ADDING_TASKS_TO_WORK_ITEM))
     }
 
     const buttonStyle: CSSProperties = { marginTop: "1em" }

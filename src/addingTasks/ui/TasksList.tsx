@@ -1,5 +1,4 @@
 import { FC } from "react"
-import EventEmitter from "events"
 
 import { useWorkItemIdValue } from "@/contexts/WorkItemIdContext"
 
@@ -9,7 +8,7 @@ import { Task } from "../task"
 
 export const TasksList: FC<{
     tasks: Task[]
-    events: EventEmitter
+    events: EventTarget
   }> = ({
     tasks,
     events,
