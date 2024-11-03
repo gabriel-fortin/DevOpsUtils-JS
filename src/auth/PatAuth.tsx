@@ -7,9 +7,9 @@ import { usePatStorage } from "./patStorage"
 import { usePersonalAccessTokenSetter } from "@/contexts/PersonalAccessTokenContext"
 
 
-export const PatAuth: React.FC<{
-}> = ({
-}) => {
+export const PatAuth: React.FC =
+  (
+  ) => {
     // internal things
     const [currentPatInput, setCurrentPatInput] = useState("")
     const [state, setState] = useState<"EMPTY" | "FETCHING" | "YES" | "NOPE">("EMPTY")
@@ -17,7 +17,7 @@ export const PatAuth: React.FC<{
 
     // external things
     const [patInStorage, savePatToStorage] = usePatStorage()
-    const setPat = usePersonalAccessTokenSetter()
+    const sendPatToTheRestOfTheApp = usePersonalAccessTokenSetter()
     const { data: response, isLoading } = useAnyCallUsingPat(currentPatInput)
 
     useEffect(() => {
@@ -26,22 +26,22 @@ export const PatAuth: React.FC<{
       } else if (!currentPatInput) {
         setState("EMPTY")
       } else if (response?.status === 200) {
-        setPat(currentPatInput)
+        sendPatToTheRestOfTheApp(currentPatInput)
         setState("YES")
-      } else {
-        setPat("")
+      } else { // Pat entered but its validation failed
+        sendPatToTheRestOfTheApp("")
         setState("NOPE")
       }
-    }, [isLoading, setPat, currentPatInput, response])
+    }, [isLoading, sendPatToTheRestOfTheApp, currentPatInput, response])
 
     useEffect(() => {
       if (isAutoLoad) {
         setCurrentPatInput(patInStorage)
         if (!patInStorage) {
-          setPat("")
+          sendPatToTheRestOfTheApp("")
         }
       }
-    }, [isAutoLoad, patInStorage, setPat])
+    }, [isAutoLoad, patInStorage, sendPatToTheRestOfTheApp])
 
     const onPatInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
       const newPat = e.target.value
@@ -62,31 +62,68 @@ export const PatAuth: React.FC<{
       setIsAutoLoad(!isAutoLoad)
     }
 
-    const spaced = { margin: "0.5em 0", display: "flex", gap: "0.5em" }
-    const save = { visibility: currentPatInput ? "initial" : "hidden" as React.CSSProperties["visibility"] }
-    const load = { visibility: patInStorage ? "initial" : "hidden" as React.CSSProperties["visibility"] }
+    const [bagdeText, bagdeClass] = {
+      "EMPTY": ["not entered yet", "badge-accent badge-outline"],
+      "FETCHING": ["checking", "bagde-info animate-bounce"],
+      "NOPE": ["failure", "bagde-error"],
+      "YES": ["confirmed", "badge-success"],
+    }[state]
 
     return (
-      <>
-        <h2>Authentication / authorisation</h2>
-        <div style={spaced}>
-          <input checked={isAutoLoad} onChange={toggleAutoLoad} id="patAutoLoad" type="checkbox"></input>
+      <div className="flex flex-col gap-3">
+
+        <h2 className="text-xl">
+          Authentication / authorisation
+        </h2>
+
+        {/* PAT entry input field */}
+        <div className="flex gap-2 items-center">
+          <label className="w-[28em] flex items-center gap-3 input input-md bg-base-300 justify-self-center">
+            <span className={`pr-3 ${currentPatInput && "border-r" || "border-r-2 border-accent"}`}>
+              PAT
+            </span>
+            <input value={currentPatInput} onChange={onPatInputChange}
+              placeholder="Personal Access Token"
+              className="grow text-ellipsis min-w-14"
+            />
+            <span className={`ml-4 -mr-1 px-2 py-0.5 text-sm rounded bagde ${bagdeClass}`}>
+              {bagdeText}
+            </span>
+          </label>
+        </div>
+
+        {/* checkbox for auto-loading PAT */}
+        <div className="flex gap-2">
+          <input checked={isAutoLoad} onChange={toggleAutoLoad} id="patAutoLoad" type="checkbox"
+            className="checkbox checkbox-primary"
+          />
           <label htmlFor="patAutoLoad">
             Load PAT automatically (if previously saved)
           </label>
         </div>
-        <div style={spaced}>
-          <div style={{ alignSelf: "center" }}>PAT: </div>
-          <input value={currentPatInput} onChange={onPatInputChange} />
-          <button onClick={savePat} style={save}>Save to local storage</button>
+
+        {/* buttons for loading/saving PAT */}
+        <div className="flex gap-2">
+          <button onClick={savePat} title="Save to local storage"
+            className={`btn btn-xs pb-5 ${!currentPatInput && "invisible"}`}
+          >
+            Save to local storage
+          </button>
+          <button onClick={loadPat} title="Load from local storage"
+            className={`btn btn-xs pb-5 ${!patInStorage && "invisible"}`}
+          >
+            Load from local storage
+          </button>
         </div>
-        <div style={spaced}>
-          <button onClick={loadPat} style={load}>Load from local storage</button>
+
+        {/* PAT status line */}
+        <div className="self-center mt-2">
+          {state === "EMPTY" && "👆 Enter Personal Access Token"}
+          {state === "FETCHING" && "❔ Checking the PAT"}
+          {state === "NOPE" && "❌ PAT check failure. It might be incorrect for the current project, not have the required access or there was a network problem"}
+          {state === "YES" && "✔️ PAT successfully checked"}
         </div>
-        {state === "EMPTY" && "👆 Enter Personal Access Token"}
-        {state === "FETCHING" && "❔ Checking the PAT"}
-        {state === "NOPE" && "❌ PAT check failure. It might be incorrect for the current project, not have the required access or there was a network problem"}
-        {state === "YES" && "✔️ PAT successfully checked"}
-      </>
+
+      </div>
     )
   }
