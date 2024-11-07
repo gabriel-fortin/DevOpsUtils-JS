@@ -5,7 +5,7 @@ import { AddTasks } from "@/addingTasks"
 import { PatAuth } from "@/auth/PatAuth"
 import { PersonalAccessTokenContextProvider, usePersonalAccessTokenValue } from "@/contexts/PersonalAccessTokenContext"
 import { ProjectUrlContextProvider, useProjectUrl, SelectProjectUrl } from "@/selectProjectUrl"
-import { IfWorkItemIdIsSet, WorkItemIdContextProvider } from "@/contexts/WorkItemIdContext"
+import { IfWorkItemIdIsSet, useWorkItemIdValue, WorkItemIdContextProvider } from "@/contexts/WorkItemIdContext"
 import { SelectWorkItem } from "@/selectWorkItem/SelectWorkItem"
 import { WorkItemAndItsChildren } from "@/showWorkItems/WorkItemAndItsChildren"
 
@@ -21,7 +21,7 @@ export default function App() {
             <h1>A tool for chores in DevOps projects</h1>
             <SelectProjectCard />
             <PatAuthCard />
-            <Card render={<SelectWorkItem />} />
+            <SelectWorkItemCard />
             <IfWorkItemIdIsSet>
               <Card render={<WorkItemAndItsChildren />} />
               <Card render={<AddTasks />} />
@@ -35,8 +35,7 @@ export default function App() {
 }
 
 const SelectProjectCard: React.FC =
-  (
-  ) => {
+  () => {
     const { projectUrl } = useProjectUrl()
     return (
       <Card isHighlighted={!projectUrl}>
@@ -46,14 +45,32 @@ const SelectProjectCard: React.FC =
   }
 
 const PatAuthCard: React.FC =
-  (
-  ) => {
+  () => {
     const { projectUrl } = useProjectUrl()
     const pat = usePersonalAccessTokenValue()
 
     return (
       <Card isHighlighted={!!projectUrl && !pat}>
         <PatAuth />
+      </Card>
+    )
+  }
+
+const SelectWorkItemCard: React.FC =
+  () => {
+    const { projectUrl } = useProjectUrl()
+    const pat = usePersonalAccessTokenValue()
+    const workItemId = useWorkItemIdValue()
+    
+    const requiresAttention = !!projectUrl && !!pat && !workItemId
+    console.log("🚀 ~ projectUrl:", projectUrl)
+    console.log("🚀 ~ pat:", pat)
+    console.log("🚀 ~ workItemId:", workItemId)
+    console.log("🚀 ~ requiresAttention:", requiresAttention)
+
+    return (
+      <Card isHighlighted={requiresAttention}>
+        <SelectWorkItem />
       </Card>
     )
   }
