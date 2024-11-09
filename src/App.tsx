@@ -21,11 +21,19 @@ export default function App() {
             <h1>A tool for chores in DevOps projects</h1>
             <SelectProjectCard />
             <PatAuthCard />
-            <SelectWorkItemCard />
-            <IfWorkItemIdIsSet>
-              <Card render={<WorkItemAndItsChildren />} />
-              <Card render={<AddTasks />} />
-            </IfWorkItemIdIsSet>
+            <div className="flex gap-8">
+              <div className="grow">
+                <SelectWorkItemCard />
+                <IfWorkItemIdIsSet>
+                  <Card render={<AddTasks />} />
+                </IfWorkItemIdIsSet>
+              </div>
+              <div className="grow">
+                <IfWorkItemIdIsSet>
+                  <Card render={<WorkItemAndItsChildren />} />
+                </IfWorkItemIdIsSet>
+              </div>
+            </div>
           </main>
           <Logos />
         </WorkItemIdContextProvider>

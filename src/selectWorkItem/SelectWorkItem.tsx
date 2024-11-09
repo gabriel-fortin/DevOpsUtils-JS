@@ -45,11 +45,11 @@ export const SelectWorkItem: FC =
     if (selectingIsProbablyWhatUserNeedsToDo) buttonStateClass = "btn-accent"
 
     return (
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 min-w-80">
         <h2 className="ml-1 text-xl">
           Select a work item
         </h2>
-        <div className="input input-bordered w-48 flex items-center pr-0">
+        <div className="input input-bordered w-40 flex items-center pr-0">
           <input className="grow min-w-0"
             placeholder="work item id"
             onChange={enteredValueChanged}
