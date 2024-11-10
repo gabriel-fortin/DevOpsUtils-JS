@@ -24,14 +24,10 @@ export default function App() {
             <div className="flex gap-8">
               <div className="grow">
                 <SelectWorkItemCard />
-                <IfWorkItemIdIsSet>
-                  <Card render={<AddTasks />} />
-                </IfWorkItemIdIsSet>
+                <AddTasksCard />
               </div>
               <div className="grow">
-                <IfWorkItemIdIsSet>
-                  <Card render={<WorkItemAndItsChildren />} />
-                </IfWorkItemIdIsSet>
+                <WorkItemAndItsChildrenCard />
               </div>
             </div>
           </main>
@@ -80,6 +76,28 @@ const SelectWorkItemCard: React.FC =
       <Card isHighlighted={requiresAttention}>
         <SelectWorkItem />
       </Card>
+    )
+  }
+
+const AddTasksCard: React.FC =
+  () => {
+    return (
+      <IfWorkItemIdIsSet>
+        <Card>
+          <AddTasks />
+        </Card>
+      </IfWorkItemIdIsSet>
+    )
+  }
+
+const WorkItemAndItsChildrenCard: React.FC =
+  () => {
+    return (
+      <IfWorkItemIdIsSet>
+        <Card>
+          <WorkItemAndItsChildren />
+        </Card>
+      </IfWorkItemIdIsSet>
     )
   }
 
