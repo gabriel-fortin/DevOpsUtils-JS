@@ -63,22 +63,22 @@ export const PatAuth: React.FC =
     }
 
     const [bagdeText, bagdeClass] = {
-      "EMPTY": ["not entered yet", "badge-accent badge-outline"],
+      "EMPTY": ["not entered yet", "badge-primary-content"],
       "FETCHING": ["checking", "bagde-info animate-bounce"],
-      "NOPE": ["failure", "bagde-error"],
-      "YES": ["confirmed", "badge-success"],
+      "NOPE": ["failure", "bagde-error badge-outline border"],
+      "YES": ["confirmed", "badge-success badge-outline border"],
     }[state]
 
     return (
       <div className="flex flex-col gap-3">
 
-        <h2 className="text-xl">
+        <h2 className="ml-1 text-xl">
           Authentication / authorisation
         </h2>
 
         {/* PAT entry input field */}
         <div className="flex gap-2 items-center">
-          <label className="w-[28em] flex items-center gap-3 input input-md bg-base-300 justify-self-center">
+          <label className="w-[28em] flex items-center gap-3 input justify-self-center">
             <span className={`pr-3 ${currentPatInput && "border-r" || "border-r-2 border-accent"}`}>
               PAT
             </span>

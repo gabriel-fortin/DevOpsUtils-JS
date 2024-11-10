@@ -22,7 +22,7 @@ export default function App() {
             <SelectProjectCard />
             <PatAuthCard />
             <div className="flex gap-8">
-              <div className="grow">
+              <div className="grow flex flex-col gap-8">
                 <SelectWorkItemCard />
                 <AddTasksCard />
               </div>
@@ -65,7 +65,7 @@ const SelectWorkItemCard: React.FC =
     const { projectUrl } = useProjectUrl()
     const pat = usePersonalAccessTokenValue()
     const workItemId = useWorkItemIdValue()
-    
+
     const requiresAttention = !!projectUrl && !!pat && !workItemId
     console.log("🚀 ~ projectUrl:", projectUrl)
     console.log("🚀 ~ pat:", pat)

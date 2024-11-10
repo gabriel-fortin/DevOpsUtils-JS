@@ -51,7 +51,7 @@ export const SelectWorkItem: FC =
         </h2>
         <div className="input input-bordered w-40 flex items-center pr-0">
           <input className="grow min-w-0"
-            placeholder="work item id"
+            placeholder="id"
             onChange={enteredValueChanged}
             onKeyDown={keyDown}
           />
