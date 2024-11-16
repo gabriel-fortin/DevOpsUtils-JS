@@ -3,7 +3,7 @@ import viteLogo from "/vite.svg"
 
 import { AddTasks } from "@/addingTasks"
 import { PatAuth } from "@/auth/PatAuth"
-import { PersonalAccessTokenContextProvider, usePersonalAccessTokenValue } from "@/contexts/PersonalAccessTokenContext"
+import { PersonalAccessTokenContextProvider, usePersonalAccessToken } from "@/contexts/PersonalAccessTokenContext"
 import { ProjectUrlContextProvider, useProjectUrl, SelectProjectUrl } from "@/selectProjectUrl"
 import { IfWorkItemIdIsSet, useWorkItemIdValue, WorkItemIdContextProvider } from "@/contexts/WorkItemIdContext"
 import { SelectWorkItem } from "@/selectWorkItem/SelectWorkItem"
@@ -51,10 +51,10 @@ const SelectProjectCard: React.FC =
 const PatAuthCard: React.FC =
   () => {
     const { projectUrl } = useProjectUrl()
-    const pat = usePersonalAccessTokenValue()
+    const { patValue } = usePersonalAccessToken()
 
     return (
-      <Card isHighlighted={!!projectUrl && !pat}>
+      <Card isHighlighted={!!projectUrl && !patValue}>
         <PatAuth />
       </Card>
     )
@@ -63,14 +63,10 @@ const PatAuthCard: React.FC =
 const SelectWorkItemCard: React.FC =
   () => {
     const { projectUrl } = useProjectUrl()
-    const pat = usePersonalAccessTokenValue()
+    const { patValue } = usePersonalAccessToken()
     const workItemId = useWorkItemIdValue()
 
-    const requiresAttention = !!projectUrl && !!pat && !workItemId
-    console.log("🚀 ~ projectUrl:", projectUrl)
-    console.log("🚀 ~ pat:", pat)
-    console.log("🚀 ~ workItemId:", workItemId)
-    console.log("🚀 ~ requiresAttention:", requiresAttention)
+    const requiresAttention = !!projectUrl && !!patValue && !workItemId
 
     return (
       <Card isHighlighted={requiresAttention}>

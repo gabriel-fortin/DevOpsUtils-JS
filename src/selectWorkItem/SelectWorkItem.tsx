@@ -3,7 +3,7 @@
 import React, { FC, useEffect, useState } from "react"
 
 import { useWorkItemIdSetter, useWorkItemIdValue } from "@/contexts/WorkItemIdContext"
-import { usePersonalAccessTokenValue } from "@/contexts/PersonalAccessTokenContext"
+import { usePersonalAccessToken } from "@/contexts/PersonalAccessTokenContext"
 import { useProjectUrl } from "@/selectProjectUrl"
 
 
@@ -17,7 +17,7 @@ export const SelectWorkItem: FC =
     const setWorkItemId = useWorkItemIdSetter()
     const workItemId = useWorkItemIdValue()
     const { projectUrl } = useProjectUrl()
-    const pat = usePersonalAccessTokenValue()
+    const {patValue} = usePersonalAccessToken()
 
     useEffect(() => {
       setIsFirstInteraction(x => x && !workItemId)
@@ -38,7 +38,7 @@ export const SelectWorkItem: FC =
       }
     }
 
-    const selectingIsProbablyWhatUserNeedsToDo = projectUrl && pat && !workItemId && userValue
+    const selectingIsProbablyWhatUserNeedsToDo = projectUrl && patValue && !workItemId && userValue
     let buttonStateClass: string = "hidden"
     if (userValue || !isFirstInteraction) buttonStateClass = "btn-secondary"
     if (userValue === workItemId) buttonStateClass += " btn-outline"

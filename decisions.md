@@ -26,4 +26,13 @@ Imports in a file are sorted into the following groups:
 - imports from other files in the component/feature, those should be in the 
 same directory
 
+**Contexts**
+Contexts will have a shape similar to the below:
+```
+{
+  value: ValueType
+  setter: (_:VaueType) => void
+}
+```
+Field names are encouraged to be function-specific.
 

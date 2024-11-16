@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react"
 
 import { useAnyCallUsingPat } from "./hooks"
 import { usePatStorage } from "./patStorage"
-import { usePersonalAccessTokenSetter } from "@/contexts/PersonalAccessTokenContext"
+import { usePersonalAccessToken } from "@/contexts/PersonalAccessTokenContext"
 
 
 export const PatAuth: React.FC =
@@ -17,7 +17,7 @@ export const PatAuth: React.FC =
 
     // external things
     const [patInStorage, savePatToStorage] = usePatStorage()
-    const sendPatToTheRestOfTheApp = usePersonalAccessTokenSetter()
+    const { patSetter: sendPatToTheRestOfTheApp } = usePersonalAccessToken()
     const { data: response, isLoading } = useAnyCallUsingPat(currentPatInput)
 
     useEffect(() => {
