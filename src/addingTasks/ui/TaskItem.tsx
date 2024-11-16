@@ -1,13 +1,12 @@
 "use client"
 
-import { CSSProperties, FC, useCallback, useEffect, useState } from "react"
+import { FC, useCallback, useEffect, useState } from "react"
 
 import { useFetchWorkItem } from "@/showWorkItems/hooks"
 
 import { useAddTaskToWorkItem } from "../hooks"
 import { Task } from "../task"
 import { REQUESTED_ADDING_TASKS_TO_WORK_ITEM } from "./AddTasks"
-import styles from "./AddTasks.module.css"
 
 
 export const TaskItem: FC<{
@@ -28,7 +27,7 @@ export const TaskItem: FC<{
     const toggleTask = useCallback(() => setIsChecked(x => !x), [])
 
     const addTaskToDevOps = useCallback(() => {
-      // do nothing is task was not selected
+      // do nothing if task was not selected
       if (!isChecked) return
 
       triggerAddingTask()
@@ -65,24 +64,21 @@ const TaskItemUi: FC<{
   task,
   toggleChecked,
 }) => {
-    const labelStyle: CSSProperties = { display: "block", marginTop: "0.1em" }
-    const checkboxStyle: CSSProperties = { marginRight: "0.5em" }
-    const progressStyle: CSSProperties = {
-      margin: "0 0.78em 0 0.25em",
-      transform: "none", // cancel a transform that is defined in the global style
-    }
-
     return (
-      <label style={labelStyle}>
+      <label className="block mt-1">
         {isHttpRequestOngoing
-          ? <span style={progressStyle} className={styles.spinAnimation}>I</span>
+          ? <span className="loading loading-ring mr-1">.</span>
           :
           <input type="checkbox"
+            className="border-2 align-bottom mr-2 checkbox checkbox-sm checkbox-primary checked:checkbox-secondary"
             value={task.name}
             checked={task.isChecked}
             onChange={toggleChecked}
-            style={checkboxStyle} />}
-        {task.getTitle()}
+          />
+        }
+        <span className="">
+          {task.getTitle()}
+        </span>
       </label>
     )
   }

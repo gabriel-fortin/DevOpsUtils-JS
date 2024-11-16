@@ -22,7 +22,7 @@ export default function App() {
             <SelectProjectCard />
             <PatAuthCard />
             <div className="flex gap-8">
-              <div className="grow flex flex-col gap-8">
+              <div className="grow flex flex-col gap-8 max-w-[30em]">
                 <SelectWorkItemCard />
                 <AddTasksCard />
               </div>
@@ -84,7 +84,9 @@ const AddTasksCard: React.FC =
     return (
       <IfWorkItemIdIsSet>
         <Card>
+          <div className="-my-3">
           <AddTasks />
+          </div>
         </Card>
       </IfWorkItemIdIsSet>
     )
