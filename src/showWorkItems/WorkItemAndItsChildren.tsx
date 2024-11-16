@@ -80,8 +80,7 @@ const ChildItem: React.FC<{
   workItemId: childWorkItemId,
 }) => {
     return (
-      <div className="list-item text-xl my-3 ml-5 pl-1"
-        style={{ listStyleType: "'⇘ '" }}
+      <div className="list-item text-xl my-3 ml-4 pl-3 [list-style-type:'⇘']"
         key={childWorkItemId}
       >
         <div className="text-base">
