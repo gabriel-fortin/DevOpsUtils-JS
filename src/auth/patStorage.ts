@@ -3,7 +3,7 @@
 import { useCallback } from "react"
 import { useLocalStorage } from "@uidotdev/usehooks"
 
-import { useProjectUrl } from "@/contexts/ProjectUrlContext"
+import { useProjectUrl } from "@/selectProjectUrl"
 
 
 type PatStore = {
@@ -12,10 +12,10 @@ type PatStore = {
 
 export const usePatStorage: () => [string, (_: string) => void] =
     () => {
-        const [projectUrl] = useProjectUrl()
+        const { projectUrl } = useProjectUrl()
         const [dataInStorage, saveDataToStorage] = useLocalStorage<PatStore>("pat", {})
 
-        const hasInvalidOrg = projectUrl.lastIndexOf("/") < 0
+        const hasInvalidOrg = !projectUrl || projectUrl.lastIndexOf("/") < 0
 
         // make a guess on the part of the URL representing the organisation
         const orgUrl = hasInvalidOrg ? undefined : projectUrl.slice(0, projectUrl.lastIndexOf("/"))
@@ -37,5 +37,4 @@ export const usePatStorage: () => [string, (_: string) => void] =
         }, [dataInStorage, saveDataToStorage, orgUrl])
 
         return [pat, setPat]
-
     }

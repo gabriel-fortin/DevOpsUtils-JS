@@ -29,10 +29,14 @@ export const delayMiddleware: (
         }
 
 export const projectUrlMiddleware: <T> (
-    projectUrl: string
+    projectUrl: string | null
 ) => Middleware<T, T> =
     (projectUrl) =>
         (key, options, next) => {
+            if (!projectUrl) {
+                throw new Error(`${projectUrlMiddleware.name}: project URL is not set'`)
+            }
+        
             const [localUrl, ...rest] = key
             const fullUrl = `${projectUrl}/${localUrl}`
             const newKey: FetcherKey = [fullUrl, ...rest]

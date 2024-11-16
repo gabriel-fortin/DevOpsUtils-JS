@@ -1,6 +1,6 @@
 import { patAuthMiddleware } from "@/auth/middleware"
 import { usePersonalAccessTokenValue } from "@/contexts/PersonalAccessTokenContext"
-import { useProjectUrl } from "@/contexts/ProjectUrlContext"
+import { useProjectUrl } from "@/selectProjectUrl"
 import { useBasicComposableFetcher } from "@/networking/fetcher"
 import { projectUrlMiddleware, apiVersionMiddleware } from "@/networking/middleware"
 
@@ -10,9 +10,10 @@ import { projectUrlMiddleware, apiVersionMiddleware } from "@/networking/middlew
  */
 export function usePreconfiguredComposableFetcher(): ReturnType<typeof useBasicComposableFetcher> {
     const pat = usePersonalAccessTokenValue()
-    const [projectUrl] = useProjectUrl()
+    const { projectUrl } = useProjectUrl()
+
     return useBasicComposableFetcher()
-        .with(projectUrlMiddleware(projectUrl))
+        .with(projectUrlMiddleware(projectUrl), projectUrl)
         .with(apiVersionMiddleware())
         .with(patAuthMiddleware(pat))
 }
@@ -22,7 +23,8 @@ export function usePreconfiguredComposableFetcher(): ReturnType<typeof useBasicC
  * This version is merely without the auth middleware.
  */
 export function useNoAuthPreconfiguredComposableFetcher(): ReturnType<typeof useBasicComposableFetcher> {
-    const [projectUrl] = useProjectUrl()
+    const { projectUrl } = useProjectUrl()
+
     return useBasicComposableFetcher()
         .with(projectUrlMiddleware(projectUrl), projectUrl)
         .with(apiVersionMiddleware())

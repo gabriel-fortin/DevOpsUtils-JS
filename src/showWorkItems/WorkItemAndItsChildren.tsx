@@ -4,16 +4,21 @@ import React from "react"
 
 import { DisplayWorkItem } from "./DisplayWorkItem"
 import { useFetchWorkItem } from "./hooks"
-import { WorkItemDto, extractWorkItemId } from "./WorkItemDto"
+import { getChildrenIds, getParentId } from "./WorkItemDto"
 import { useWorkItemIdValue } from "@/contexts/WorkItemIdContext"
 
 
-export const WorkItemAndItsChildren: React.FC<{
-}> = ({
-}) => {
+const itemTextColor = "text-primary-content/70"
+const currentItemTextColor = "text-primary-content"
+
+export const WorkItemAndItsChildren: React.FC =
+  () => {
     const workItemId = useWorkItemIdValue()
     if (workItemId == null) return
-    return WorkItemAndItsChildrenInternal({ workItemId })
+
+    return (
+      <WorkItemAndItsChildrenInternal workItemId={workItemId} />
+    )
   }
 
 const WorkItemAndItsChildrenInternal: React.FC<{
@@ -27,63 +32,60 @@ const WorkItemAndItsChildrenInternal: React.FC<{
 
     /*  arrows   ↓↯↧⇓⇣⇩▼▽    ↘⇘   ⇒⇨⇾  */
 
-    const overallStyle = {
-      color: "grey",
-    }
-    const listItem = {
-      display: "list-item",
-      margin: "0.5em 0 0.5em 1.4em",
-      listStyleType: "'⇘ '",
-      fontSize: "1.2rem",
-    }
-    const parentingSymbol = {
-      margin: "0.0em 0.0em 0.3em",
-      fontSize: "1.2rem",
-    }
-    const mainItem = {
-      color: "white",
-    }
-
     return (
-      <div style={overallStyle}>
-        {parentWorkItemId &&
-          <>
-            <DisplayWorkItem workItemId={parentWorkItemId} />
-            <div style={parentingSymbol}>
-              ⇓
-            </div>
-          </>
-        }
-        <DisplayWorkItem workItemId={workItemId} style={mainItem} />
-        {childrenWorkItemsIds
-          .map(id =>
-            <div style={listItem} key={id}>
-              <DisplayWorkItem workItemId={id} />
-            </div>
-          )}
+      <div className={`mx-4 ${itemTextColor}`}>
+        {parentWorkItemId && <ParentItem workItemId={parentWorkItemId} />}
+        <CurrentItem workItemId={workItemId} />
+        {childrenWorkItemsIds.map(id => <ChildItem workItemId={id} />)}
       </div>
     )
   }
 
-function getParentId(workItemDto?: WorkItemDto): number | null {
-  const parentUrl = workItemDto
-    ?.relations
-    ?.find(x => x.rel === "System.LinkTypes.Hierarchy-Reverse")
-    ?.url
+const ParentItem: React.FC<{
+  workItemId: number
+}> = ({
+  workItemId: parentWorkItemId,
+}) => {
+    return (
+      <>
+        <div className="-mx-0.5">
+          <DisplayWorkItem workItemId={parentWorkItemId} />
+        </div>
+        <div className="mb-1 text-xl">
+          ⇓
+        </div>
+      </>
+    )
+  }
 
-  if (!parentUrl) return null
-  return extractWorkItemId(parentUrl)
-}
+const CurrentItem: React.FC<{
+  workItemId: number
+}> = ({
+  workItemId,
+}) => {
+    const border = "border border-secondary rounded-lg"
+    const spacing = "pl-3 pr-4 py-2 -mx-4"
+    const shadow = "" //"shadow-md shadow-secondary/10"
 
-function getChildrenIds(workItemDto?: WorkItemDto): number[] {
-  const maybeIds: (number | null)[] | undefined =
-    workItemDto
-      ?.relations
-      ?.filter(x => x.rel === "System.LinkTypes.Hierarchy-Forward")
-      .map(x => extractWorkItemId(x.url))
-  return omitFalsyValues(maybeIds ?? [])
-}
+    return (
+      <div className={`w-fit ${border} ${spacing} ${shadow} ${currentItemTextColor}`}>
+        <DisplayWorkItem workItemId={workItemId} />
+      </div>
+    )
+  }
 
-function omitFalsyValues<T>(arg: (T | null | undefined)[]): T[] {
-  return arg.filter(x => !!x) as T[]
-}
+const ChildItem: React.FC<{
+  workItemId: number
+}> = ({
+  workItemId: childWorkItemId,
+}) => {
+    return (
+      <div className="list-item text-xl my-3 ml-4 pl-3 [list-style-type:'⇘']"
+        key={childWorkItemId}
+      >
+        <div className="text-base">
+          <DisplayWorkItem workItemId={childWorkItemId} />
+        </div>
+      </div>
+    )
+  }
