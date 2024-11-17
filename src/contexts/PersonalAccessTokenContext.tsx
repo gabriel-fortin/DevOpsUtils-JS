@@ -4,12 +4,12 @@ import React, { ReactElement, createContext, useContext, useState } from "react"
 type ValueType = string
 type ContextType = {
   patValue: ValueType
-  patSetter: (_: ValueType) => void
+  patSetter: (_newPat: ValueType) => void
 }
 
 const defaultValue: ContextType = {
   patValue: "",
-  patSetter: (_: string) => console.warn("PAT setter no initialised, new value not set")
+  patSetter: _ => console.warn("PAT setter not initialised, new value not set")
 }
 const PersonalAccessTokenContext = createContext<ContextType>(defaultValue)
 

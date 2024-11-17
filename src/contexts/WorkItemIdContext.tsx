@@ -6,7 +6,7 @@ import { createContext, ReactNode, useContext, useState } from "react"
 type ValueType = number | null
 type ContextData = {
   workItemId: ValueType
-  setWorkItemId: (_workItemId: ValueType) => void
+  setWorkItemId: (_newId: ValueType) => void
 }
 
 const defaultData: ContextData = {
