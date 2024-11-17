@@ -81,7 +81,7 @@ const AddTasksCard: React.FC =
       <IfWorkItemIdIsSet>
         <Card>
           <div className="-my-3">
-          <AddTasks />
+            <AddTasks />
           </div>
         </Card>
       </IfWorkItemIdIsSet>

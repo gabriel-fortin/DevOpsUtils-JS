@@ -16,7 +16,7 @@ export const SelectWorkItem: FC =
     // external things
     const { workItemId, setWorkItemId } = useWorkItemId()
     const { projectUrl } = useProjectUrl()
-    const {patValue} = usePersonalAccessToken()
+    const { patValue } = usePersonalAccessToken()
 
     useEffect(() => {
       setIsFirstInteraction(x => x && !workItemId)
