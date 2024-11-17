@@ -41,8 +41,11 @@ export default function App() {
 const SelectProjectCard: React.FC =
   () => {
     const { projectUrl } = useProjectUrl()
+
+    const requiresAttention = !projectUrl
+
     return (
-      <Card isHighlighted={!projectUrl}>
+      <Card isHighlighted={requiresAttention}>
         <SelectProjectUrl />
       </Card>
     )
@@ -53,9 +56,11 @@ const PatAuthCard: React.FC =
     const { projectUrl } = useProjectUrl()
     const { patValue } = usePersonalAccessToken()
 
+    const requiresAttention = !!projectUrl && !patValue
+
     return (
-      <Card isHighlighted={!!projectUrl && !patValue}>
-        <PatAuth />
+      <Card isHighlighted={requiresAttention}>
+        <PatAuth requiresAttention={requiresAttention} />
       </Card>
     )
   }
@@ -70,7 +75,7 @@ const SelectWorkItemCard: React.FC =
 
     return (
       <Card isHighlighted={requiresAttention}>
-        <SelectWorkItem />
+        <SelectWorkItem requiresAttention={requiresAttention} />
       </Card>
     )
   }

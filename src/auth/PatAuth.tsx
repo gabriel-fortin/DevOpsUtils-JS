@@ -7,9 +7,11 @@ import { usePatStorage } from "./patStorage"
 import { usePersonalAccessToken } from "@/contexts/PersonalAccessTokenContext"
 
 
-export const PatAuth: React.FC =
-  (
-  ) => {
+export const PatAuth: React.FC<{
+  requiresAttention: boolean
+}> = ({
+  requiresAttention,
+}) => {
     // internal things
     const [currentPatInput, setCurrentPatInput] = useState("")
     const [state, setState] = useState<"EMPTY" | "FETCHING" | "YES" | "NOPE">("EMPTY")
@@ -62,12 +64,15 @@ export const PatAuth: React.FC =
       setIsAutoLoad(!isAutoLoad)
     }
 
+    // badge used for info in the PAT input field
     const [bagdeText, bagdeClass] = {
       "EMPTY": ["not entered yet", "badge-primary-content"],
-      "FETCHING": ["checking", "bagde-info animate-bounce"],
-      "NOPE": ["failure", "bagde-error badge-outline border"],
+      "FETCHING": ["checking", "badge-info animate-bounce"],
+      "NOPE": ["failure", "badge-error"],
       "YES": ["confirmed", "badge-success badge-outline border"],
     }[state]
+
+    const isHighlight = requiresAttention && !currentPatInput
 
     return (
       <div className="flex flex-col gap-3">
@@ -78,8 +83,8 @@ export const PatAuth: React.FC =
 
         {/* PAT entry input field */}
         <div className="flex gap-2 items-center">
-          <label className="w-[28em] flex items-center gap-3 input justify-self-center">
-            <span className={`pr-3 ${currentPatInput && "border-r" || "border-r-2 border-accent"}`}>
+          <label className={`w-[28em] flex gap-3 items-center justify-self-center input ${isHighlight && "input-accent"}`}>
+            <span className={`pr-3 ${isHighlight && "border-r-2 border-accent" || "border-r"}`}>
               PAT
             </span>
             <input value={currentPatInput} onChange={onPatInputChange}
@@ -109,8 +114,9 @@ export const PatAuth: React.FC =
           >
             Save to local storage
           </button>
-          <button onClick={loadPat} title="Load from local storage"
-            className={`btn btn-xs pb-5 ${!patInStorage && "invisible"}`}
+          <button className={`btn btn-xs ${isHighlight && "btn-accent btn-outline"} pb-5 ${!patInStorage && "invisible"}`}
+            onClick={loadPat}
+            title="Load from local storage"
           >
             Load from local storage
           </button>

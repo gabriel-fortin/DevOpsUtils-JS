@@ -3,20 +3,19 @@
 import React, { FC, useEffect, useState } from "react"
 
 import { useWorkItemId } from "@/contexts/WorkItemIdContext"
-import { usePersonalAccessToken } from "@/contexts/PersonalAccessTokenContext"
-import { useProjectUrl } from "@/selectProjectUrl"
 
 
-export const SelectWorkItem: FC =
-  () => {
+export const SelectWorkItem: FC<{
+  requiresAttention: boolean
+}> = ({
+  requiresAttention,
+}) => {
     // internal things
     const [userValue, setUserValue] = useState<number | null>(null)
     const [isFirstInteraction, setIsFirstInteraction] = useState(true)
 
     // external things
     const { workItemId, setWorkItemId } = useWorkItemId()
-    const { projectUrl } = useProjectUrl()
-    const { patValue } = usePersonalAccessToken()
 
     useEffect(() => {
       setIsFirstInteraction(x => x && !workItemId)
@@ -37,11 +36,10 @@ export const SelectWorkItem: FC =
       }
     }
 
-    const selectingIsProbablyWhatUserNeedsToDo = projectUrl && patValue && !workItemId && userValue
     let buttonStateClass: string = "hidden"
     if (userValue || !isFirstInteraction) buttonStateClass = "btn-secondary"
     if (userValue === workItemId) buttonStateClass += " btn-outline"
-    if (selectingIsProbablyWhatUserNeedsToDo) buttonStateClass = "btn-accent"
+    if (requiresAttention && userValue) buttonStateClass = "btn-accent"
 
     return (
       <div className="flex flex-col gap-3 min-w-80">
