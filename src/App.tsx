@@ -5,7 +5,7 @@ import { AddTasks } from "@/addingTasks"
 import { PatAuth } from "@/auth/PatAuth"
 import { PersonalAccessTokenContextProvider, usePersonalAccessToken } from "@/contexts/PersonalAccessTokenContext"
 import { ProjectUrlContextProvider, useProjectUrl, SelectProjectUrl } from "@/selectProjectUrl"
-import { IfWorkItemIdIsSet, useWorkItemIdValue, WorkItemIdContextProvider } from "@/contexts/WorkItemIdContext"
+import { IfWorkItemIdIsSet, useWorkItemId, WorkItemIdContextProvider } from "@/contexts/WorkItemIdContext"
 import { SelectWorkItem } from "@/selectWorkItem/SelectWorkItem"
 import { WorkItemAndItsChildren } from "@/showWorkItems/WorkItemAndItsChildren"
 
@@ -64,7 +64,7 @@ const SelectWorkItemCard: React.FC =
   () => {
     const { projectUrl } = useProjectUrl()
     const { patValue } = usePersonalAccessToken()
-    const workItemId = useWorkItemIdValue()
+    const { workItemId } = useWorkItemId()
 
     const requiresAttention = !!projectUrl && !!patValue && !workItemId
 

@@ -2,23 +2,21 @@
 
 import { createContext, ReactNode, useContext, useState } from "react"
 
+
+type ValueType = number | null
 type ContextData = {
-  workItemId: number | null
-  setter: (workItemId: number | null) => void
+  workItemId: ValueType
+  setWorkItemId: (_workItemId: ValueType) => void
 }
+
 const defaultData: ContextData = {
   workItemId: null,
-  setter: _ => console.warn("Work Item Id setter not initiialised; new value not set")
+  setWorkItemId: _ => console.warn("Work Item Id setter not initiialised; new value not set"),
 }
-
 const WorkItemIdContext = createContext<ContextData>(defaultData)
 
-export function useWorkItemIdValue(): ContextData["workItemId"] {
-  return useContext(WorkItemIdContext).workItemId
-}
-
-export function useWorkItemIdSetter(): ContextData["setter"] {
-  return useContext(WorkItemIdContext).setter
+export function useWorkItemId(): ContextData {
+  return useContext(WorkItemIdContext)
 }
 
 export const WorkItemIdContextProvider: React.FC<{
@@ -27,8 +25,9 @@ export const WorkItemIdContextProvider: React.FC<{
   children,
 }) => {
     const [workItemId, setWorkItemId] = useState<ContextData["workItemId"]>(null)
+
     return (
-      <WorkItemIdContext.Provider value={{ workItemId, setter: setWorkItemId }}>
+      <WorkItemIdContext.Provider value={{ workItemId, setWorkItemId }}>
         {children}
       </WorkItemIdContext.Provider>
     )
@@ -39,7 +38,7 @@ export const IfWorkItemIdIsSet: React.FC<{
 }> = ({
   children,
 }) => {
-    const workItemId = useWorkItemIdValue()
+    const { workItemId } = useWorkItemId()
     if (!workItemId) return null
     return children
   }

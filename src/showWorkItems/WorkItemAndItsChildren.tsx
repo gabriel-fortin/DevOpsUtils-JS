@@ -5,7 +5,7 @@ import React from "react"
 import { DisplayWorkItem } from "./DisplayWorkItem"
 import { useFetchWorkItem } from "./hooks"
 import { getChildrenIds, getParentId } from "./WorkItemDto"
-import { useWorkItemIdValue } from "@/contexts/WorkItemIdContext"
+import { useWorkItemId } from "@/contexts/WorkItemIdContext"
 
 
 const itemTextColor = "text-primary-content/70"
@@ -13,7 +13,7 @@ const currentItemTextColor = "text-primary-content"
 
 export const WorkItemAndItsChildren: React.FC =
   () => {
-    const workItemId = useWorkItemIdValue()
+    const { workItemId } = useWorkItemId()
     if (workItemId == null) return
 
     return (

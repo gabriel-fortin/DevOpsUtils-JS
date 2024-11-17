@@ -2,7 +2,7 @@
 
 import { FC, useMemo, useRef, useState } from "react"
 
-import { useWorkItemIdValue } from "@/contexts/WorkItemIdContext"
+import { useWorkItemId } from "@/contexts/WorkItemIdContext"
 
 import { Task, createFreshTasksList } from "../task"
 import { TasksList } from "./TasksList"
@@ -84,7 +84,7 @@ const Button: FC<{
 }> = ({
   events,
 }) => {
-    const workItemId = useWorkItemIdValue()
+    const { workItemId } = useWorkItemId()
 
     const addTasksToWorkItem = () => {
       events.dispatchEvent(new Event(REQUESTED_ADDING_TASKS_TO_WORK_ITEM))

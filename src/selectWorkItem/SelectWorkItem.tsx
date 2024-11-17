@@ -2,7 +2,7 @@
 
 import React, { FC, useEffect, useState } from "react"
 
-import { useWorkItemIdSetter, useWorkItemIdValue } from "@/contexts/WorkItemIdContext"
+import { useWorkItemId } from "@/contexts/WorkItemIdContext"
 import { usePersonalAccessToken } from "@/contexts/PersonalAccessTokenContext"
 import { useProjectUrl } from "@/selectProjectUrl"
 
@@ -14,8 +14,7 @@ export const SelectWorkItem: FC =
     const [isFirstInteraction, setIsFirstInteraction] = useState(true)
 
     // external things
-    const setWorkItemId = useWorkItemIdSetter()
-    const workItemId = useWorkItemIdValue()
+    const { workItemId, setWorkItemId } = useWorkItemId()
     const { projectUrl } = useProjectUrl()
     const {patValue} = usePersonalAccessToken()
 
