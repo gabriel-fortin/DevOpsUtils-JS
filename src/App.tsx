@@ -1,13 +1,14 @@
 import reactLogo from "./assets/react.svg"
 import viteLogo from "/vite.svg"
 
-import { AddTasks } from "@/addingTasks"
-import { PatAuth } from "@/auth/PatAuth"
-import { PersonalAccessTokenContextProvider, usePersonalAccessToken } from "@/contexts/PersonalAccessTokenContext"
-import { ProjectUrlContextProvider, useProjectUrl, SelectProjectUrl } from "@/selectProjectUrl"
-import { IfWorkItemIdIsSet, useWorkItemId, WorkItemIdContextProvider } from "@/contexts/WorkItemIdContext"
-import { SelectWorkItem } from "@/selectWorkItem/SelectWorkItem"
-import { WorkItemAndItsChildren } from "@/showWorkItems/WorkItemAndItsChildren"
+import { AddTasks } from "@/components/addingTasks"
+import { PatAuth } from "@/components/auth"
+import { SelectProjectUrl } from "@/components/selectProjectUrl"
+import { SelectWorkItem } from "@/components/selectWorkItem"
+import { WorkItemAndItsChildren } from "@/components/showWorkItems"
+import { PersonalAccessTokenContextProvider, usePersonalAccessToken } from "@/state/personalAccesssToken"
+import { ProjectUrlContextProvider, useProjectUrl } from "@/state/projectUrl"
+import { IfWorkItemIdIsSet, useWorkItemId, WorkItemIdContextProvider } from "@/state/workItemId"
 
 import "./App.css"
 
