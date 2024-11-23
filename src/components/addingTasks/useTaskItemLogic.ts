@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react"
 
 import { Task, useAddTaskCall } from "@/dataAccess/addTask"
-import { useWorkItemCall } from "@/dataAccess/workItem"
 import { useProjectUrl } from "@/state/projectUrl"
 
 import { REQUESTED_ADDING_TASKS_TO_WORK_ITEM } from "./constants"
@@ -19,11 +18,8 @@ type HookType = (
 
 export const useTaskItemLogic: HookType =
   (parentWorkItemId, task, events) => {
-    const {projectUrl} = useProjectUrl()
+    const { projectUrl } = useProjectUrl()
     const { trigger: triggerAddingTask, isMutating } = useAddTaskCall(parentWorkItemId, task, projectUrl)
-    // by adding a child task, we're effectively modifying the parent
-    // so we need a way to refresh its data
-    const { mutate: refreshParent } = useWorkItemCall(parentWorkItemId)
     const [isChecked, setIsChecked] = useState(false)
 
     const toggleTask = useCallback(() => setIsChecked(x => !x), [])
@@ -36,11 +32,10 @@ export const useTaskItemLogic: HookType =
         .then(response => {
           if (response.status === 200) {
             setIsChecked(false)
-            refreshParent()
             // TODO: show toast
           }
         })
-    }, [isChecked, refreshParent, triggerAddingTask])
+    }, [isChecked, triggerAddingTask])
 
     useEffect(() => {
       events.addEventListener(REQUESTED_ADDING_TASKS_TO_WORK_ITEM, addTaskToDevOps)
