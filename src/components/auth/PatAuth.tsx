@@ -1,9 +1,8 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React, {  } from "react"
 
-import { useAnythingUsingPatCall, usePatStorage } from "@/dataAccess/personalAccessToken"
-import { usePersonalAccessToken } from "@/state/personalAccesssToken"
+import { usePathAuthLogic } from "./usePatAuthLogic"
 
 
 export const PatAuth: React.FC<{
@@ -11,57 +10,18 @@ export const PatAuth: React.FC<{
 }> = ({
   requiresAttention,
 }) => {
-    // internal things
-    const [currentPatInput, setCurrentPatInput] = useState("")
-    const [state, setState] = useState<"EMPTY" | "FETCHING" | "YES" | "NOPE">("EMPTY")
-    const [isAutoLoad, setIsAutoLoad] = useState(true)
-
-    // external things
-    const [patInStorage, savePatToStorage] = usePatStorage()
-    const { patSetter: sendPatToTheRestOfTheApp } = usePersonalAccessToken()
-    const { data: response, isLoading } = useAnythingUsingPatCall(currentPatInput)
-
-    useEffect(() => {
-      if (isLoading) {
-        setState("FETCHING")
-      } else if (!currentPatInput) {
-        setState("EMPTY")
-      } else if (response?.status === 200) {
-        sendPatToTheRestOfTheApp(currentPatInput)
-        setState("YES")
-      } else { // Pat entered but its validation failed
-        sendPatToTheRestOfTheApp("")
-        setState("NOPE")
-      }
-    }, [isLoading, sendPatToTheRestOfTheApp, currentPatInput, response])
-
-    useEffect(() => {
-      if (isAutoLoad) {
-        setCurrentPatInput(patInStorage)
-        if (!patInStorage) {
-          sendPatToTheRestOfTheApp("")
-        }
-      }
-    }, [isAutoLoad, patInStorage, sendPatToTheRestOfTheApp])
-
-    const onPatInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-      const newPat = e.target.value
-      setCurrentPatInput(newPat)
-    }
-
-    const loadPat = () => {
-      setCurrentPatInput(patInStorage)
-    }
-    const savePat = () => {
-      // don't save a PAT that didn't lead to a successful response
-      if (state !== "YES") return
-
-      savePatToStorage(currentPatInput)
-    }
-
-    const toggleAutoLoad = () => {
-      setIsAutoLoad(!isAutoLoad)
-    }
+    const {
+      state,
+      currentPatInput,
+      setCurrentPatInput,
+      savePat,
+      loadPat,
+      isAutoLoad,
+      toggleAutoLoad,
+      isHighlight,
+      isSaveVisible,
+      isLoadVisible,
+    } = usePathAuthLogic(requiresAttention)
 
     // badge used for info in the PAT input field
     const [bagdeText, bagdeClass] = {
@@ -70,8 +30,6 @@ export const PatAuth: React.FC<{
       "NOPE": ["failure", "badge-error"],
       "YES": ["confirmed", "badge-success badge-outline border"],
     }[state]
-
-    const isHighlight = requiresAttention && !currentPatInput
 
     return (
       <div className="flex flex-col gap-3">
@@ -86,7 +44,8 @@ export const PatAuth: React.FC<{
             <span className={`pr-3 ${isHighlight && "border-r-2 border-accent" || "border-r"}`}>
               PAT
             </span>
-            <input value={currentPatInput} onChange={onPatInputChange}
+            <input value={currentPatInput}
+              onChange={e => setCurrentPatInput(e.target.value)}
               placeholder="Personal Access Token"
               className="grow text-ellipsis min-w-14"
             />
@@ -109,11 +68,11 @@ export const PatAuth: React.FC<{
         {/* buttons for loading/saving PAT */}
         <div className="flex gap-2">
           <button onClick={savePat} title="Save to local storage"
-            className={`btn btn-xs pb-5 ${!currentPatInput && "invisible"}`}
+            className={`btn btn-xs pb-5 ${!isSaveVisible && "invisible"}`}
           >
             Save to local storage
           </button>
-          <button className={`btn btn-xs ${isHighlight && "btn-accent btn-outline"} pb-5 ${!patInStorage && "invisible"}`}
+          <button className={`btn btn-xs ${isHighlight && "btn-accent btn-outline"} pb-5 ${!isLoadVisible && "invisible"}`}
             onClick={loadPat}
             title="Load from local storage"
           >
