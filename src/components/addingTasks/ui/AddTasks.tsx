@@ -2,13 +2,12 @@
 
 import { FC, useMemo, useRef, useState } from "react"
 
-import { useWorkItemId } from "@/state/workItemId"
 import { Task, createFreshTasksList } from "@/dataAccess/addTask"
+import { useWorkItemId } from "@/state/workItemId"
 
+import { REQUESTED_ADDING_TASKS_TO_WORK_ITEM } from "../constants"
 import { TasksList } from "./TasksList"
 
-
-export const REQUESTED_ADDING_TASKS_TO_WORK_ITEM = "requested adding tasks to work item"
 
 export function AddTasks() {
   const [tasks] = useState<Task[]>(createFreshTasksList)
