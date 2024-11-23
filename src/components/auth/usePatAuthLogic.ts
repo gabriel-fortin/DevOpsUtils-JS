@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 
 import { useAnythingUsingPatCall, usePatStorage } from "@/dataAccess/personalAccessToken"
 import { usePersonalAccessToken } from "@/state/personalAccesssToken"
+import { useProjectUrl } from "@/state/projectUrl"
 
 
 type StateType = "EMPTY" | "FETCHING" | "YES" | "NOPE"
@@ -27,7 +28,8 @@ export const usePathAuthLogic: HookType =
     const [isAutoLoad, setIsAutoLoad] = useState(true)
 
     // external things
-    const [patInStorage, savePatToStorage] = usePatStorage()
+    const { projectUrl } = useProjectUrl()
+    const [patInStorage, savePatToStorage] = usePatStorage(projectUrl)
     const { patSetter: sendPatToTheRestOfTheApp } = usePersonalAccessToken()
     const { data: response, isLoading } = useAnythingUsingPatCall(currentPatInput)
 
@@ -67,10 +69,6 @@ export const usePathAuthLogic: HookType =
       setIsAutoLoad(!isAutoLoad)
     }
 
-    const isHighlight = requiresAttention && !currentPatInput
-    const isSaveVisible = !!currentPatInput
-    const isLoadVisible = !!patInStorage
-
     return {
       state,
       currentPatInput,
@@ -79,8 +77,8 @@ export const usePathAuthLogic: HookType =
       loadPat,
       isAutoLoad,
       toggleAutoLoad,
-      isHighlight,
-      isSaveVisible,
-      isLoadVisible,
+      isHighlight: requiresAttention && !currentPatInput,
+      isSaveVisible: !!currentPatInput,
+      isLoadVisible: !!patInStorage,
     }
   }
