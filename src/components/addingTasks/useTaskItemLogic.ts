@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react"
 
 import { Task, useAddTaskCall } from "@/dataAccess/addTask"
 import { useWorkItemCall } from "@/dataAccess/workItem"
+import { useProjectUrl } from "@/state/projectUrl"
 
 import { REQUESTED_ADDING_TASKS_TO_WORK_ITEM } from "./constants"
 
@@ -18,7 +19,8 @@ type HookType = (
 
 export const useTaskItemLogic: HookType =
   (parentWorkItemId, task, events) => {
-    const { trigger: triggerAddingTask, isMutating } = useAddTaskCall(parentWorkItemId, task)
+    const {projectUrl} = useProjectUrl()
+    const { trigger: triggerAddingTask, isMutating } = useAddTaskCall(parentWorkItemId, task, projectUrl)
     // by adding a child task, we're effectively modifying the parent
     // so we need a way to refresh its data
     const { mutate: refreshParent } = useWorkItemCall(parentWorkItemId)
