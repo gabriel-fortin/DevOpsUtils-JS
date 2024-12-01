@@ -18,7 +18,7 @@ export const TasksList: FC<{
     if (!parentWorkItemId) return "No parent work item selected"
 
     return tasks.map(task =>
-      <TaskItem key={task.name}
+      <TaskItem key={task.getTitle()}
         parentWorkItemId={parentWorkItemId}
         task={task}
         events={events}

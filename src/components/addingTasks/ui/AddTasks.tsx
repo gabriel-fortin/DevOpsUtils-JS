@@ -16,7 +16,7 @@ export function AddTasks() {
 
   const specialTasks = tasks.filter(x => x.group === "special")
   const presentationLayerTasks = tasks.filter(x => x.group === "Presentation")
-  const accessLayerTasks = tasks.filter(x => x.group === "Access")
+  const accessLayerTasks = tasks.filter(x => x.group === "System Portal")
 
   return (
     <div className="collapse collapse-arrow min-h-0">

@@ -3,59 +3,87 @@ import { Task } from "./Task"
 
 const allTasks: Task[] = [
     {
-        name: "fill infosec",
-        getTitle() { return this.name },
         group: "special",
+        getTitle() { return this.allKnownTitles[0] },
+        allKnownTitles: ["Fill infosec"],
     },
     {
-        name: "add functions to SQL script",
-        getTitle() { return this.name },
         group: "special",
+        getTitle() { return this.allKnownTitles[0] },
+        allKnownTitles: [
+            "Add SQL functions and Relay endpoints",
+            "add functions to SQL script",
+        ],
     },
     {
-        name: "update ServiceUrls in the Relay",
-        getTitle() { return this.name },
         group: "special",
+        getTitle() { return this.allKnownTitles[0] },
+        allKnownTitles: ["Preserve example payloads"],
     },
     {
-        name: "implement web API",
-        getTitle() { return this.name },
-        group: "Access",
+        group: "special",
+        getTitle() { return this.allKnownTitles[0] },
+        allKnownTitles: ["End-to-end smoke test"],
     },
     {
-        name: "validate CRM payloads",
-        getTitle() { return this.name },
-        group: "Access",
+        group: "System Portal",
+        getTitle() { return this.allKnownTitles[0] },
+        allKnownTitles: ["Implement web API"],
     },
     {
-        name: "ensure web API is secure",
-        getTitle() { return this.name },
-        group: "Access",
+        group: "System Portal",
+        getTitle() { return this.allKnownTitles[0] },
+        allKnownTitles: ["Validate CRM payloads"],
     },
     {
-        name: "implement front-end",
-        getTitle() { return this.name },
+        group: "System Portal",
+        getTitle() { return this.allKnownTitles[0] },
+        allKnownTitles: ["Ensure web API is secure"],
+    },
+    {
+        group: "System Portal",
+        getTitle() { return this.allKnownTitles[0] },
+        allKnownTitles: ["Validate TaxLive payloads"],
+    },
+    {
+        group: "System Portal",
+        getTitle() { return this.allKnownTitles[0] },
+        allKnownTitles: ["Unit tests for service"],
+    },
+    {
         group: "Presentation",
+        getTitle() { return this.allKnownTitles[0] },
+        allKnownTitles: ["Model, action method stub"],
     },
     {
-        name: "ensure front-end is accessible",
-        getTitle() { return this.name },
         group: "Presentation",
+        getTitle() { return this.allKnownTitles[0] },
+        allKnownTitles: ["View"],
     },
     {
-        name: "validate user inputs",
-        getTitle() { return this.name },
         group: "Presentation",
+        getTitle() { return this.allKnownTitles[0] },
+        allKnownTitles: ["User flow, repository"],
     },
     {
-        name: "unit tests for user flow",
-        getTitle() { return this.name },
         group: "Presentation",
+        getTitle() { return this.allKnownTitles[0] },
+        allKnownTitles: ["Ensure front-end is accessible"],
     },
     {
-        name: "unit tests for service",
-        getTitle() { return this.name },
-        group: "Access",
+        group: "Presentation",
+        getTitle() { return this.allKnownTitles[0] },
+        allKnownTitles: ["Validate user inputs"],
+    },
+    {
+        group: "Presentation",
+        getTitle() { return this.allKnownTitles[0] },
+        allKnownTitles: ["Unit tests for user flow"],
+    },
+    {
+        group: "Presentation",
+        getTitle() { return this.allKnownTitles[0] },
+        allKnownTitles: ["Put correct enrolment levels against action methods"],
     },
 ]
 

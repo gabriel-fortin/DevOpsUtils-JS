@@ -1,5 +1,5 @@
 export type Task = {
-    name: string,
-    getTitle(): string,
-    group: "special" | "Presentation" | "Access"
+    getTitle(): string
+    group: "special" | "Presentation" | "System Portal"
+    allKnownTitles: string[]
 }

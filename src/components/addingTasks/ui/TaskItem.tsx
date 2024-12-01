@@ -29,7 +29,7 @@ export const TaskItem: FC<{
           :
           <input type="checkbox"
             className="border-2 align-bottom mr-2 checkbox checkbox-sm checkbox-primary checked:checkbox-secondary"
-            value={task.name}
+            value={task.getTitle()}
             checked={isTaskChecked}
             onChange={toggleTaskCheckedState}
           />
