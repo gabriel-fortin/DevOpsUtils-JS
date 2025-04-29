@@ -2,16 +2,16 @@
 export type FetcherUrl = string // we could also include 'URL' and 'Request' in this type
 
 /** What we promise ourselves we'll always use as the key (which eventually is passed to SWR) */
-export type FetcherKey = [FetcherUrl, ...any[]]
+export type FetcherKey = [FetcherUrl, ...unknown[]]
 
 /** A fetcher accepting request options and returning the specified type */
-export type FetcherWithOptions<TReturn> = (key: FetcherKey, options: RequestInit) => Promise<TReturn>
+export type FetcherWithOptions<TReturn> = (_key: FetcherKey, _options: RequestInit) => Promise<TReturn>
 
 /** A transformator which can extend or modify options for the request and which can convert the response */
 export type Middleware<TReturn1, TReturn2> = (
-    key: FetcherKey,
-    options: RequestInit,
-    next: FetcherWithOptions<TReturn1>,
+    _key: FetcherKey,
+    _options: RequestInit,
+    _next: FetcherWithOptions<TReturn1>,
 ) => Promise<TReturn2>
 
 /** Allows building a fetcher for SWR in a flexible way by composing middleware */
@@ -23,24 +23,24 @@ interface ComposableFetcherBuilder<TReturn> {
      *  validation, response parsing and much more 
      * @returns an new instance of the builder which can build an enhanced fetcher
     */
-    with: <TNewReturn> (_: Middleware<TReturn, TNewReturn>, keyExtension?: any) => ComposableFetcherBuilder<TNewReturn>
+    with: <TNewReturn> (_: Middleware<TReturn, TNewReturn>, _keyExtension?: unknown) => ComposableFetcherBuilder<TNewReturn>
 
     /**
      * Builds a fetcher which will execute all the composed middleware
      */
-    build: (url: FetcherUrl | null) => [FetcherKey | null, (key: FetcherKey) => Promise<TReturn>]
+    build: (_url: FetcherUrl | null) => [FetcherKey | null, (_key: FetcherKey) => Promise<TReturn>]
 }
 
 class BuilderImpl<TReturn> implements ComposableFetcherBuilder<TReturn> {
     innerFetcher: FetcherWithOptions<TReturn>
-    fetcherKeyAdditions: any[]
+    fetcherKeyAdditions: unknown[]
 
-    constructor(innerFetcher: FetcherWithOptions<TReturn>, fetcherKeyAdditions: any[]) {
+    constructor(innerFetcher: FetcherWithOptions<TReturn>, fetcherKeyAdditions: unknown[]) {
         this.innerFetcher = innerFetcher
         this.fetcherKeyAdditions = fetcherKeyAdditions
     }
 
-    with<TNewReturn>(middleware: Middleware<TReturn, TNewReturn>, keyExtension?: any): ComposableFetcherBuilder<TNewReturn> {
+    with<TNewReturn>(middleware: Middleware<TReturn, TNewReturn>, keyExtension?: unknown): ComposableFetcherBuilder<TNewReturn> {
         return new BuilderImpl(
             (key, opts) => middleware(key, opts, this.innerFetcher),
             keyExtension === undefined ? this.fetcherKeyAdditions : [...this.fetcherKeyAdditions, keyExtension],
