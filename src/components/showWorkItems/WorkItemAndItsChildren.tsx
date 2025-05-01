@@ -32,6 +32,12 @@ const WorkItemAndItsChildrenInternal: React.FC<{
 
     /*  arrows   ↓↯↧⇓⇣⇩▼▽    ↘⇘   ⇒⇨⇾  */
 
+    if (!workItemDto) {
+      return (
+        <span className="ml-3 text-error">no work item to show here</span>
+      )
+    }
+
     return (
       <div className={`mx-4 ${itemTextColor}`}>
         {parentWorkItemId && <ParentItem workItemId={parentWorkItemId} />}
