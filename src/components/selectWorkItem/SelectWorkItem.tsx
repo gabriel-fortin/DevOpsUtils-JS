@@ -17,7 +17,7 @@ export const SelectWorkItem: FC<{
 
     // external things
     const { workItemId, setWorkItemId } = useWorkItemId()
-    const { error: wiFetchError } = useWorkItemCall(workItemId)
+    const { error: wiFetchError, isValidating } = useWorkItemCall(workItemId)
 
     useEffect(() => {
       setIsFirstInteraction(x => x && !workItemId)
@@ -42,7 +42,8 @@ export const SelectWorkItem: FC<{
     if (userValue || !isFirstInteraction) buttonStateClass = "btn-secondary"
     if (userValue === workItemId) buttonStateClass += " btn-outline"
     if (requiresAttention && userValue) buttonStateClass = "btn-accent"
-    const showNotFoundError = wiFetchError instanceof NotFoundError && userValue === workItemId
+    const showNotFoundError = (userValue === workItemId) && wiFetchError instanceof NotFoundError
+    const showOtherError = (userValue === workItemId) && wiFetchError && !showNotFoundError
 
     return (
       <div className="flex flex-col gap-3 min-w-80">
@@ -62,7 +63,9 @@ export const SelectWorkItem: FC<{
               Select
             </button>
           </div>
+          {isValidating && <span className="loading mx-3"></span>}
           {showNotFoundError && <span className="ml-3 text-error">work item not found</span>}
+          {showOtherError && <span className="ml-3 text-error">error fetching work item</span>}
         </div>
       </div>
     )
