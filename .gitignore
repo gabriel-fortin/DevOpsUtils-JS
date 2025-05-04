@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# files for incremental compilation information  https://www.typescriptlang.org/tsconfig/#tsBuildInfoFile
+*.tsbuildinfo
