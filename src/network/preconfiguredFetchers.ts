@@ -15,7 +15,7 @@ export function usePreconfiguredComposableFetcher(): ReturnType<typeof useBasicC
     return useBasicComposableFetcher()
         .with(projectUrlMiddleware(projectUrl)).withKeyExtension(projectUrl)
         .with(apiVersionMiddleware())
-        .with(patAuthMiddleware(patValue))
+        .with(patAuthMiddleware(patValue)).withKeyExtension(patValue)
 }
 
 /**
