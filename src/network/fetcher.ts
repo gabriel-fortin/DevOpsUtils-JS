@@ -18,12 +18,18 @@ export type Middleware<TReturn1, TReturn2> = (
 interface ComposableFetcherBuilder<TReturn> {
     /**
      * Allows to expand what the bare fetch operations does
-     * and what the key is (to trigger re-fetching when it changes)
      * @param middleware will enhance the fetching process by adding payload, headers,
-     *  validation, response parsing and much more 
+     *  validation, response parsing and more 
      * @returns an new instance of the builder which can build an enhanced fetcher
     */
-    with: <TNewReturn> (_: Middleware<TReturn, TNewReturn>, _keyExtension?: unknown) => ComposableFetcherBuilder<TNewReturn>
+    with: <TNewReturn> (_: Middleware<TReturn, TNewReturn>) => ComposableFetcherBuilder<TNewReturn>
+
+    /**
+     * Allows to add data to the key so that a change in that data triggers a re-fetch
+     * @param _keyExtension the data to add to the key
+     * @returns an new instance of the builder which can build an enhanced fetcher
+     */
+    withKeyExtension: (_keyExtension: unknown) => ComposableFetcherBuilder<TReturn>
 
     /**
      * Builds a fetcher which will execute all the composed middleware
@@ -40,10 +46,17 @@ class BuilderImpl<TReturn> implements ComposableFetcherBuilder<TReturn> {
         this.fetcherKeyAdditions = fetcherKeyAdditions
     }
 
-    with<TNewReturn>(middleware: Middleware<TReturn, TNewReturn>, keyExtension?: unknown): ComposableFetcherBuilder<TNewReturn> {
+    with<TNewReturn>(middleware: Middleware<TReturn, TNewReturn>): ComposableFetcherBuilder<TNewReturn> {
         return new BuilderImpl(
             (key, opts) => middleware(key, opts, this.innerFetcher),
-            keyExtension === undefined ? this.fetcherKeyAdditions : [...this.fetcherKeyAdditions, keyExtension],
+            this.fetcherKeyAdditions,
+        )
+    }
+
+    withKeyExtension(keyExtension: unknown): ComposableFetcherBuilder<TReturn> {
+        return new BuilderImpl(
+            this.innerFetcher,
+            [...this.fetcherKeyAdditions, keyExtension]
         )
     }
 
