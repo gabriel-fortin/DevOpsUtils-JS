@@ -1,5 +1,4 @@
-import { API_VERSION } from "@/config"
-
+import { API_VERSION } from "./constants"
 import { FetcherKey, Middleware } from "./fetcher"
 
 

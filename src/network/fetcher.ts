@@ -25,7 +25,7 @@ interface ComposableFetcherBuilder<TReturn> {
     with: <TNewReturn> (_: Middleware<TReturn, TNewReturn>) => ComposableFetcherBuilder<TNewReturn>
 
     /**
-     * Allows to add data to the key so that a change in that data triggers a re-fetch
+     * Adds data to the key so that a change in that data triggers a re-fetch
      * @param _keyExtension the data to add to the key
      * @returns an new instance of the builder which can build an enhanced fetcher
      */

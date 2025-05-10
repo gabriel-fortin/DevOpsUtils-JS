@@ -4,7 +4,7 @@ import { apiVersionMiddleware, delayMiddleware, patAuthMiddleware, projectUrlMid
 import { useNoAuthPreconfiguredComposableFetcher, usePreconfiguredComposableFetcher } from "./preconfiguredFetchers"
 
 export {
-    apiVersionMiddleware,
+    apiVersionMiddleware, API_VERSION,
     delayMiddleware, patAuthMiddleware, projectUrlMiddleware, TAGS_URL, useBasicComposableFetcher,
     useNoAuthPreconfiguredComposableFetcher,
     usePreconfiguredComposableFetcher, WIT_BATCH_URL,
