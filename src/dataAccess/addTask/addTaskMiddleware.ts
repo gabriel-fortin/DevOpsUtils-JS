@@ -5,9 +5,9 @@ import { Task } from "./Task"
 
 
 export const addTaskMiddleware: <T> (
-    workItemId: number,
-    task: Task,
-    projectUrl: string | null,
+    _workItemId: number,
+    _task: Task,
+    _projectUrl: string | null,
 ) => Middleware<T, T> =
     (workItemId, task, projectUrl) =>
         async (key, options, next) => {

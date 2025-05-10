@@ -43,7 +43,7 @@ export const projectUrlMiddleware: <T> (
         }
 
 export const patAuthMiddleware: (
-    pat: string
+    _pat: string
 ) => Middleware<Response, Response> =
     (pat) =>
         (key, options, next) => {

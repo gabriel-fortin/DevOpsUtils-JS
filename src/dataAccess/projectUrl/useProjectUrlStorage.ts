@@ -3,8 +3,8 @@ import { useLocalStorage } from "@uidotdev/usehooks"
 
 type RepoModel = {
     projectList: string[]
-    addProject: (url: string) => void
-    removeProject: (url: string) => void
+    addProject: (_url: string) => void
+    removeProject: (_url: string) => void
 }
 
 export function useProjectUrlStorage(): RepoModel {
