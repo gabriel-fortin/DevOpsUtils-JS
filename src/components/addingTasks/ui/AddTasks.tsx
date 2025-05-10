@@ -105,7 +105,7 @@ const SectionName: React.FC<{
   name,
 }) => {
     return (
-      <div className="mt-2 underline underline-offset-2">
+      <div className="mt-3 font-bold">
         {name}
       </div>
     )

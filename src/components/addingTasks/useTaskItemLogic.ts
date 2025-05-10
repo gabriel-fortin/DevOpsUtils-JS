@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from "react"
 
 import { Task, useAddTaskCall } from "@/dataAccess/addTask"
+import { getChildrenIds, useWorkItemCall } from "@/dataAccess/workItem"
+import { useMultipleWorkItemsTitlesCall } from "@/dataAccess/workItemsTitles"
 import { useProjectUrl } from "@/state/projectUrl"
 
 import { REQUESTED_ADDING_TASKS_TO_WORK_ITEM } from "./constants"
@@ -13,29 +15,35 @@ type HookType = (
 ) => {
   isHttpRequestOngoing: boolean
   isTaskChecked: boolean
+  isTaskToggable: boolean
+  isTaskEditable: boolean
   toggleTaskCheckedState: () => void
 }
 
 export const useTaskItemLogic: HookType =
   (parentWorkItemId, task, events) => {
     const { projectUrl } = useProjectUrl()
-    const { trigger: triggerAddingTask, isMutating } = useAddTaskCall(parentWorkItemId, task, projectUrl)
-    const [isChecked, setIsChecked] = useState(false)
+    const { trigger: triggerAddTaskCall, isMutating } = useAddTaskCall(parentWorkItemId, task, projectUrl)
+    const { titles: alreadyAddedTitles } = useMultipleWorkItemsTitlesCall(
+      getChildrenIds(useWorkItemCall(parentWorkItemId).workItemDto))
+    const [isSelected, setIsSelected] = useState(false)
+    const [isAlreadyAdded, setIsAlreadyAdded] = useState(false)
 
-    const toggleTask = useCallback(() => setIsChecked(x => !x), [])
+    const toggleTask = useCallback(() => setIsSelected(x => !x), [])
 
     const addTaskToDevOps = useCallback(() => {
       // do nothing if task was not selected
-      if (!isChecked) return
+      if (!isSelected) return
+      if (isAlreadyAdded) return
 
-      triggerAddingTask()
+      triggerAddTaskCall()
         .then(response => {
           if (response.status === 200) {
-            setIsChecked(false)
-            // TODO: show toast
+            setIsAlreadyAdded(true)
+            setIsSelected(true)
           }
         })
-    }, [isChecked, triggerAddingTask])
+    }, [isAlreadyAdded, isSelected, triggerAddTaskCall])
 
     useEffect(() => {
       events.addEventListener(REQUESTED_ADDING_TASKS_TO_WORK_ITEM, addTaskToDevOps)
@@ -44,9 +52,21 @@ export const useTaskItemLogic: HookType =
       }
     }, [events, addTaskToDevOps])
 
+    useEffect(() => {
+      const hasTaskBeenAlreadyAdded = (alreadyAddedTitles ?? [])
+        .some(existing => task.allKnownTitles.some(known => equalIgnoreCase(known, existing)))
+      setIsAlreadyAdded(hasTaskBeenAlreadyAdded)
+    }, [alreadyAddedTitles, task.allKnownTitles])
+
     return {
       isHttpRequestOngoing: isMutating,
-      isTaskChecked: isChecked,
+      isTaskChecked: isSelected || isAlreadyAdded,
+      isTaskToggable: !isAlreadyAdded,
+      isTaskEditable: isAlreadyAdded,
       toggleTaskCheckedState: toggleTask,
     }
   }
+
+function equalIgnoreCase(a: string, b: string) {
+  return a.localeCompare(b, undefined, { sensitivity: "base" }) == 0
+}

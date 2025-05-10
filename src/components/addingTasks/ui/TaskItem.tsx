@@ -19,8 +19,14 @@ export const TaskItem: FC<{
     const {
       isHttpRequestOngoing,
       isTaskChecked,
+      isTaskToggable,
+      isTaskEditable,
       toggleTaskCheckedState,
     } = useTaskItemLogic(parentWorkItemId, task, events)
+
+    const editTask = () => {
+      alert('TODO: task edit dialog')
+    }
 
     return (
       <label className="block mt-1">
@@ -29,12 +35,15 @@ export const TaskItem: FC<{
           :
           <input type="checkbox"
             className="border-2 align-bottom mr-2 checkbox checkbox-sm checkbox-primary checked:checkbox-secondary"
+            disabled={!isTaskToggable}
             value={task.getTitle()}
             checked={isTaskChecked}
             onChange={toggleTaskCheckedState}
           />
         }
-        <span className="">
+        <span onClick={editTask}
+         className={isTaskEditable ? "link link-secondary" : ""}
+        >
           {task.getTitle()}
         </span>
       </label>
