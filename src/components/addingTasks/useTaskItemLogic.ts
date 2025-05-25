@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react"
 
 import { Task, useAddTaskCall } from "@/dataAccess/addTask"
-import { getChildrenIds, useWorkItemCall } from "@/dataAccess/workItem"
-import { useMultipleWorkItemsTitlesCall } from "@/dataAccess/workItemsTitles"
+import { getChildrenIds, useWorkItemCall, WorkItemDto } from "@/dataAccess/workItem"
+import { useWorkItemsBatchCall } from "@/dataAccess/workItemsBatch"
 import { useProjectUrl } from "@/state/projectUrl"
 
 import { REQUESTED_ADDING_TASKS_TO_WORK_ITEM } from "./constants"
@@ -17,6 +17,7 @@ type HookType = (
   isTaskChecked: boolean
   isTaskToggable: boolean
   isTaskEditable: boolean
+  taskId: number | null
   toggleTaskCheckedState: () => void
 }
 
@@ -24,26 +25,25 @@ export const useTaskItemLogic: HookType =
   (parentWorkItemId, task, events) => {
     const { projectUrl } = useProjectUrl()
     const { trigger: triggerAddTaskCall, isMutating } = useAddTaskCall(parentWorkItemId, task, projectUrl)
-    const { titles: alreadyAddedTitles } = useMultipleWorkItemsTitlesCall(
+    const { workItemsDtos: existingDevOpsTasks } = useWorkItemsBatchCall(
       getChildrenIds(useWorkItemCall(parentWorkItemId).workItemDto))
     const [isSelected, setIsSelected] = useState(false)
-    const [isAlreadyAdded, setIsAlreadyAdded] = useState(false)
+    const [matchingDevOpsTask, setMatchingDevOpsTask] = useState<WorkItemDto | null>(null)
 
     const toggleTask = useCallback(() => setIsSelected(x => !x), [])
 
     const addTaskToDevOps = useCallback(() => {
-      // do nothing if task was not selected
+      // do nothing if task was not selected or is already in DevOps
       if (!isSelected) return
-      if (isAlreadyAdded) return
+      if (matchingDevOpsTask !== null) return
 
       triggerAddTaskCall()
         .then(response => {
           if (response.status === 200) {
-            setIsAlreadyAdded(true)
             setIsSelected(true)
           }
         })
-    }, [isAlreadyAdded, isSelected, triggerAddTaskCall])
+    }, [isSelected, matchingDevOpsTask, triggerAddTaskCall])
 
     useEffect(() => {
       events.addEventListener(REQUESTED_ADDING_TASKS_TO_WORK_ITEM, addTaskToDevOps)
@@ -53,16 +53,23 @@ export const useTaskItemLogic: HookType =
     }, [events, addTaskToDevOps])
 
     useEffect(() => {
-      const hasTaskBeenAlreadyAdded = (alreadyAddedTitles ?? [])
-        .some(existing => task.allKnownTitles.some(known => equalIgnoreCase(known, existing)))
-      setIsAlreadyAdded(hasTaskBeenAlreadyAdded)
-    }, [alreadyAddedTitles, task.allKnownTitles])
+      const existingTasksThatMatch = (existingDevOpsTasks ?? [])
+        .filter(existingTask => task.allKnownTitles
+          .some(title => equalIgnoreCase(title, existingTask.fields["System.Title"])))
+      if (existingTasksThatMatch.length > 0) {
+        setMatchingDevOpsTask(existingTasksThatMatch[0])
+      }
+      if (existingTasksThatMatch.length > 1) {
+        console.warn(`Multiple matching existing tasks:`, existingTasksThatMatch)
+      }
+    }, [existingDevOpsTasks, task.allKnownTitles])
 
     return {
       isHttpRequestOngoing: isMutating,
-      isTaskChecked: isSelected || isAlreadyAdded,
-      isTaskToggable: !isAlreadyAdded,
-      isTaskEditable: isAlreadyAdded,
+      isTaskChecked: isSelected || matchingDevOpsTask !== null,
+      isTaskToggable: matchingDevOpsTask === null,
+      isTaskEditable: matchingDevOpsTask !== null,
+      taskId: matchingDevOpsTask ? Number(matchingDevOpsTask.id) : null,
       toggleTaskCheckedState: toggleTask,
     }
   }

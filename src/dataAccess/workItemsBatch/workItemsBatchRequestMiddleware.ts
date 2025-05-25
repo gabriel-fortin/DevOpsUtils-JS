@@ -1,7 +1,7 @@
 import { Middleware } from "@/network"
 
 
-export const requestWorkItemsTitlesMiddleware: <T> (
+export const workItemsBatchRequestMiddleware: <T> (
     _workItems: number[]
 ) => Middleware<T, T> =
     (workItems) =>
