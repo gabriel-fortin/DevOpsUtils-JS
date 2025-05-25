@@ -42,7 +42,7 @@ const WorkItemAndItsChildrenInternal: React.FC<{
       <div className={`mx-4 ${itemTextColor}`}>
         {parentWorkItemId && <ParentItem workItemId={parentWorkItemId} />}
         <CurrentItem workItemId={workItemId} />
-        {childrenWorkItemsIds.map(id => <ChildItem workItemId={id} />)}
+        {childrenWorkItemsIds.map(id => <ChildItem key={id} workItemId={id} />)}
       </div>
     )
   }
