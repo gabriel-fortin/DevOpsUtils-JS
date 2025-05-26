@@ -1,14 +1,17 @@
-import React, { FC, useImperativeHandle, useRef } from "react"
+import { FC, RefObject, useImperativeHandle, useRef } from "react"
+
+import { useProjectUrl } from "@/state/projectUrl"
 
 
 export type TaskEditDialogActions = {
   showDialog: () => void
 }
 
+
 export const TaskEditDialog: FC<{
   workItemId: number | null
   title: string
-  ref: React.RefObject<TaskEditDialogActions>
+  ref: RefObject<TaskEditDialogActions>
 }> = ({
   workItemId,
   title,
@@ -26,11 +29,6 @@ export const TaskEditDialog: FC<{
 
     if (!workItemId) return null
 
-
-    // TODO: get URL of item in DevOps to make the button navigate to devOps
-    const temporaryStaticUrl = `https://google.com?q=${workItemId}`
-
-
     return (
       <dialog ref={dialogRef} className="modal">
         <div className="modal-box">
@@ -38,21 +36,60 @@ export const TaskEditDialog: FC<{
           <p>This task is already added to the current work item</p>
 
           <div className="modal-action">
-            <form method="dialog">
-              <button className="btn btn-ghost btn-circle absolute right-2 top-2 text-xl" title="Close">
-                <span aria-hidden={true}> × </span>
-              </button>
-            </form>
-            <a className="btn btn-info btn-outline" target="_blank" href={temporaryStaticUrl}>
-              See in DevOps
-              <span className="text-xl">↗</span>
-            </a>
+            <DevOpsLinkButton workItemId={workItemId} />
           </div>
+
+          <DialogClosingButton />
         </div>
 
-        <form method="dialog" className="modal-backdrop">
-          <button className="bg-transparent border-0">Close</button>
-        </form>
+        <DialogClosingBackdrop />
       </dialog>
     )
   }
+
+
+const DevOpsLinkButton: FC<{
+  workItemId: number
+}> = ({
+  workItemId,
+}) => {
+    const { projectUrl } = useProjectUrl()
+
+    if (!workItemId) {
+      return (
+        <span className="btn btn-disabled">
+          Edit in DevOps
+          <span className="text-xl">↗</span>
+        </span>
+      )
+    }
+
+    const url = `${projectUrl}/_workitems/edit/${workItemId}`
+
+    return (
+      <a className="btn btn-info btn-outline" target="_blank" href={url}>
+        Edit in DevOps
+        <span className="text-xl">↗</span>
+      </a>
+    )
+  }
+
+function DialogClosingButton() {
+  return (
+    <form method="dialog">
+      <button className="btn btn-ghost btn-circle absolute right-2 top-2 text-xl" title="Close">
+        <span aria-hidden={true}> × </span>
+      </button>
+    </form>
+  )
+}
+
+function DialogClosingBackdrop() {
+  return (
+    <form method="dialog" className="modal-backdrop">
+      <button className="bg-transparent border-0">
+        Close
+      </button>
+    </form>
+  )
+}
