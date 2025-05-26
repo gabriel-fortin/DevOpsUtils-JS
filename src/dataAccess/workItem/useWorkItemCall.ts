@@ -1,4 +1,4 @@
-import useSWR from "swr"
+import useSWR, { KeyedMutator } from "swr"
 
 import { usePreconfiguredComposableFetcher, WORK_ITEMS_URL, FetcherUrl } from "@/network"
 
@@ -9,7 +9,13 @@ import { WorkItemDto } from "./WorkItemDto"
 
 export function useWorkItemCall(
     workItemId: number | null,
-) {
+): {
+    workItemDto: WorkItemDto | undefined
+    error: any // eslint-disable-line @typescript-eslint/no-explicit-any
+    isLoading: boolean
+    isValidating: boolean
+    mutate: KeyedMutator<WorkItemDto>
+} {
     const url: FetcherUrl | null = (workItemId === null)
         ? null
         : `${WORK_ITEMS_URL}/${workItemId}?$expand=Relations`

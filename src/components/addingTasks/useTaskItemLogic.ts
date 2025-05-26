@@ -25,8 +25,8 @@ export const useTaskItemLogic: HookType =
   (parentWorkItemId, task, events) => {
     const { projectUrl } = useProjectUrl()
     const { trigger: triggerAddTaskCall, isMutating } = useAddTaskCall(parentWorkItemId, task, projectUrl)
-    const { workItemsDtos: existingDevOpsTasks } = useWorkItemsBatchCall(
-      getChildrenIds(useWorkItemCall(parentWorkItemId).workItemDto))
+    const { workItemDto} = useWorkItemCall(parentWorkItemId)
+    const { workItemsDtos: existingDevOpsTasks } = useWorkItemsBatchCall(getChildrenIds(workItemDto))
     const [isSelected, setIsSelected] = useState(false)
     const [matchingDevOpsTask, setMatchingDevOpsTask] = useState<WorkItemDto | null>(null)
 
