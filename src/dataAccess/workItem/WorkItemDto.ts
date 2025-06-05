@@ -13,7 +13,8 @@ export type WorkItemDto = {
     relations?: [{
         rel: string
         url: string
-        attributes: [any]
+        // potentially there are interesting things in the attributes property
+        attributes: [any] // eslint-disable-line @typescript-eslint/no-explicit-any
     }]
     _links: {
         self: { href: string }

@@ -112,7 +112,7 @@ const NewProjectButton: React.FC<{
   }
 
 const NewProjectInput: React.FC<{
-  onProjectSubmitted: (projectName: string) => void
+  onProjectSubmitted: (_projectName: string) => void
   onNewProjectCancelled: () => void
 }> = ({
   onProjectSubmitted: submitProject,
@@ -121,7 +121,11 @@ const NewProjectInput: React.FC<{
     const projectNameInputRef = useRef<HTMLInputElement>()
 
     const addNewProject = () => {
-      const newProjectName: string = projectNameInputRef.current?.value!
+      if (projectNameInputRef.current === undefined) {
+        console.warn("Ref for the project name input has not been set yet")
+        return
+      }
+      const newProjectName: string = projectNameInputRef.current?.value
       submitProject(newProjectName)
     }
 

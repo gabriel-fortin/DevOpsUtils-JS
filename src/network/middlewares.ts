@@ -1,5 +1,4 @@
-import { API_VERSION } from "@/config"
-
+import { API_VERSION } from "./constants"
 import { FetcherKey, Middleware } from "./fetcher"
 
 
@@ -44,7 +43,7 @@ export const projectUrlMiddleware: <T> (
         }
 
 export const patAuthMiddleware: (
-    pat: string
+    _pat: string
 ) => Middleware<Response, Response> =
     (pat) =>
         (key, options, next) => {

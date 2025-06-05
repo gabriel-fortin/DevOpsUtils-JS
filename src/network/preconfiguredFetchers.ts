@@ -13,9 +13,9 @@ export function usePreconfiguredComposableFetcher(): ReturnType<typeof useBasicC
     const { projectUrl } = useProjectUrl()
 
     return useBasicComposableFetcher()
-        .with(projectUrlMiddleware(projectUrl), projectUrl)
+        .with(projectUrlMiddleware(projectUrl)).withKeyExtension(projectUrl)
         .with(apiVersionMiddleware())
-        .with(patAuthMiddleware(patValue))
+        .with(patAuthMiddleware(patValue)).withKeyExtension(patValue)
 }
 
 /**
@@ -26,6 +26,6 @@ export function useNoAuthPreconfiguredComposableFetcher(): ReturnType<typeof use
     const { projectUrl } = useProjectUrl()
 
     return useBasicComposableFetcher()
-        .with(projectUrlMiddleware(projectUrl), projectUrl)
+        .with(projectUrlMiddleware(projectUrl)).withKeyExtension(projectUrl)
         .with(apiVersionMiddleware())
 }

@@ -37,7 +37,7 @@ export function AddTasks() {
         <TasksList tasks={accessLayerTasks} events={emitter} />
 
         <div className="flex gap-3">
-          <Button events={emitter} />
+          <AddTasksButton events={emitter} />
           {/* temporary button to show dialog */}
           <button
             className="btn btn-outline btn-primary mt-4"
@@ -78,7 +78,7 @@ export function AddTasks() {
   )
 }
 
-const Button: FC<{
+const AddTasksButton: FC<{
   events: EventTarget
 }> = ({
   events,
@@ -105,7 +105,7 @@ const SectionName: React.FC<{
   name,
 }) => {
     return (
-      <div className="mt-2 underline underline-offset-2">
+      <div className="mt-3 font-bold">
         {name}
       </div>
     )

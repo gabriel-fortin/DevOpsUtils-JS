@@ -10,6 +10,9 @@ of middleware is widely understood and this project meets a developer's
 expectations of what it does.
 
 In addition to middleware, when building a request, it's possible to provide 
-an additional bit to the key provided to SWR. It results on SWR being better 
+an additional bit of info to the key provided to SWR. It results in SWR being better 
 informed of when a request's dependency change - when to re-make a request.
 
+Additionally, using SWR allows to de-duplicate requests coming from different 
+components. When the same resource is requested by multiple components, SWR 
+will make only one request and share the result with all requestors.
