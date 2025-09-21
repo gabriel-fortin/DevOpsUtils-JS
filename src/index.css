@@ -1,4 +1,20 @@
 @import 'tailwindcss';
+@plugin "daisyui" {
+  /* themes: light --default, dark --prefersdark, cupcake; */
+}
+@plugin "daisyui/theme" {
+  name: "gabi3";
+  prefersdark: false;
+  --color-neutral: #3D4351;
+  --color-base-100: #323743;
+  --color-primary: #293457;
+  --color-secondary: #6C93EF;
+  --color-accent: #efc86c;
+  --color-info: #3b82f6;
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+}
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
