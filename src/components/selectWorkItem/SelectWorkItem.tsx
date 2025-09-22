@@ -57,11 +57,11 @@ export const SelectWorkItem: FC<{
               onChange={enteredValueChanged}
               onKeyDown={keyDown}
             />
-            <button className={`btn ${buttonStateClass}`}
+            <div className={`btn ${buttonStateClass}`}
               onClick={confirmWorkItemChoice}
             >
               Select
-            </button>
+            </div>
           </div>
           {isValidating && <span className="loading mx-3"></span>}
           {showNotFoundError && <span className="ml-3 text-error">work item not found</span>}

@@ -20,16 +20,28 @@ export default function App() {
         <WorkItemIdContextProvider>
           <main className="main">
             <h1>A tool for chores in DevOps projects</h1>
-            <SelectProjectCard />
-            <PatAuthCard />
-            <div className="flex gap-8">
-              <div className="grow flex flex-col gap-8 max-w-[30em]">
-                <SelectWorkItemCard />
-                <AddTasksCard />
-              </div>
-              <div className="grow">
-                <WorkItemAndItsChildrenCard />
-              </div>
+            <div role="tablist" className="tabs tabs-lift">
+              <Tab label="Project & auth" defaultChecked={true}>
+                <div className=" flex flex-col gap-5">
+                  <SelectProjectCard />
+                  <PatAuthCard />
+                </div>
+              </Tab>
+              <Tab label="Work item">
+                <div className="flex gap-8">
+                  <div className="grow flex flex-col gap-8 max-w-[30em]">
+                    <SelectWorkItemCard />
+                    <AddTasksCard />
+                  </div>
+                  <div className="grow">
+                    <WorkItemAndItsChildrenCard />
+                  </div>
+                </div>
+              </Tab>
+              <Tab label="Pull requests">
+                Some summary of active pull requests. Maybe grouped by project. Maybe by date.
+                Maybe untouched ones will be displayed first.
+              </Tab>
             </div>
           </main>
           <Logos />
@@ -38,6 +50,25 @@ export default function App() {
     </ProjectUrlContextProvider>
   )
 }
+
+const Tab: React.FC<{
+  label: string
+  defaultChecked?: boolean
+  children?: React.ReactNode
+}> = ({
+  label,
+  defaultChecked,
+  children,
+}) => {
+    return (
+      <>
+        <input type="radio" name="main-tabs" className="tab" aria-label={label} defaultChecked={defaultChecked} />
+        <div className="tab-content p-3 bg-base-100 border-(--color-base-300)">
+          {children}
+        </div>
+      </>
+    )
+  }
 
 const SelectProjectCard: React.FC =
   () => {
@@ -115,7 +146,7 @@ const Card: React.FC<{
   isHighlighted = false,
 }) => {
     return (
-      <div className={`card p-4 m-1 ${isHighlighted ? "border-1 border-accent" : "border-2 border-primary"}`}>
+      <div className={`card p-4 m-1 ${isHighlighted ? "border border-accent" : "border-3 border-primary"}`}>
         {childrenToRender}
         {children}
         {isHighlighted && <span className="absolute left-0.5 top-4 bottom-4 rounded-sm bg-accent w-0.5 animate-pulse"></span>}

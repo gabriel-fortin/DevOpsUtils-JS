@@ -1,6 +1,50 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@plugin "daisyui" {
+  /* themes: light --default, dark --prefersdark, cupcake; */
+}
+@plugin "daisyui/theme" {
+  name: "gabi2";
+  prefersdark: false;
+  --color-neutral: #3d4451;
+  --color-base-100: #103039;
+  --color-base-200: #103039;
+  --color-primary: #0e5378;
+  --color-secondary: #60a5fa;
+  --color-accent: #f472b6;
+  --color-info: #3b82f6;
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+}
+@plugin "daisyui/theme" {
+  name: "gabi3"; /* yellow */
+  prefersdark: false;
+  --color-neutral: #3D4351;
+  --color-base-100: #485166;
+  --color-base-200: #373c48;
+  --color-base-300: #202345;
+  --color-primary: #293457;
+  --color-secondary: #6C93EF;
+  --color-accent: #efc86c;
+  --color-info: #3b82f6;
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+}
+@plugin "daisyui/theme" {
+  name: "gabi4"; /* pink */
+  prefersdark: false;
+  --color-neutral: #3D4351;
+  --color-base-100: #485166;
+  --color-base-200: #323743;
+  --color-primary: #293457;
+  --color-secondary: #6C93EF;
+  --color-accent: #F471B5;
+  --color-info: #3b82f6;
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+}
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;

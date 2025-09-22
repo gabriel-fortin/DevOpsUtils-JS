@@ -19,7 +19,7 @@ export function AddTasks() {
   const accessLayerTasks = tasks.filter(x => x.group === "System Portal")
 
   return (
-    <div className="collapse collapse-arrow min-h-0">
+    <div className="collapse collapse-arrow collapse-open min-h-0">
       <input type="checkbox" className="min-h-0" />
 
       <div className="collapse-title text-xl pl-1">
@@ -63,14 +63,14 @@ export function AddTasks() {
               <button className="btn btn-success" onClick={() => dialogRef.current!.close()}>
                 Add/Update
               </button>
-              <button className="btn btn-error btn-outline" onClick={() => dialogRef.current!.close()}>
+              <button className="btn btn-error" onClick={() => dialogRef.current!.close()}>
                 Cancel
               </button>
             </div>
           </div>
 
           <form method="dialog" className="modal-backdrop">
-            <button className="bg-transparent border-0">Cancel</button>
+            <div className="bg-transparent border-0">Cancel</div>
           </form>
         </dialog>
       </div>
@@ -90,12 +90,12 @@ const AddTasksButton: FC<{
     }
 
     return (
-      <button
+      <div
         className="btn btn-md btn-primary mt-4"
         onClick={addTasksToWorkItem}
       >
         Add above tasks to #{workItemId}
-      </button>
+      </div>
     )
   }
 
