@@ -19,7 +19,7 @@ export function AddTasks() {
   const accessLayerTasks = tasks.filter(x => x.group === "System Portal")
 
   return (
-    <div className="collapse collapse-arrow min-h-0">
+    <div className="collapse collapse-arrow collapse-open min-h-0">
       <input type="checkbox" className="min-h-0" />
 
       <div className="collapse-title text-xl pl-1">
