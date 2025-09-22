@@ -133,21 +133,21 @@ const NewProjectInput: React.FC<{
 
     return (
       <div className="flex items-center input input-sm input-bordered px-0">
-        <button
+        <div
           className="btn btn-sm btn-accent btn-outline mr-2"
           onClick={cancel}>
           X
-        </button>
+        </div>
         {/* cast to LegacyRef because TS types are botched; hopefully we can remove the cast in the future */}
         <input ref={projectNameInputRef as React.LegacyRef<HTMLInputElement>}
           placeholder="project URL"
           className="grow"
         />
-        <button
+        <div
           className="btn btn-sm btn-accent"
           onClick={addNewProject}>
           Add
-        </button>
+        </div>
       </div>
     )
   }

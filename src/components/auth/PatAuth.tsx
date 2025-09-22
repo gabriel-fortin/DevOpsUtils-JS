@@ -67,17 +67,17 @@ export const PatAuth: React.FC<{
 
         {/* buttons for loading/saving PAT */}
         <div className="flex gap-2">
-          <button onClick={savePat} title="Save to local storage"
-            className={`btn btn-xs pb-5 ${!isSaveVisible && "invisible"}`}
+          <div onClick={savePat} title="Save to local storage"
+            className={`btn btn-xs ${!isSaveVisible && "invisible"}`}
           >
             Save to local storage
-          </button>
-          <button className={`btn btn-xs ${isHighlight && "btn-accent btn-outline"} pb-5 ${!isLoadVisible && "invisible"}`}
+          </div>
+          <div className={`btn btn-xs ${isHighlight && "btn-accent btn-outline"} ${!isLoadVisible && "invisible"}`}
             onClick={loadPat}
             title="Load from local storage"
           >
             Load from local storage
-          </button>
+          </div>
         </div>
 
         {/* PAT status line */}

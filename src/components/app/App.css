@@ -16,7 +16,6 @@
   width: min(40em, 100%);
   padding: 1rem 1.2rem;
   border-radius: var(--border-radius);
-  border: 1px solid rgba(var(--border-rgb), 0.2);
   transition: background 200ms, box-shadow ease-out 200ms;
 }
 
