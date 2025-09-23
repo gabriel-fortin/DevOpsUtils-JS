@@ -11,9 +11,12 @@ import { ProjectUrlContextProvider, useProjectUrl } from "@/state/projectUrl"
 import { IfWorkItemIdIsSet, useWorkItemId, WorkItemIdContextProvider } from "@/state/workItemId"
 
 import "./App.css"
+import { useState } from "react"
 
 
 export default function App() {
+  const [currentTab, setCurrentTab] = useState(0)
+
   return (
     <ProjectUrlContextProvider>
       <PersonalAccessTokenContextProvider>
@@ -21,13 +24,8 @@ export default function App() {
           <main className="main">
             <h1>A tool for chores in DevOps projects</h1>
             <div role="tablist" className="tabs tabs-lift">
-              <Tab label="Project & auth" defaultChecked={true}>
-                <div className=" flex flex-col gap-5">
-                  <SelectProjectCard />
-                  <PatAuthCard />
-                </div>
-              </Tab>
-              <Tab label="Work item">
+              <ProjectAndAuthTab isCurrent={currentTab === 0} onClick={() => setCurrentTab(0)} />
+              <Tab label="Work item" isCurrent={currentTab === 1} onClick={() => setCurrentTab(1)}>
                 <div className="flex gap-8">
                   <div className="grow flex flex-col gap-8 max-w-[30em]">
                     <SelectWorkItemCard />
@@ -38,7 +36,7 @@ export default function App() {
                   </div>
                 </div>
               </Tab>
-              <Tab label="Pull requests">
+              <Tab label="Pull requests" isCurrent={currentTab === 2} onClick={() => setCurrentTab(2)}>
                 Some summary of active pull requests. Maybe grouped by project. Maybe by date.
                 Maybe untouched ones will be displayed first.
               </Tab>
@@ -51,18 +49,51 @@ export default function App() {
   )
 }
 
+const ProjectAndAuthTab: React.FC<{
+  isCurrent?: boolean
+  onClick?: () => void
+}> = ({
+  isCurrent,
+  onClick,
+}) => {
+    const { projectUrl } = useProjectUrl()
+    const { patValue } = usePersonalAccessToken()
+    const tab1RequiresAttention = !isCurrent && (!projectUrl || !patValue)
+
+    return (
+      <Tab label="Project & auth" isCurrent={isCurrent} onClick={onClick} hasDot={tab1RequiresAttention}>
+        <div className=" flex flex-col gap-5">
+          <SelectProjectCard />
+          <PatAuthCard />
+        </div>
+      </Tab>
+    )
+  }
+
 const Tab: React.FC<{
   label: string
-  defaultChecked?: boolean
+  isCurrent?: boolean
+  onClick?: () => void
+  hasDot?: boolean
   children?: React.ReactNode
 }> = ({
   label,
-  defaultChecked,
+  isCurrent,
+  onClick,
+  hasDot,
   children,
 }) => {
+    const css = isCurrent ? "tab-active" : ""
     return (
       <>
-        <input type="radio" name="main-tabs" className="tab" aria-label={label} defaultChecked={defaultChecked} />
+        <span role="tab" className={`tab indicator ${css}`} onClick={onClick}>
+          {hasDot &&
+            <span className="mt-1 indicator-item indicator-center status status-accent status-lg animate-pulse font-bold" />
+          }
+          <span className="">
+            {label}
+          </span>
+        </span>
         <div className="tab-content p-3 bg-base-100 border-(--color-base-300)">
           {children}
         </div>
