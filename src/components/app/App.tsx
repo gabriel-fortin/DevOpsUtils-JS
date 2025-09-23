@@ -25,21 +25,8 @@ export default function App() {
             <h1>A tool for chores in DevOps projects</h1>
             <div role="tablist" className="tabs tabs-lift">
               <ProjectAndAuthTab isCurrent={currentTab === 0} onClick={() => setCurrentTab(0)} />
-              <Tab label="Work item" isCurrent={currentTab === 1} onClick={() => setCurrentTab(1)}>
-                <div className="flex gap-8">
-                  <div className="grow flex flex-col gap-8 max-w-[30em]">
-                    <SelectWorkItemCard />
-                    <AddTasksCard />
-                  </div>
-                  <div className="grow">
-                    <WorkItemAndItsChildrenCard />
-                  </div>
-                </div>
-              </Tab>
-              <Tab label="Pull requests" isCurrent={currentTab === 2} onClick={() => setCurrentTab(2)}>
-                Some summary of active pull requests. Maybe grouped by project. Maybe by date.
-                Maybe untouched ones will be displayed first.
-              </Tab>
+              <WorkItemTab isCurrent={currentTab === 1} onClick={() => setCurrentTab(1)} />
+              <PullRequestsTab isCurrent={currentTab === 2} onClick={() => setCurrentTab(2)} />
             </div>
           </main>
           <Logos />
@@ -66,6 +53,43 @@ const ProjectAndAuthTab: React.FC<{
           <SelectProjectCard />
           <PatAuthCard />
         </div>
+      </Tab>
+    )
+  }
+
+const WorkItemTab: React.FC<{
+  isCurrent?: boolean
+  onClick?: () => void
+}> = ({
+  isCurrent,
+  onClick,
+}) => {
+    return (
+      <Tab label="Work item" isCurrent={isCurrent} onClick={onClick}>
+        <div className="flex gap-8">
+          <div className="grow flex flex-col gap-8 max-w-[30em]">
+            <SelectWorkItemCard />
+            <AddTasksCard />
+          </div>
+          <div className="grow">
+            <WorkItemAndItsChildrenCard />
+          </div>
+        </div>
+      </Tab>
+    )
+  }
+
+const PullRequestsTab: React.FC<{
+  isCurrent?: boolean
+  onClick?: () => void
+}> = ({
+  isCurrent,
+  onClick,
+}) => {
+    return (
+      <Tab label="Pull requests" isCurrent={isCurrent} onClick={onClick}>
+        Some summary of active pull requests. Maybe grouped by project. Maybe by date.
+        Maybe untouched ones will be displayed first.
       </Tab>
     )
   }
