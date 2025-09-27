@@ -27,17 +27,17 @@ export const delayMiddleware: (
             })
         }
 
-export const projectUrlMiddleware: <T> (
-    _projectUrl: string | null
+export const baseUrlMiddleware: <T> (
+    _baseUrl: string | null
 ) => Middleware<T, T> =
-    (projectUrl) =>
+    (baseUrl) =>
         (key, options, next) => {
-            if (!projectUrl) {
-                throw new Error(`${projectUrlMiddleware.name}: project URL is not set'`)
+            if (!baseUrl) {
+                throw new Error(`${baseUrlMiddleware.name}: base/project URL is not set'`)
             }
 
             const [localUrl, ...rest] = key
-            const fullUrl = `${projectUrl}/${localUrl}`
+            const fullUrl = `${baseUrl}/${localUrl}`
             const newKey: FetcherKey = [fullUrl, ...rest]
             return next(newKey, options)
         }

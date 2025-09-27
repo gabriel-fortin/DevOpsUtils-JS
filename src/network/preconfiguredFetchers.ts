@@ -2,7 +2,7 @@ import { usePersonalAccessToken } from "@/state/personalAccesssToken"
 import { useProjectUrl } from "@/state/projectUrl"
 
 import { useBasicComposableFetcher } from "./fetcher"
-import { apiVersionMiddleware, patAuthMiddleware, projectUrlMiddleware } from "./middlewares"
+import { apiVersionMiddleware, patAuthMiddleware, baseUrlMiddleware } from "./middlewares"
 
 
 /**
@@ -13,7 +13,7 @@ export function usePreconfiguredComposableFetcher(): ReturnType<typeof useBasicC
     const { projectUrl } = useProjectUrl()
 
     return useBasicComposableFetcher()
-        .with(projectUrlMiddleware(projectUrl)).withKeyExtension(projectUrl)
+        .with(baseUrlMiddleware(projectUrl)).withKeyExtension(projectUrl)
         .with(apiVersionMiddleware())
         .with(patAuthMiddleware(patValue)).withKeyExtension(patValue)
 }
@@ -26,6 +26,6 @@ export function useNoAuthPreconfiguredComposableFetcher(): ReturnType<typeof use
     const { projectUrl } = useProjectUrl()
 
     return useBasicComposableFetcher()
-        .with(projectUrlMiddleware(projectUrl)).withKeyExtension(projectUrl)
+        .with(baseUrlMiddleware(projectUrl)).withKeyExtension(projectUrl)
         .with(apiVersionMiddleware())
 }
