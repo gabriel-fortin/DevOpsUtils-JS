@@ -2,7 +2,7 @@ import useSWR, { KeyedMutator } from "swr"
 
 import { baseUrlMiddleware, FetcherUrl, useBasicComposableFetcher, PROJECTS_URL, apiVersionMiddleware, patAuthMiddleware } from "@/network"
 import { usePersonalAccessToken } from "@/state/personalAccesssToken"
-import { useProjectUrl } from "@/state/projectUrl"
+import { useOrgUrl } from "@/state/projectUrl"
 
 import { projectsDtoResponseMiddleware } from "./projectsDtoResponseMiddleware"
 import { ProjectDto } from "./ProjectDto"
@@ -16,15 +16,9 @@ export function useProjectListCall(): {
     mutate: KeyedMutator<ProjectDto[]>
 } {
     const { patValue } = usePersonalAccessToken()
-    let { projectUrl } = useProjectUrl()
-    
-    let orgUrl = null
-    if (projectUrl) {
-        projectUrl = projectUrl?.endsWith("/") ? projectUrl.slice(0, -1) : projectUrl
-        orgUrl = projectUrl.substring(0, projectUrl.lastIndexOf("/"))
-    }
+    const orgUrl = useOrgUrl()
 
-    const url: FetcherUrl | null = (projectUrl === null) ? null : PROJECTS_URL
+    const url: FetcherUrl | null = (orgUrl === null) ? null : PROJECTS_URL
 
     const { data, error, isLoading, isValidating, mutate } =
         useSWR(
