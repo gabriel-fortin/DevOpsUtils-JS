@@ -1,5 +1,22 @@
 A set of little tools to make my life easier with Azure DevOps
 
+## Project structure
+
+- `components/` – UI components and related logic
+- `dataAccess/` – functions (and supporting constructs) to manage data 
+  either over the network or in local persistence
+- `network` – primitives to make network calls using SWR
+- `state` – storing and exposing application-wide state
+
+
+## Naming convention
+
+- Hooks of the form `useXXCall` make network requests to the DevOps's API.
+- Hooks of the form `useXXStorage` give access to local persistence.
+- Objects called `XXMiddleware` are middleware that can be used with
+  the fetcher system implemented in this project.
+
+
 ## `SWR` and fetchers
 
 This project uses `SWR` and builds an infrastructure on top of it to make the 

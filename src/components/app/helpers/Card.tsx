@@ -8,7 +8,7 @@ const Card: React.FC<{
   render: childrenToRender,
   isHighlighted = false,
 }) => {
-    const border = isHighlighted ? "border border-accent" : "border-3 border-primary"
+    const border = isHighlighted ? "border border-accent" : "border-2 border-primary"
     return (
       <div className={`card p-4 m-1 ${border}`}>
         {childrenToRender}
