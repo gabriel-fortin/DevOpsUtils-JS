@@ -27,8 +27,8 @@ export default function App() {
 
 const MainUi: React.FC = () => {
   return (
-    <main className="main">
-      <h1>A tool for chores in DevOps projects</h1>
+    <main className="main -m-1.5 md:p-6 lg:p-12">
+      <h1 className="px-6 md:p-0">A tool for chores in DevOps projects</h1>
       <TabContainer>
         <ProjectAndAuthTab />
         <WorkItemTab />
