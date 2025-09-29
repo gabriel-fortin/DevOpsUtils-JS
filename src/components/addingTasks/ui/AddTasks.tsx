@@ -1,5 +1,3 @@
-"use client"
-
 import { FC, useMemo, useRef, useState } from "react"
 
 import { Task, createFreshTasksList } from "@/dataAccess/addTask"

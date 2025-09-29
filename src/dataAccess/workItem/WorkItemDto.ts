@@ -1,5 +1,3 @@
-"use client"
-
 import { WORK_ITEMS_URL } from "@/network"
 
 

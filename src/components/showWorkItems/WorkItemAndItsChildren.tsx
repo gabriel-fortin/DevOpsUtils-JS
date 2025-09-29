@@ -1,5 +1,3 @@
-"use client"
-
 import React from "react"
 
 import { getChildrenIds, getParentId, useWorkItemCall } from "@/dataAccess/workItem"
