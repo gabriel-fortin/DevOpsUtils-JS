@@ -1,5 +1,3 @@
-"use client"
-
 import { FC, useRef } from "react"
 
 import { Task } from "@/dataAccess/addTask"

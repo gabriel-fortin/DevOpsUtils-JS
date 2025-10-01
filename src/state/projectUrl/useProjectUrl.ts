@@ -23,3 +23,14 @@ export function useProjectUrl(): HookReturnType {
     removeProjectUrl: () => setter(null),
   }
 }
+
+export function useOrgUrl(): UrlType {
+  let { projectUrl } = useProjectUrl()
+
+  if (!projectUrl) return null
+
+  projectUrl = projectUrl?.endsWith("/") ? projectUrl.slice(0, -1) : projectUrl
+  const orgUrl = projectUrl.substring(0, projectUrl.lastIndexOf("/"))
+
+  return orgUrl
+}

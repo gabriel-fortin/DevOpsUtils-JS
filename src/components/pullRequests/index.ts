@@ -1,0 +1,1 @@
+export { LatestPullRequests } from "./LatestPullRequests"
