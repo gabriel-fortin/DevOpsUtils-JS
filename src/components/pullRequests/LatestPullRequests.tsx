@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 
 import { useProjectListCall } from "@/dataAccess/projects"
-import { useGetPullRequestsByProjectCall, PullRequestDto } from "@/dataAccess/pullRequest"
+import { useGetPullRequestsByProjectCall, PullRequestDto, useGetPrThreadsCall, ThreadDto } from "@/dataAccess/pullRequest"
 
 
 export const LatestPullRequests: React.FC =
@@ -29,7 +29,6 @@ export const LatestPullRequests: React.FC =
       }))
       // put repositories with newer PRs first
       .sort((a, b) => b.prs[0].creationDate.localeCompare(a.prs[0].creationDate))
-
 
     return (
       <>
@@ -94,30 +93,73 @@ const ColumnContent: React.FC<{
     return (
       <div className={`row-2 p-1 bg-base-100`}>
         {pullRequests.map(pr =>
-          // PR card
-          <div key={pr.pullRequestId} className="mb-2 p-2 border border-base-200 rounded-md
-                                            hover:bg-base-200 hover:border-secondary transition-colors duration-200">
-                                              
-            <div className="text-center text-primary-content/30">
-              #{pr.pullRequestId}
-            </div>
-
-            <div className="">
-              {pr.title}
-            </div>
-
-            <div className="text-sm text-primary-content/50 flex gap-2 mt-1">
-              <span> created </span>
-              <span> {new Date(pr.creationDate).toLocaleDateString()} </span>
-              <span> {new Date(pr.creationDate).toLocaleTimeString().slice(0, -3)} </span>
-            </div>
-
-            <div className="text-sm text-primary-content/50 flex gap-2">
-              <span> by </span>
-              <span> {pr.createdBy.displayName} </span>
-            </div>
-          </div>
+          <PrCard key={pr.pullRequestId} pullRequest={pr} />
         )}
       </div>
     )
   }
+
+const PrCard: React.FC<{
+  pullRequest: PullRequestDto
+}> = ({
+  pullRequest: pr,
+}) => {
+    const { threads, error, isLoading } =
+      useGetPrThreadsCall(
+        pr.repository.project.name,
+        pr.repository.name,
+        pr.pullRequestId)
+
+    const requiresAttention = threads && threads.every(not(looksLikeReviewAction))
+
+    return (
+      <div key={pr.pullRequestId}
+          className="mb-2 p-2 border border-base-200 rounded-md
+                    hover:bg-base-200 hover:border-secondary transition-colors duration-200">
+
+        <div className="text-center text-primary-content/30 flex justify-between">
+          <span className="ml-3">#{pr.pullRequestId}</span>
+          {!isLoading && !error && requiresAttention &&
+            <span className="mr-2 badge badge-warning text-black rounded-full">new</span>
+          }
+          {(error || !threads) &&
+            <span className="badge-xs badge badge-error rounded-full"></span>
+          }
+        </div>
+
+        <div className="">
+          {pr.title}
+        </div>
+
+        <div className="text-sm text-primary-content/50 flex gap-2 mt-1">
+          <span> created </span>
+          <span> {new Date(pr.creationDate).toLocaleDateString()} </span>
+          <span> {new Date(pr.creationDate).toLocaleTimeString().slice(0, -3)} </span>
+        </div>
+
+        <div className="text-sm text-primary-content/50 flex gap-2">
+          <span> by </span>
+          <span> {pr.createdBy.displayName} </span>
+        </div>
+      </div>
+    )
+  }
+
+function looksLikeReviewAction(thread: ThreadDto): boolean {
+  // commenting on the PR
+  if (thread.comments[0].commentType === "text") return true
+
+  if (thread.comments[0].commentType === "system") {
+    // voting for the PR
+    if (thread.properties["CodeReviewThreadType"].$value === "VoteUpdate") return true
+
+    // joining as a reviewer
+    if (thread.properties["CodeReviewThreadType"].$value === "ReviewersUpdate") return true
+  }
+
+  return false
+}
+
+function not<T>(fn: (_x: T) => boolean): (_x: T) => boolean {
+  return (x: T) => !fn(x)
+}
