@@ -103,7 +103,7 @@ const NewProjectButton: React.FC<{
   isHighlighted,
 }) => {
     return (
-      <div onClick={clickLink} className={`w-fit btn btn-sm ${isHighlighted && "btn-accent"}`}>
+      <div onClick={clickLink} className={`w-fit btn btn-sm ${isHighlighted && "btn-primary"}`}>
         add project...
       </div>
     )
@@ -142,7 +142,7 @@ const NewProjectInput: React.FC<{
           className="grow"
         />
         <div
-          className="btn btn-sm btn-accent"
+          className="btn btn-sm btn-primary"
           onClick={addNewProject}>
           Add
         </div>
