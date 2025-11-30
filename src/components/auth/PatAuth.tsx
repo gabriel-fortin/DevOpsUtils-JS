@@ -19,6 +19,7 @@ export const PatAuth: React.FC<{
       isHighlight,
       isSaveVisible,
       isLoadVisible,
+      isSaveHighlighted,
     } = usePathAuthLogic(requiresAttention)
 
     // badge used for info in the PAT input field
@@ -66,11 +67,11 @@ export const PatAuth: React.FC<{
         {/* buttons for loading/saving PAT */}
         <div className="flex gap-2">
           <div onClick={savePat} title="Save to local storage"
-            className={`btn btn-xs ${!isSaveVisible && "invisible"}`}
+            className={`btn btn-sm ${isSaveHighlighted && "btn-primary"} ${!isSaveVisible && "invisible"}`}
           >
             Save to local storage
           </div>
-          <div className={`btn btn-xs ${isHighlight && "btn-accent btn-outline"} ${!isLoadVisible && "invisible"}`}
+          <div className={`btn btn-sm ${isHighlight && "btn-accent btn-outline"} ${!isLoadVisible && "invisible"}`}
             onClick={loadPat}
             title="Load from local storage"
           >

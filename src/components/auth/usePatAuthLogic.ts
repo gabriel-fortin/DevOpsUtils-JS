@@ -18,6 +18,7 @@ type HookType = (_requiresAttention: boolean) => {
   isHighlight: boolean
   isSaveVisible: boolean
   isLoadVisible: boolean
+  isSaveHighlighted: boolean
 }
 
 export const usePathAuthLogic: HookType =
@@ -80,5 +81,6 @@ export const usePathAuthLogic: HookType =
       isHighlight: requiresAttention && !currentPatInput,
       isSaveVisible: !!currentPatInput,
       isLoadVisible: !!patInStorage,
+      isSaveHighlighted: state === "YES" && !patInStorage,
     }
   }
