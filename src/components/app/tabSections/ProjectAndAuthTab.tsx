@@ -2,7 +2,7 @@ import { PatAuth } from "@/components/auth"
 import { SelectProjectUrl } from "@/components/selectProjectUrl"
 
 import { usePersonalAccessToken } from "@/state/personalAccesssToken"
-import { useProjectUrl } from "@/state/projectUrl"
+import { IfProjectUrlIsSet, useProjectUrl } from "@/state/projectUrl"
 
 import { Tab } from "../helpers/tabs"
 import Card from "../helpers/Card"
@@ -46,8 +46,10 @@ const PatAuthCard: React.FC =
     const requiresAttention = !!projectUrl && !patValue
 
     return (
-      <Card isHighlighted={requiresAttention}>
-        <PatAuth requiresAttention={requiresAttention} />
-      </Card>
+      <IfProjectUrlIsSet>
+        <Card isHighlighted={requiresAttention}>
+          <PatAuth requiresAttention={requiresAttention} />
+        </Card>
+      </IfProjectUrlIsSet>
     )
   }

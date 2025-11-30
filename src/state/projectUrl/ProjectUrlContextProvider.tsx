@@ -1,7 +1,8 @@
-import { useMemo, useState } from "react"
+import { ReactNode, useMemo, useState } from "react"
 
 import { defaultContextValue, ProjectUrlContext } from "./ProjectUrlContext"
 import { UrlSetterType, UrlType } from "./types"
+import { useProjectUrl } from "./useProjectUrl"
 
 
 export const ProjectUrlContextProvider: React.FC<{
@@ -21,6 +22,16 @@ export const ProjectUrlContextProvider: React.FC<{
         {children}
       </ProjectUrlContext.Provider>
     )
+  }
+
+export const IfProjectUrlIsSet: React.FC<{
+  children: ReactNode
+}> = ({
+  children,
+}) => {
+    const { projectUrl } = useProjectUrl()
+    if (!projectUrl) return null
+    return children
   }
 
 // Prevent common errors when setting project's URL
