@@ -82,7 +82,7 @@ const ProjectItem: React.FC<{
 
     return (
       <div
-        className={`btn flex flex-row flex-flex-nowrap ${classesWhenSelected}`}
+        className={`btn select-text flex flex-row flex-flex-nowrap ${classesWhenSelected}`}
         onClick={selectProject}>
         <span className="grow text-left">
           {projectName}
