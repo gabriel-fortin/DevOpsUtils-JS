@@ -73,6 +73,7 @@ const ProjectItem: React.FC<{
   onProjectSelected: selectProject,
   onProjectRemoved: removeProject,
 }) => {
+    const [hasHover, setHasHover] = useState(false)
     const classesWhenSelected = isSelected && "border-secondary hover:border-secondary"
 
     const handleRemoveProject: React.MouseEventHandler<HTMLElement> = e => {
@@ -83,11 +84,13 @@ const ProjectItem: React.FC<{
     return (
       <div
         className={`btn select-text flex flex-row flex-flex-nowrap ${classesWhenSelected}`}
-        onClick={selectProject}>
+        onClick={selectProject}
+        onMouseEnter={() => setHasHover(true)}
+        onMouseLeave={() => setHasHover(false)}>
         <span className="grow text-left">
           {projectName}
         </span>
-        <span className="btn btn-outline btn-md -my-8 -mr-4 border-0"
+        <span className={`btn btn-outline btn-md -my-8 -mr-4 border-0 opacity-${hasHover ? '100' : '0'}`}
           onClick={handleRemoveProject}>
           ❌
         </span>
