@@ -74,7 +74,9 @@ const ProjectItem: React.FC<{
   onProjectRemoved: removeProject,
 }) => {
     const [hasHover, setHasHover] = useState(false)
-    const classesWhenSelected = isSelected && "border-secondary hover:border-secondary"
+    const classesWhenSelected = isSelected && "bg-base-300/40"
+    const classesWhenHovered = hasHover && "border-secondary"
+    const deleteButtonOpacity = hasHover ? 'opacity-100' : 'opacity-0'
 
     const handleRemoveProject: React.MouseEventHandler<HTMLElement> = e => {
       e.stopPropagation()
@@ -83,14 +85,19 @@ const ProjectItem: React.FC<{
 
     return (
       <div
-        className={`btn select-text flex flex-row flex-flex-nowrap ${classesWhenSelected}`}
+        className={`btn select-text flex flex-row ${classesWhenSelected} ${classesWhenHovered}`}
         onClick={selectProject}
         onMouseEnter={() => setHasHover(true)}
         onMouseLeave={() => setHasHover(false)}>
+        <input
+          type="radio"
+          checked={isSelected}
+          className="radio size-4 mr-2 checked:radio-secondary"
+        />
         <span className="grow text-left">
           {projectName}
         </span>
-        <span className={`btn btn-outline btn-md -my-8 -mr-4 border-0 opacity-${hasHover ? '100' : '0'}`}
+        <span className={`btn btn-outline btn-md -my-8 -mr-4 border-0 ${deleteButtonOpacity}`}
           onClick={handleRemoveProject}>
           ❌
         </span>
