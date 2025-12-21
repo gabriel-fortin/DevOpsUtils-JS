@@ -1,4 +1,4 @@
-import React, {  } from "react"
+import React from "react"
 
 import { usePathAuthLogic } from "./usePatAuthLogic"
 
@@ -19,6 +19,7 @@ export const PatAuth: React.FC<{
       isHighlight,
       isSaveVisible,
       isLoadVisible,
+      isSaveHighlighted,
     } = usePathAuthLogic(requiresAttention)
 
     // badge used for info in the PAT input field
@@ -47,7 +48,7 @@ export const PatAuth: React.FC<{
               placeholder="Personal Access Token"
               className="grow text-ellipsis min-w-14"
             />
-            <span className={`ml-4 -mr-1 px-2 py-0.5 text-sm rounded bagde ${bagdeClass}`}>
+            <span className={`ml-4 -mr-1.5 px-2 py-0.5 text-sm rounded-lg bagde ${bagdeClass}`}>
               {bagdeText}
             </span>
           </label>
@@ -56,7 +57,7 @@ export const PatAuth: React.FC<{
         {/* checkbox for auto-loading PAT */}
         <div className="flex gap-2">
           <input checked={isAutoLoad} onChange={toggleAutoLoad} id="patAutoLoad" type="checkbox"
-            className="checkbox checkbox-primary"
+            className="checkbox checkbox-neutral"
           />
           <label htmlFor="patAutoLoad">
             Load PAT automatically (if previously saved)
@@ -66,11 +67,11 @@ export const PatAuth: React.FC<{
         {/* buttons for loading/saving PAT */}
         <div className="flex gap-2">
           <div onClick={savePat} title="Save to local storage"
-            className={`btn btn-xs ${!isSaveVisible && "invisible"}`}
+            className={`btn btn-sm ${isSaveHighlighted && "btn-primary"} ${!isSaveVisible && "invisible"}`}
           >
             Save to local storage
           </div>
-          <div className={`btn btn-xs ${isHighlight && "btn-accent btn-outline"} ${!isLoadVisible && "invisible"}`}
+          <div className={`btn btn-sm ${isHighlight && "btn-accent btn-outline"} ${!isLoadVisible && "invisible"}`}
             onClick={loadPat}
             title="Load from local storage"
           >

@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @plugin "daisyui" {
   /* themes: light --default, dark --prefersdark, cupcake; */
+  themes: cupcake, coffee, cyberpunk, sunset;
 }
 @plugin "daisyui/theme" {
   name: "gabi2";
@@ -21,9 +22,11 @@
   prefersdark: false;
   --color-neutral: #3D4351;
   --color-base-100: #485166;
-  --color-base-200: #373c48;
+  --color-base-200: #3d4351;
   --color-base-300: #202345;
+  --color-base-content: #DFE9FF;
   --color-primary: #293457;
+  --color-primary-content: #efc86c;
   --color-secondary: #6C93EF;
   --color-accent: #efc86c;
   --color-info: #3b82f6;
@@ -45,6 +48,41 @@
   --color-warning: #f59e0b;
   --color-error: #ef4444;
 }
+@plugin "daisyui/theme" {
+  name: "gabi5";
+  default: true;
+  prefersdark: false;
+  color-scheme: "light dark";
+  --color-base-100: oklch(55% 0.016 285.938);
+  --color-base-200: oklch(44% 0.017 285.786);
+  --color-base-300: oklch(37% 0.013 285.805);
+  --color-base-content: oklch(98% 0.016 73.684);
+  --color-primary: oklch(42% 0.095 57.708);
+  --color-primary-content: oklch(27% 0.006 286.033);
+  --color-secondary: oklch(58% 0.233 277.117);
+  --color-secondary-content: oklch(94% 0.028 342.258);
+  --color-accent: oklch(51% 0.253 323.949);
+  --color-accent-content: oklch(97% 0.017 320.058);
+  --color-neutral: oklch(37% 0.034 259.733);
+  --color-neutral-content: oklch(92% 0.004 286.32);
+  --color-info: oklch(74% 0.16 232.661);
+  --color-info-content: oklch(29% 0.066 243.157);
+  --color-success: oklch(76% 0.177 163.223);
+  --color-success-content: oklch(37% 0.077 168.94);
+  --color-warning: oklch(82% 0.189 84.429);
+  --color-warning-content: oklch(41% 0.112 45.904);
+  --color-error: oklch(71% 0.194 13.428);
+  --color-error-content: oklch(27% 0.105 12.094);
+  --radius-selector: 0.5rem;
+  --radius-field: 1rem;
+  --radius-box: 1rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}
+
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -53,7 +91,6 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -93,7 +130,6 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -108,7 +144,6 @@ button:focus-visible {
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
-    background-color: #ffffff;
   }
   a:hover {
     color: #747bff;
