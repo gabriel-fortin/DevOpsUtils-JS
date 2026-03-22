@@ -1,3 +1,4 @@
+import { Identity } from "./IdentityDto"
 
 export type PullRequestDto = {
     repository: Repository
@@ -34,20 +35,6 @@ export type Project = {
     state: string
     visibility: string
     lastUpdateTime: string
-}
-
-export type Identity = {
-    displayName: string
-    url: string
-    _links: {
-        avatar: {
-            href: string
-        }
-    }
-    id: string
-    uniqueName: string
-    imageUrl: string
-    descriptor: string
 }
 
 export type CommitRef = {
