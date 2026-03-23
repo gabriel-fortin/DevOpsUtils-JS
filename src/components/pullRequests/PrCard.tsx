@@ -1,6 +1,7 @@
 import type { PropsWithChildren } from "react"
 
 import { PullRequestDto, ThreadDto, useGetPrThreadsCall } from "@/dataAccess/pullRequest"
+import { useOrgUrl } from "@/state/projectUrl"
 
 
 export const PrCard: React.FC<{
@@ -48,25 +49,27 @@ const CardHeader: React.FC<{
 }> = ({
   pullRequest: pr,
 }) => {
+    const orgUrl = useOrgUrl()
     const { threads, error, isLoading } =
       useGetPrThreadsCall(
         pr.repository.project.name,
         pr.repository.name,
         pr.pullRequestId)
 
-    const reviewersAvatars: string[] = unique(
-      threads
-        ?.filter(t => t.properties && t.properties["CodeReviewThreadType"]?.$value === "ReviewersUpdate")
-        .map(t => t.identities[1].imageUrl) || []
-    )
-    const requiresAttention = threads && threads.every(not(looksLikeReviewAction))
-    const showAttentionBadge = !isLoading && !error && requiresAttention
+    const prWebUrl = `${orgUrl}/${pr.repository.project.name}/_git/${pr.repository.name}/pullrequest/${pr.pullRequestId}`
+
+    const reviewCommentsOrVotes = threads?.filter(looksLikeReviewAction) ?? []
+    const reviewersAvatars: string[] = unique(reviewCommentsOrVotes.map(extractAvatarUrl))
+    const showAttentionBadge = !isLoading && !error && (reviewCommentsOrVotes.length === 0)
 
     return (
       <div className="text-primary-content/30 flex flex-wrap justify-end gap-x-1 gap-y-1">
 
         {/* PR id */}
-        <span className="ml-3 pr-3 mr-auto justify-self-start">#{pr.pullRequestId}</span>
+        <span onClick={() => window.open(prWebUrl, "_blank", "noreferrer")}
+          className="ml-3 mr-auto pr-3 justify-self-start link link-secondary cursor-pointer">
+          #{pr.pullRequestId}
+        </span>
 
         {/* error badge */}
         {(error || !threads) &&
@@ -100,11 +103,19 @@ function looksLikeReviewAction(thread: ThreadDto): boolean {
     // voting for the PR
     if (thread.properties["CodeReviewThreadType"].$value === "VoteUpdate") return true
 
-    // joining as a reviewer
+    // joining as a reviewer – not included because it can be set by anybody
     // if (thread.properties["CodeReviewThreadType"].$value === "ReviewersUpdate") return true
   }
 
   return false
+}
+
+function extractAvatarUrl(thread: ThreadDto): string {
+  if (thread.comments[0].commentType === "text") {
+    return thread.comments[0].author._links.avatar.href
+  }
+
+  return thread.identities[1].imageUrl
 }
 
 function not<T>(fn: (_x: T) => boolean): (_x: T) => boolean {

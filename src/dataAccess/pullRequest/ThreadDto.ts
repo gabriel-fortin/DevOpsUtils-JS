@@ -42,6 +42,11 @@ export type Author = {
     imageUrl: string
     isContainer?: boolean
     uniqueName?: string
+    _links: {
+        avatar: {
+            href: string
+        }
+    }
 }
 
 export type Comment = {
