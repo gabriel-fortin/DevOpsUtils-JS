@@ -92,6 +92,7 @@ const ProjectItem: React.FC<{
         <input
           type="radio"
           checked={isSelected}
+          onChange={selectProject}
           className="radio size-4 mr-2 checked:radio-secondary"
         />
         <span className="grow text-left">
