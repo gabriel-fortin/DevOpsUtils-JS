@@ -1,3 +1,4 @@
+import { Identity } from "./IdentityDto"
 
 
 export type ThreadDto = {
@@ -8,6 +9,7 @@ export type ThreadDto = {
     comments: Comment[]
     threadContext: PullRequestThreadContext | null
     properties: PullRequestThreadProperties
+    identities: Identity[]
     isDeleted: boolean
     status?: string
 }
@@ -40,6 +42,11 @@ export type Author = {
     imageUrl: string
     isContainer?: boolean
     uniqueName?: string
+    _links: {
+        avatar: {
+            href: string
+        }
+    }
 }
 
 export type Comment = {

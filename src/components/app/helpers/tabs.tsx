@@ -108,7 +108,7 @@ export const Tab: React.FC<{
           </span>
         </span>
         <div className="tab-content p-3 bg-base-100 border-(--color-base-300)">
-          {children}
+          {isActive && children}
         </div>
       </>
     )
