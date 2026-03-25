@@ -22,7 +22,7 @@ export const PersonalAccessTokenContextProvider: React.FC<{
 }> = ({
   children,
 }) => {
-    const [pat, setPat] = useState<string>("")
+    const [pat, setPat] = useState<ValueType>("")
 
     const context: ContextType = {
       patValue: pat,
