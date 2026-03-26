@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from "react"
 
 import { PullRequestDto, ThreadDto, useGetPrThreadsCall } from "@/dataAccess/pullRequest"
-import { useOrgUrl } from "@/state/projectUrl"
+import { useSelectedPr } from "@/state/selectedPr"
 
 
 export const PrCard: React.FC<{
@@ -49,14 +49,12 @@ const CardHeader: React.FC<{
 }> = ({
   pullRequest: pr,
 }) => {
-    const orgUrl = useOrgUrl()
+    const { setSelectedPr } = useSelectedPr()
     const { threads, error, isLoading } =
       useGetPrThreadsCall(
         pr.repository.project.name,
         pr.repository.name,
         pr.pullRequestId)
-
-    const prWebUrl = `${orgUrl}/${pr.repository.project.name}/_git/${pr.repository.name}/pullrequest/${pr.pullRequestId}`
 
     const reviewCommentsOrVotes = threads?.filter(looksLikeReviewAction) ?? []
     const reviewersAvatars: string[] = unique(reviewCommentsOrVotes.map(extractAvatarUrl))
@@ -66,7 +64,7 @@ const CardHeader: React.FC<{
       <div className="text-primary-content/30 flex flex-wrap justify-end gap-x-1 gap-y-1">
 
         {/* PR id */}
-        <span onClick={() => window.open(prWebUrl, "_blank", "noreferrer")}
+        <span onClick={() => setSelectedPr(pr)}
           className="ml-3 mr-auto pr-3 justify-self-start link link-secondary cursor-pointer">
           #{pr.pullRequestId}
         </span>
