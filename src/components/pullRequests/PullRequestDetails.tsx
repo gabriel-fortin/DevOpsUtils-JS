@@ -1,40 +1,124 @@
+import { ThreadDto, useGetPrThreadsCall } from "@/dataAccess/pullRequest"
 import { useOrgUrl } from "@/state/projectUrl"
 import { useSelectedPr } from "@/state/selectedPr"
 
 
 export const PullRequestDetails: React.FC = () => {
-	return (
-		<>
-			<SelectedPrLink />
-			<ClearSelectedPrButton />
-		</>
-	)
+  return (
+    <>
+      <div className="flex items-center">
+        <SelectedPrLink />
+        <ClearSelectedPrButton />
+      </div>
+
+      {/* Threads area */}
+      <div className="mt-2">
+        <ThreadsDisplay />
+      </div>
+    </>
+  )
 }
 
 const SelectedPrLink: React.FC = () => {
-	const orgUrl = useOrgUrl()
-	const { selectedPr: pr } = useSelectedPr()
+  const orgUrl = useOrgUrl()
+  const { selectedPr: pr } = useSelectedPr()
 
-	if (!pr) return null
+  if (!pr) return null
 
-	const prWebUrl = `${orgUrl}/${pr.repository.project.name}/_git/${pr.repository.name}/pullrequest/${pr.pullRequestId}`
+  const prWebUrl = `${orgUrl}/${pr.repository.project.name}/_git/${pr.repository.name}/pullrequest/${pr.pullRequestId}`
 
-	return (
-		<a href={prWebUrl} target="_blank" rel="noreferrer"
-			className="link link-secondary">
-			PR #{pr!.pullRequestId}
-		</a>
-	)
+  return (
+    <a href={prWebUrl} target="_blank" rel="noreferrer"
+      className="link link-secondary">
+      PR #{pr!.pullRequestId}
+    </a>
+  )
 }
 
 const ClearSelectedPrButton: React.FC = () => {
-	const { setSelectedPr } = useSelectedPr()
+  const { setSelectedPr } = useSelectedPr()
 
-	return (
-		<button onClick={() => setSelectedPr(null)}
-			className="btn btn-xs ml-2"
-			aria-label="Clear selected PR">
-			✕
-		</button>
-	)
+  return (
+    <button onClick={() => setSelectedPr(null)}
+      className="btn btn-xs ml-2"
+      aria-label="Clear selected PR">
+      ✕
+    </button>
+  )
 }
+
+const ThreadsDisplay: React.FC = () => {
+  const { selectedPr: pr } = useSelectedPr()
+  const { threads, error, isLoading } = useGetPrThreadsCall(
+    pr?.repository.project.name,
+    pr?.repository.name,
+    pr?.pullRequestId,
+  )
+
+  const showNoThreadsMessage = !isLoading && !error && (!threads || threads.length === 0)
+  const showThreads = threads && threads.length > 0
+
+  return (
+    <>
+      {isLoading &&
+        <div className="text-sm">Loading threads...</div>
+      }
+      {error &&
+        <div className="text-sm text-error">Error loading threads: {error.message}</div>
+      }
+      {showNoThreadsMessage &&
+        <div className="text-sm text-muted">No threads for this PR.</div>
+      }
+      {showThreads &&
+        <ThreadList threads={threads!} />
+      }
+    </>
+  )
+}
+
+const ThreadList: React.FC<{
+  threads: ThreadDto[]
+}> = ({
+  threads
+}) => {
+    const filteredAndSorted = threads
+      .filter(t => t.comments[0]?.commentType === 'text')
+      .sort((a, b) =>
+        new Date(b.publishedDate).getTime() - new Date(a.publishedDate).getTime()
+      )
+    return (
+      <div className="space-y-2">
+        {filteredAndSorted.map(t => (
+          <ThreadItem key={t.id} thread={t} />
+        ))}
+      </div>
+    )
+  }
+
+const ThreadItem: React.FC<{
+  thread: ThreadDto
+}> = ({
+  thread
+}) => {
+    return (
+      <div className="p-3 pt-2 border rounded-md bg-base-100">
+        <div className="text-xs text-primary-content/90 mb-2 flex justify-between">
+          <span>Thread #{thread.id}</span>
+          <span>{new Date(thread.publishedDate).toLocaleString()}</span>
+        </div>
+
+        {/* show comments */}
+        <div className="space-y-2 text-sm">
+          {thread.comments.map(c => (
+            <div>
+              <div key={c.id} className="flex gap-3 text-xs text-primary-content/50">
+                <div>{c.author.displayName}</div>
+                <div>{new Date(c.publishedDate).toLocaleString()}</div>
+              </div>
+              <div className="whitespace-pre-wrap">{c.content}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
