@@ -95,6 +95,29 @@ const ThreadList: React.FC<{
     )
   }
 
+const THREAD_STATUSES = ["active", "pending", "resolved", "won't fix", "closed"]
+
+const StatusDropdown: React.FC<{
+  status: string
+}> = ({
+  status
+}) => {
+    return (
+      <div className="dropdown dropdown-hover">
+        <button className="btn btn-xs btn-primary w-22">{status}</button>
+        <ul className="dropdown-content menu bg-base-200 rounded-box shadow">
+          {THREAD_STATUSES.map(s => (
+            <li key={s}>
+              <span className="text-secondary-content" onClick={() => alert("This will set the status")}>
+                {s}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )
+  }
+
 const ThreadItem: React.FC<{
   thread: ThreadDto
 }> = ({
@@ -102,16 +125,18 @@ const ThreadItem: React.FC<{
 }) => {
     return (
       <div className="p-3 pt-2 border rounded-md bg-base-100">
-        <div className="text-xs text-primary-content/90 mb-2 flex justify-between">
-          <span>Thread #{thread.id}</span>
+        {/* thread item header */}
+        <div className="text-xs text-primary-content/90 mb-2 flex justify-between items-center gap-3">
+          <span className="mr-auto">Thread {thread.id}</span>
+          <StatusDropdown status={thread.status || "???"} />
           <span>{new Date(thread.publishedDate).toLocaleString()}</span>
         </div>
 
         {/* show comments */}
         <div className="space-y-2 text-sm">
           {thread.comments.map(c => (
-            <div>
-              <div key={c.id} className="flex gap-3 text-xs text-primary-content/50">
+            <div key={c.id}>
+              <div className="flex gap-3 text-xs text-primary-content/50">
                 <div>{c.author.displayName}</div>
                 <div>{new Date(c.publishedDate).toLocaleString()}</div>
               </div>
