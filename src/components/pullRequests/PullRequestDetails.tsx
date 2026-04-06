@@ -30,7 +30,7 @@ const SelectedPrLink: React.FC = () => {
   return (
     <a href={prWebUrl} target="_blank" rel="noreferrer"
       className="link link-secondary">
-      PR #{pr!.pullRequestId}
+      PR #{pr.pullRequestId}
     </a>
   )
 }
@@ -104,7 +104,7 @@ const StatusDropdown: React.FC<{
 }) => {
     return (
       <div className="dropdown dropdown-hover">
-        <button className="btn btn-xs btn-primary w-22">{status}</button>
+        <button className="btn btn-xs btn-primary w-24">{status}</button>
         <ul className="dropdown-content menu bg-base-200 rounded-box shadow">
           {THREAD_STATUSES.map(s => (
             <li key={s}>

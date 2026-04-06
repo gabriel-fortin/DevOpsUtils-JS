@@ -6,7 +6,7 @@ import { PullRequestDto } from "@/dataAccess/pullRequest"
 type ValueType = PullRequestDto | null
 type ContextData = {
   selectedPr: ValueType
-  setSelectedPr: (_newId: ValueType) => void
+  setSelectedPr: (_newDto: ValueType) => void
 }
 
 const defaultData: ContextData = {
