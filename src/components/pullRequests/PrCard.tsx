@@ -116,10 +116,6 @@ function extractAvatarUrl(thread: ThreadDto): string {
   return thread.identities[1].imageUrl
 }
 
-function not<T>(fn: (_x: T) => boolean): (_x: T) => boolean {
-  return (x: T) => !fn(x)
-}
-
 function unique<T>(array: T[]): T[] {
   return Array.from(new Set(array))
 }
