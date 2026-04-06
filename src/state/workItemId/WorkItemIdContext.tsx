@@ -22,7 +22,7 @@ export const WorkItemIdContextProvider: React.FC<{
 }> = ({
   children,
 }) => {
-    const [workItemId, setWorkItemId] = useState<ContextData["workItemId"]>(null)
+    const [workItemId, setWorkItemId] = useState<ValueType>(null)
 
     return (
       <WorkItemIdContext.Provider value={{ workItemId, setWorkItemId }}>
