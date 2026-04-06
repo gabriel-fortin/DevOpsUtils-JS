@@ -6,9 +6,9 @@ import { useSelectedPr } from "@/state/selectedPr"
 export const PullRequestDetails: React.FC = () => {
   return (
     <>
-      <div className="flex items-center">
+      <div className="flex justify-between items-center">
         <SelectedPrLink />
-        <ClearSelectedPrButton />
+        <CloseButton />
       </div>
 
       {/* Threads area */}
@@ -35,13 +35,13 @@ const SelectedPrLink: React.FC = () => {
   )
 }
 
-const ClearSelectedPrButton: React.FC = () => {
+const CloseButton: React.FC = () => {
   const { setSelectedPr } = useSelectedPr()
 
   return (
     <button onClick={() => setSelectedPr(null)}
-      className="btn btn-xs ml-2"
-      aria-label="Clear selected PR">
+      className="btn btn-sm btn-circle btn-primary ml-2"
+      aria-label="Close details view">
       ✕
     </button>
   )
