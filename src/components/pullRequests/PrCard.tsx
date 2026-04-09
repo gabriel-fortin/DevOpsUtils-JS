@@ -10,7 +10,7 @@ export const PrCard: React.FC<{
   pullRequest: pr,
 }) => {
     return (
-      <CardOutline>
+      <CardOutline pullRequest={pr}>
         <CardHeader pullRequest={pr} />
 
         {/* CONTENT - PR title */}
@@ -33,14 +33,21 @@ export const PrCard: React.FC<{
     )
   }
 
-const CardOutline: React.FC<PropsWithChildren> = ({
+const CardOutline: React.FC<PropsWithChildren<{
+  pullRequest: PullRequestDto
+}>> = ({
+  pullRequest: pr,
   children,
 }) => {
+    const { setSelectedPr } = useSelectedPr()
+
   return (
-    <div className="mb-2 p-2 border border-base-200 rounded-md
-                    hover:bg-base-200 hover:border-secondary transition-colors duration-200">
+    <div className="mb-2 p-2 border border-base-200 rounded-md cursor-pointer
+                    hover:bg-base-200 hover:border-secondary transition-colors duration-200"
+      onClick={() => setSelectedPr(pr)}
+    >
       {children}
-    </div>
+    </div >
   )
 }
 
@@ -49,7 +56,6 @@ const CardHeader: React.FC<{
 }> = ({
   pullRequest: pr,
 }) => {
-    const { setSelectedPr } = useSelectedPr()
     const { threads, error, isLoading } =
       useGetPrThreadsCall(
         pr.repository.project.name,
@@ -61,11 +67,10 @@ const CardHeader: React.FC<{
     const showAttentionBadge = !isLoading && !error && (reviewCommentsOrVotes.length === 0)
 
     return (
-      <div className="text-primary-content/30 flex flex-wrap justify-end gap-x-1 gap-y-1">
+      <div className="text-primary-content/50 flex flex-wrap justify-end gap-1">
 
         {/* PR id */}
-        <span onClick={() => setSelectedPr(pr)}
-          className="ml-3 mr-auto pr-3 justify-self-start link link-secondary cursor-pointer">
+        <span className="ml-3 mr-auto pr-3 justify-self-start">
           #{pr.pullRequestId}
         </span>
 
