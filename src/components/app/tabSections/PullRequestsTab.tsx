@@ -1,4 +1,5 @@
-import { LatestPullRequests, PullRequestDetails } from "@/components/pullRequests"
+import { LatestPullRequests } from "@/components/pullRequests"
+import { PullRequestDetails } from "@/components/pullRequestDetails"
 import { SelectedPrContextProvider, WhenSelectedPrExists, WhenSelectedPrIsNull } from "@/state/selectedPr"
 
 import { useOrgUrl } from "@/state/projectUrl"
