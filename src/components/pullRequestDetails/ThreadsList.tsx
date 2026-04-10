@@ -4,7 +4,11 @@ import { useSelectedPr } from "@/state/selectedPr"
 import { ThreadItem } from "./Thread"
 
 
-export const ThreadsList: React.FC = () => {
+export const ThreadsList: React.FC<{
+	activeStatuses: Set<string>
+}> = ({
+	activeStatuses
+}) => {
 	const { selectedPr: pr } = useSelectedPr()
 	const { threads, error, isLoading } = useGetPrThreadsCall(
 		pr?.repository.project.name,
@@ -15,8 +19,9 @@ export const ThreadsList: React.FC = () => {
 	const showThreads = threads && threads.length > 0
 	const showNoThreadsMessage = !isLoading && !error && !showThreads
 
-	const filteredAndSortedThreads = (threads ?? [])
+	const conversationThreads = (threads ?? [])
 		.filter(t => t.comments[0]?.commentType === 'text')
+		.filter(t => activeStatuses.size === 0 || activeStatuses.has(t.status ?? ""))
 		.sort((a, b) =>
 			new Date(b.publishedDate).getTime() - new Date(a.publishedDate).getTime()
 		)
@@ -34,7 +39,7 @@ export const ThreadsList: React.FC = () => {
 			}
 			{showThreads &&
 				<div className="space-y-2">
-					{filteredAndSortedThreads.map(t => (
+					{conversationThreads.map(t => (
 						<ThreadItem key={t.id} thread={t} />
 					))}
 				</div>

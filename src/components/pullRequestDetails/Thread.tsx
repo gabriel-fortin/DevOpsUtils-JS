@@ -1,7 +1,7 @@
 import { ThreadDto } from "@/dataAccess/pullRequest"
 
+import { THREAD_STATUSES } from "./constants"
 
-const THREAD_STATUSES = ["active", "pending", "fixed", "won't fix", "closed"]
 
 export const ThreadItem: React.FC<{
   thread: ThreadDto

@@ -1,10 +1,24 @@
+import { useState } from "react"
+
 import { useOrgUrl } from "@/state/projectUrl"
 import { useSelectedPr } from "@/state/selectedPr"
 
 import { ThreadsList } from "./ThreadsList"
+import { THREAD_STATUSES } from "./constants"
 
 
 export const PullRequestDetails: React.FC = () => {
+  const [activeStatuses, setActiveStatuses] = useState<Set<string>>(new Set())
+
+  const toggleStatus = (status: string) => {
+    setActiveStatuses(prev => {
+      const next = new Set(prev)
+      if (next.has(status)) next.delete(status)
+      else next.add(status)
+      return next
+    })
+  }
+
   return (
     <>
       <div className="flex gap-5 items-center">
@@ -14,12 +28,33 @@ export const PullRequestDetails: React.FC = () => {
       </div>
 
       {/* main content: threads */}
-      <div className="mt-3">
-        <ThreadsList />
-      </div>
+        <FiltersPanel activeStatuses={activeStatuses} toggleStatus={toggleStatus} />
+        <ThreadsList activeStatuses={activeStatuses} />
     </>
   )
 }
+
+const FiltersPanel: React.FC<{
+  activeStatuses: Set<string>
+  toggleStatus: (_status: string) => void
+}> = ({
+  activeStatuses,
+  toggleStatus,
+}) => {
+    return (
+      <div className="flex gap-3 mb-2 flex-wrap w-fit ml-auto bg-base-200 p-2 rounded-xl">
+        <span className="ml-2">Filtering:</span>
+        {THREAD_STATUSES.map(s => (
+          <button key={s}
+            onClick={() => toggleStatus(s)}
+            className={`btn btn-xs ${activeStatuses.has(s) ? "btn-primary" : "btn-soft"}`}
+          >
+            {s}
+          </button>
+        ))}
+      </div>
+    )
+  }
 
 const SelectedPrLink: React.FC = () => {
   const orgUrl = useOrgUrl()
