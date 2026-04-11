@@ -1,4 +1,6 @@
 import { ThreadDto } from "@/dataAccess/pullRequest"
+import { useOrgUrl } from "@/state/projectUrl"
+import { useSelectedPr } from "@/state/selectedPr"
 
 import { THREAD_STATUSES } from "./constants"
 
@@ -8,6 +10,13 @@ export const Thread: React.FC<{
 }> = ({
   thread
 }) => {
+    const orgUrl = useOrgUrl()
+    const { selectedPr: pr } = useSelectedPr()
+
+    const threadUrl = pr
+      ? `${orgUrl}/${pr.repository.project.name}/_git/${pr.repository.name}/pullrequest/${pr.pullRequestId}?discussionId=${thread.id}#${thread.comments[0]?.id}`
+      : undefined
+
     return (
       <div className="p-3 pt-2 border rounded-md bg-base-100">
 
@@ -15,7 +24,11 @@ export const Thread: React.FC<{
         <div className="text-xs text-primary-content/90
                         mb-2 flex justify-between gap-3 items-center">
           <span className="mr-auto">
-            Thread {thread.id}
+            <span onClick={() => window.open(threadUrl, '_blank')}
+              role="link"
+              className="link link-secondary cursor-pointer">
+              Thread {thread.id}
+            </span>
           </span>
           <StatusDropdown status={thread.status || "???"} />
           <span>
@@ -51,7 +64,8 @@ const StatusDropdown: React.FC<{
           {THREAD_STATUSES.map(s => (
             <li key={s}>
               <span className="text-secondary-content"
-                    onClick={() => alert("This will set the status")}>
+                onClick={() => alert("This will set the status")}
+              >
                 {s}
               </span>
             </li>
