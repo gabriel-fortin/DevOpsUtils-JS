@@ -1,7 +1,7 @@
 import { useGetPrThreadsCall } from "@/dataAccess/pullRequest"
 import { useSelectedPr } from "@/state/selectedPr"
 
-import { ThreadItem } from "./Thread"
+import { Thread } from "./Thread"
 
 
 export const ThreadsList: React.FC<{
@@ -40,7 +40,7 @@ export const ThreadsList: React.FC<{
 			{showThreads &&
 				<div className="space-y-2">
 					{conversationThreads.map(t => (
-						<ThreadItem key={t.id} thread={t} />
+						<Thread key={t.id} thread={t} />
 					))}
 				</div>
 			}

@@ -3,7 +3,7 @@ import { ThreadDto } from "@/dataAccess/pullRequest"
 import { THREAD_STATUSES } from "./constants"
 
 
-export const ThreadItem: React.FC<{
+export const Thread: React.FC<{
   thread: ThreadDto
 }> = ({
   thread
