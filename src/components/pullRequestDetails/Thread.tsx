@@ -1,4 +1,4 @@
-import { ThreadDto } from "@/dataAccess/pullRequest"
+import { ThreadDto, useUpdateThreadStatusCall } from "@/dataAccess/pullRequest"
 import { useOrgUrl } from "@/state/projectUrl"
 import { useSelectedPr } from "@/state/selectedPr"
 
@@ -12,6 +12,13 @@ export const Thread: React.FC<{
 }) => {
     const orgUrl = useOrgUrl()
     const { selectedPr: pr } = useSelectedPr()
+
+    const { trigger: setThreadStatus, isMutating } = useUpdateThreadStatusCall(
+      pr?.repository.project.name,
+      pr?.repository.name,
+      pr?.pullRequestId,
+      thread.id,
+    )
 
     const threadUrl = pr
       ? `${orgUrl}/${pr.repository.project.name}/_git/${pr.repository.name}/pullrequest/${pr.pullRequestId}?discussionId=${thread.id}#${thread.comments[0]?.id}`
@@ -30,7 +37,11 @@ export const Thread: React.FC<{
               Thread {thread.id}
             </span>
           </span>
-          <StatusDropdown status={thread.status || "???"} />
+          <StatusDropdown
+            status={thread.status || "???"}
+            onStatusChange={setThreadStatus}
+            isMutating={isMutating}
+          />
           <span>
             {new Date(thread.publishedDate).toLocaleString()}
           </span>
@@ -54,17 +65,23 @@ export const Thread: React.FC<{
 
 const StatusDropdown: React.FC<{
   status: string
+  onStatusChange: (_newStatus: string) => void
+  isMutating: boolean
 }> = ({
-  status
+  status,
+  onStatusChange,
+  isMutating,
 }) => {
     return (
       <div className="dropdown dropdown-hover">
-        <button className="btn btn-xs btn-primary w-24">{status}</button>
+        <button
+          disabled={isMutating}
+          className="btn btn-xs btn-primary w-24">{status}</button>
         <ul className="dropdown-content menu bg-base-200 rounded-box shadow">
           {THREAD_STATUSES.map(s => (
             <li key={s}>
               <span className="text-secondary-content"
-                onClick={() => alert("This will set the status")}
+                onClick={() => onStatusChange(s)}
               >
                 {s}
               </span>
