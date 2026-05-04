@@ -1,11 +1,33 @@
 import { ThreadDto, useUpdateThreadStatusCall } from "@/dataAccess/pullRequest"
-import { useOrgUrl } from "@/state/projectUrl"
+import { ProjectUrlContext, useOrgUrl, useProjectUrl } from "@/state/projectUrl"
 import { useSelectedPr } from "@/state/selectedPr"
 
 import { THREAD_STATUSES } from "./constants"
 
 
 export const Thread: React.FC<{
+    thread: ThreadDto
+  }> = ({
+    thread
+  }) => {
+      const { selectedPr: pr } = useSelectedPr()
+      const { projectUrl, setProjectUrl } = useProjectUrl()
+
+      const modifiedProjectUrl = (() => {
+        if (!projectUrl || !pr) return projectUrl
+        const trimmed = projectUrl.endsWith("/") ? projectUrl.slice(0, -1) : projectUrl
+        const base = trimmed.substring(0, trimmed.lastIndexOf("/"))
+        return `${base}/${pr.repository.project.name}`
+      })()
+
+      return (
+        <ProjectUrlContext.Provider value={{ value: modifiedProjectUrl, setter: setProjectUrl }}>
+          <ThreadInternal thread={thread} />
+        </ProjectUrlContext.Provider>
+      )
+    }
+
+  const ThreadInternal: React.FC<{
   thread: ThreadDto
 }> = ({
   thread
