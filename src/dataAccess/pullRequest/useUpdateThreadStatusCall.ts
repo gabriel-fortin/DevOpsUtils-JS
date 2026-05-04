@@ -1,8 +1,9 @@
-import useSWRMutation from "swr/mutation"
+import useSWRMutation, { SWRMutationResponse } from "swr/mutation"
 
-import { FetcherUrl, usePreconfiguredComposableFetcher, REPOSITORIES_URL } from "@/network"
+import { FetcherUrl, FetcherKey, usePreconfiguredComposableFetcher, REPOSITORIES_URL } from "@/network"
 
 import { useGetPrThreadsCall } from "./useGetPrThreadsCall"
+import { statusResponseErrorsMiddleware } from "./statusResponseErrorsMiddleware"
 
 
 export function useUpdateThreadStatusCall(
@@ -10,14 +11,15 @@ export function useUpdateThreadStatusCall(
     repositoryName: string | undefined,
     pullRequestId: number | undefined,
     threadId: number,
-) {
+): SWRMutationResponse<null, string[] | Error, FetcherKey, string> {
     const url: FetcherUrl | null =
         (!repositoryName || !pullRequestId) ? null
             : `${REPOSITORIES_URL}/${repositoryName}/pullRequests/${pullRequestId}/threads/${threadId}`
 
-    const { data, error, trigger, reset, isMutating } =
+    const { data: _, error, trigger, reset, isMutating } =
         useSWRMutation(
             ...usePreconfiguredComposableFetcher()
+                .with(statusResponseErrorsMiddleware)
                 .buildForMutation(url, payloadBuilder)
         )
 
@@ -28,14 +30,21 @@ export function useUpdateThreadStatusCall(
         repositoryName,
         pullRequestId,
     )
-    const triggerAndRefresh: (_newStatus: string) => ReturnType<typeof trigger> =
+    const triggerAndRefresh: (_newStatus: string) => Promise<null> =
         async (newStatus) => {
             const result = await trigger(newStatus)
             refreshThreads()
             return result
         }
 
-    return { data, error, trigger: triggerAndRefresh, reset, isMutating }
+
+    return {
+        data: undefined,
+        error,
+        trigger: triggerAndRefresh,
+        reset,
+        isMutating
+    }
 }
 
 function payloadBuilder(newStatus: string): RequestInit {

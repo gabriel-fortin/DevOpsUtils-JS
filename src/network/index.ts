@@ -1,4 +1,4 @@
-import { FetcherUrl, Middleware, useBasicComposableFetcher } from "./fetcher"
+import { FetcherUrl, FetcherKey, Middleware, useBasicComposableFetcher } from "./fetcher"
 import { apiVersionMiddleware, delayMiddleware, patAuthMiddleware, baseUrlMiddleware } from "./middlewares"
 import { useNoAuthPreconfiguredComposableFetcher, usePreconfiguredComposableFetcher } from "./preconfiguredFetchers"
 
@@ -13,5 +13,6 @@ export {
 
 export type {
     FetcherUrl,
+    FetcherKey,
     Middleware
 }
