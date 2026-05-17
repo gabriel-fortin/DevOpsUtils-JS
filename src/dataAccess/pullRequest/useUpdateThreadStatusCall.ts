@@ -1,6 +1,6 @@
 import useSWRMutation, { SWRMutationResponse } from "swr/mutation"
 
-import { FetcherUrl, FetcherKey, usePreconfiguredComposableFetcher, REPOSITORIES_URL } from "@/network"
+import { FetcherUrl, FetcherKey, useOrgLevelPreconfiguredComposableFetcher, REPOSITORIES_URL } from "@/network"
 
 import { useGetPrThreadsCall } from "./useGetPrThreadsCall"
 import { statusResponseErrorsMiddleware } from "./statusResponseErrorsMiddleware"
@@ -14,11 +14,11 @@ export function useUpdateThreadStatusCall(
 ): SWRMutationResponse<null, string[] | Error, FetcherKey, string> {
     const url: FetcherUrl | null =
         (!repositoryName || !pullRequestId) ? null
-            : `${REPOSITORIES_URL}/${repositoryName}/pullRequests/${pullRequestId}/threads/${threadId}`
+            : `${projectName}/${REPOSITORIES_URL}/${repositoryName}/pullRequests/${pullRequestId}/threads/${threadId}`
 
     const { data: _, error, trigger, reset, isMutating } =
         useSWRMutation(
-            ...usePreconfiguredComposableFetcher()
+            ...useOrgLevelPreconfiguredComposableFetcher()
                 .with(statusResponseErrorsMiddleware)
                 .buildForMutation(url, payloadBuilder)
         )
