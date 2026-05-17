@@ -18,11 +18,11 @@ export type Middleware<TReturn1, TReturn2> = (
 interface ComposableFetcherBuilder<TReturn> {
     /**
      * Allows to expand what the bare fetch operations does
-     * @param middleware will enhance the fetching process by adding payload, headers,
+     * @param _middleware will enhance the fetching process by adding payload, headers,
      *  validation, response parsing and more 
      * @returns an new instance of the builder which can build an enhanced fetcher
     */
-    with: <TNewReturn> (_: Middleware<TReturn, TNewReturn>) => ComposableFetcherBuilder<TNewReturn>
+    with: <TNewReturn> (_middleware: Middleware<TReturn, TNewReturn>) => ComposableFetcherBuilder<TNewReturn>
 
     /**
      * Adds data to the key so that a change in that data triggers a re-fetch
@@ -33,8 +33,23 @@ interface ComposableFetcherBuilder<TReturn> {
 
     /**
      * Builds a fetcher which will execute all the composed middleware
+     * @returns arguments for the 'useSWR' function
      */
-    build: (_url: FetcherUrl | null) => [FetcherKey | null, (_key: FetcherKey) => Promise<TReturn>]
+    build: (_url: FetcherUrl | null) => [
+        FetcherKey | null,
+        (_key: FetcherKey) => Promise<TReturn>
+    ]
+
+    /**
+     * Builds a mutating fetcher which will execute all the composed middleware.
+     * @param _argAccepter takes the argument passed to the 'trigger' function
+     *                     and transforms it into the initial RequestInit for the middleware chain
+     * @returns arguments for the 'useSWRMutation' function
+     */
+    buildForMutation: <TTriggerInput>(_url: FetcherUrl | null, _argAccepter: (_arg: TTriggerInput) => RequestInit) => [
+        FetcherKey | null,
+        (_key: FetcherKey, _wrappedArg: { arg: TTriggerInput }) => Promise<TReturn>
+    ]
 }
 
 class BuilderImpl<TReturn> implements ComposableFetcherBuilder<TReturn> {
@@ -67,6 +82,15 @@ class BuilderImpl<TReturn> implements ComposableFetcherBuilder<TReturn> {
         return [
             actualKeyForSwr,
             key => this.innerFetcher(key, {} as RequestInit)
+        ]
+    }
+
+    buildForMutation<TTriggerInput>(url: FetcherUrl | null, argAccepter: (_arg: TTriggerInput) => RequestInit)
+        : [FetcherKey | null, (_key: FetcherKey, _wrappedArg: { arg: TTriggerInput }) => Promise<TReturn>] {
+        const actualKeyForSwr: FetcherKey | null = (url == null) ? null : [url, this.fetcherKeyAdditions]
+        return [
+            actualKeyForSwr,
+            (key, wrappedArg) => this.innerFetcher(key, argAccepter(wrappedArg.arg))
         ]
     }
 }

@@ -1,8 +1,6 @@
 import useSWR, { KeyedMutator } from "swr"
 
-import { apiVersionMiddleware, baseUrlMiddleware, FetcherUrl, patAuthMiddleware, REPOSITORIES_URL, useBasicComposableFetcher } from "@/network"
-import { usePersonalAccessToken } from "@/state/personalAccesssToken"
-import { useOrgUrl } from "@/state/projectUrl"
+import { FetcherUrl, REPOSITORIES_URL, useOrgLevelPreconfiguredComposableFetcher } from "@/network"
 
 import { ThreadDto } from "./ThreadDto"
 import { threadDtoResponseMiddleware } from "./threadDtoResponseMiddleware"
@@ -14,24 +12,18 @@ export function useGetPrThreadsCall(
     pullRequestIdOrName: number | undefined,
 ): {
     threads: ThreadDto[] | undefined,
-    error: Error,
+    error: Error | undefined,
     isLoading: boolean,
     isValidating: boolean,
     mutate: KeyedMutator<ThreadDto[]>
 } {
-    const orgUrl = useOrgUrl()
-    const { patValue } = usePersonalAccessToken()
-
     const url: FetcherUrl | null =
         (!projectIdOrName || !repositoryIdOrName || !pullRequestIdOrName) ? null
             : `${projectIdOrName}/${REPOSITORIES_URL}/${repositoryIdOrName}/pullRequests/${pullRequestIdOrName}/threads`
 
     const { data, error, isLoading, isValidating, mutate } =
         useSWR(
-            ...useBasicComposableFetcher()
-                .with(baseUrlMiddleware(orgUrl)).withKeyExtension(orgUrl)
-                .with(apiVersionMiddleware())
-                .with(patAuthMiddleware(patValue)).withKeyExtension(patValue)
+            ...useOrgLevelPreconfiguredComposableFetcher()
                 .with<ThreadDto[]>(threadDtoResponseMiddleware)
                 .build(url),
         )
