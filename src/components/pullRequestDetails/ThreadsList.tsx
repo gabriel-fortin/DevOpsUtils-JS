@@ -16,8 +16,8 @@ export const ThreadsList: React.FC<{
 		pr?.pullRequestId,
 	)
 
-	const showThreads = threads && threads.length > 0
-	const showNoThreadsMessage = !isLoading && !error && !showThreads
+	const hasThreads = threads && threads.length > 0
+	const showNoThreadsMessage = !isLoading && !error && !hasThreads
 
 	const conversationThreads = (threads ?? [])
 		.filter(t => t.comments[0]?.commentType === 'text')
@@ -37,7 +37,10 @@ export const ThreadsList: React.FC<{
 			{showNoThreadsMessage &&
 				<div className="text-sm text-muted">No threads for this PR.</div>
 			}
-			{showThreads &&
+			{conversationThreads.length === 0 &&
+				<div className="text-sm text-muted">All threads are filtered out.</div>
+			}
+			{conversationThreads.length > 0 &&
 				<div className="space-y-2">
 					{conversationThreads.map(t => (
 						<Thread key={t.id} thread={t} />

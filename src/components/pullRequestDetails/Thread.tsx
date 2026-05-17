@@ -59,10 +59,13 @@ export const Thread: React.FC<{
         text: e,
         id: Math.random().toString(36).substring(2, 15)
       }))
+      // add new toasts to the end of the array
       setToasts(prev => [...prev, ...newToastItems])
 
       setTimeout(() => {
-        setToasts(prev => prev.slice(errors.length))
+        // when the time comes, the toasts are removed from the beginning of the array
+        // (all toasts previously at the front were already removed at this point in time)
+        setToasts(prev => prev.slice(newToastItems.length))
       }, 8000)
     }, [error])
 

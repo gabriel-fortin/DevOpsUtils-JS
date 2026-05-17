@@ -33,7 +33,7 @@ interface ComposableFetcherBuilder<TReturn> {
 
     /**
      * Builds a fetcher which will execute all the composed middleware
-     * @returns arguments for the 'useSWRMutation' function
+     * @returns arguments for the 'useSWR' function
      */
     build: (_url: FetcherUrl | null) => [
         FetcherKey | null,
