@@ -107,8 +107,8 @@ const ThreadInternal: React.FC<{
 
         {/* file path */}
         {thread.threadContext?.filePath && (
-          <div className="mb-2 flex flex-row-reverse me-27
-          font-mono text-xs text-primary-content/50 hover:text-primary-content"
+          <div className="mb-2 flex flex-row-reverse me-27 justify-end
+                          font-mono text-xs text-primary-content/50 hover:text-primary-content"
             title={thread.threadContext.filePath}>
             {/* file name */}
             <span className="text-primary-content">
