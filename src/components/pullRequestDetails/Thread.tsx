@@ -105,6 +105,22 @@ export const Thread: React.FC<{
           </span>
         </div>
 
+        {/* file path */}
+        {thread.threadContext?.filePath && (
+          <div className="mb-2 flex flex-row-reverse me-27
+          font-mono text-xs text-primary-content/50 hover:text-primary-content"
+            title={thread.threadContext.filePath}>
+            {/* file name */}
+            <span className="text-primary-content">
+              {thread.threadContext.filePath.split("/").pop()}
+            </span>
+            {/* folder - truncate and show the ellipsis on the left side of the folder path */}
+            <span dir="rtl" className="truncate">
+              {thread.threadContext.filePath.split("/").slice(0, -1).join("/")}/
+            </span>
+          </div>
+        )}
+
         {/* thread comments */}
         <div className="space-y-2 text-sm">
           {thread.comments.map(c => (
