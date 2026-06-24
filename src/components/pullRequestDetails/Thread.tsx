@@ -7,28 +7,28 @@ import { useEffect, useState } from "react"
 
 
 export const Thread: React.FC<{
-    thread: ThreadDto
-  }> = ({
-    thread
-  }) => {
-      const { selectedPr: pr } = useSelectedPr()
-      const { projectUrl, setProjectUrl } = useProjectUrl()
+  thread: ThreadDto
+}> = ({
+  thread
+}) => {
+    const { selectedPr: pr } = useSelectedPr()
+    const { projectUrl, setProjectUrl } = useProjectUrl()
 
-      const modifiedProjectUrl = (() => {
-        if (!projectUrl || !pr) return projectUrl
-        const trimmed = projectUrl.endsWith("/") ? projectUrl.slice(0, -1) : projectUrl
-        const base = trimmed.substring(0, trimmed.lastIndexOf("/"))
-        return `${base}/${pr.repository.project.name}`
-      })()
+    const modifiedProjectUrl = (() => {
+      if (!projectUrl || !pr) return projectUrl
+      const trimmed = projectUrl.endsWith("/") ? projectUrl.slice(0, -1) : projectUrl
+      const base = trimmed.substring(0, trimmed.lastIndexOf("/"))
+      return `${base}/${pr.repository.project.name}`
+    })()
 
-      return (
-        <ProjectUrlContext.Provider value={{ value: modifiedProjectUrl, setter: setProjectUrl }}>
-          <ThreadInternal thread={thread} />
-        </ProjectUrlContext.Provider>
-      )
-    }
+    return (
+      <ProjectUrlContext.Provider value={{ value: modifiedProjectUrl, setter: setProjectUrl }}>
+        <ThreadInternal thread={thread} />
+      </ProjectUrlContext.Provider>
+    )
+  }
 
-  const ThreadInternal: React.FC<{
+const ThreadInternal: React.FC<{
   thread: ThreadDto
 }> = ({
   thread
@@ -95,14 +95,14 @@ export const Thread: React.FC<{
               Thread {thread.id}
             </span>
           </span>
+          <span>
+            {new Date(thread.publishedDate).toLocaleString()}
+          </span>
           <StatusDropdown
             status={thread.status || "???"}
             onStatusChange={setThreadStatus}
             isMutating={isMutating}
           />
-          <span>
-            {new Date(thread.publishedDate).toLocaleString()}
-          </span>
         </div>
 
         {/* file path */}
@@ -125,8 +125,8 @@ export const Thread: React.FC<{
         <div className="space-y-2 text-sm">
           {thread.comments.map(c => (
             <div key={c.id}>
-              <div className="flex gap-3 text-xs text-primary-content/50">
-                <div>{c.author.displayName}</div>
+              <div className="flex gap-3 text-xs text-primary-content/70">
+                <div className="font-bold">{c.author.displayName}</div>
                 <div>{new Date(c.publishedDate).toLocaleString()}</div>
               </div>
               <div className="whitespace-pre-wrap">{c.content}</div>
