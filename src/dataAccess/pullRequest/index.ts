@@ -3,6 +3,10 @@ export {
 } from "./useGetPullRequestsByProjectCall"
 
 export {
+    useGetFileContentCall,
+} from "./useGetFileContentCall"
+
+export {
     useGetPrThreadsCall
 } from "./useGetPrThreadsCall"
 
