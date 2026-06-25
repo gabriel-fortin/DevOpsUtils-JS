@@ -4,6 +4,7 @@ import { useSelectedPr } from "@/state/selectedPr"
 
 import { THREAD_STATUSES } from "./constants"
 import { useEffect, useState } from "react"
+import { CodeChunk } from "./CodeChunk"
 
 
 export const Thread: React.FC<{
@@ -119,6 +120,18 @@ const ThreadInternal: React.FC<{
               {thread.threadContext.filePath.split("/").slice(0, -1).join("/")}/
             </span>
           </div>
+        )}
+
+        {/* code chunk */}
+        {thread.threadContext?.filePath && thread.threadContext?.rightFileStart && (
+          <CodeChunk
+            projectName={pr?.repository.project.name}
+            repositoryName={pr?.repository.name}
+            filePath={thread.threadContext.filePath}
+            commitId={pr?.lastMergeSourceCommit.commitId}
+            startLine={thread.threadContext.rightFileStart.line}
+            endLine={thread.threadContext.rightFileEnd?.line ?? thread.threadContext.rightFileStart.line}
+          />
         )}
 
         {/* thread comments */}
