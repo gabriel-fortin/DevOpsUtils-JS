@@ -43,6 +43,9 @@ function buildUrl(
 
 const textResponseMiddleware: Middleware<Response, string> = async (key, options, next) => {
     const response = await next(key, options)
-    if (!response.ok) throw new Error(`HTTP ${response.status} \n ${await response.text()}`)
+    if (!response.ok) {
+        throw new Error(`HTTP ${response.status} ${response.statusText} \n`
+            + (await response.text()).slice(0, 400))
+    }
     return response.text()
 }
